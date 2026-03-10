@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Study Guide — Project AAA</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="nebula"></div>
+<div class="grid-overlay"></div>
+<div class="meteor-container" id="meteorContainer"></div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">AAA</a>
+  <div class="nav-links">
+    <a href="resources.html">Resources</a>
+    <a href="ai-tools.html">AI Tools</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="study-guide.html" class="nav-active">Study Guide</a>
+  </div>
+  
+  <div id="navAuth"></div>
+</nav>
+
+<div class="page-hero" style="margin-bottom:0; padding-bottom:1.5rem;">
+  <div class="page-hero-icon">🤖</div>
+  <div class="page-label">AI STUDY GUIDE</div>
+  <h1 class="page-title">Your AI Tutor. <span class="accent-cyan">Ask Anything.</span></h1>
+  <p class="page-sub">Available 24/7. Classes 9–12. Physics, Chemistry, Biology, Maths and more.</p>
+</div>
+
+<!-- FULL CHAT -->
+<div class="chat-full-container">
+  <div class="chat-container glass">
+    <div class="chat-header">
+      <div class="chat-avatar">🤖</div>
+      <div>
+        <div class="chat-name">AAA Study Guide</div>
+        <div class="chat-status"><span class="status-dot"></span> Online · Offline AI · No internet needed</div>
+      </div>
+      <button class="clear-btn" onclick="clearChat()">Clear Chat</button>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+      <div class="ai-message">
+        <div class="msg-icon">🤖</div>
+        <div class="msg-content">
+          Namaste! 👋 I'm your AAA Study Guide for Classes 9–12.<br><br>
+          I can help with <strong>Physics, Chemistry, Biology, Maths, History, Geography, Economics</strong> and more!<br><br>
+          What would you like to study today?
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-suggestions">
+      <button class="suggestion" onclick="setInput('Explain Newton\'s first law')">Newton's Laws</button>
+      <button class="suggestion" onclick="setInput('How does photosynthesis work?')">Photosynthesis</button>
+      <button class="suggestion" onclick="setInput('Solve x² + 5x + 6 = 0')">Quadratic</button>
+      <button class="suggestion" onclick="setInput('What is Ohm\'s law?')">Ohm's Law</button>
+      <button class="suggestion" onclick="setInput('Explain the French Revolution')">French Revolution</button>
+      <button class="suggestion" onclick="setInput('Give me board exam tips')">Exam Tips</button>
+    </div>
+
+    <div class="chat-input-row">
+      <input type="text" id="userInput" placeholder="Ask any study question... e.g. Explain photosynthesis" onkeydown="if(event.key==='Enter') sendMessage()">
+      <button class="send-btn" onclick="sendMessage()" id="sendBtn">
+        <span id="sendBtnText">Send ✦</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+// Auto-fire tool prompt from AI Tools page
+window.addEventListener('load', () => {
+  const prompt = localStorage.getItem('aaa_tool_prompt');
+  if (prompt) {
+    localStorage.removeItem('aaa_tool_prompt');
+    document.getElementById('userInput').value = prompt;
+    setTimeout(sendMessage, 800);
+  }
+
+  initNavAuth();
+});
+</script>
+</body>
+</html>

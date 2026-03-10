@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Tools — Project AAA</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="nebula"></div>
+<div class="grid-overlay"></div>
+<div class="meteor-container" id="meteorContainer"></div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">AAA</a>
+  <div class="nav-links">
+    <a href="resources.html">Resources</a>
+    <a href="ai-tools.html" class="nav-active">AI Tools</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="study-guide.html">Study Guide</a>
+  </div>
+  <button class="nav-cta" onclick="window.location='index.html'">← Home</button>
+  <button onclick="logout()" class="logout-btn">Logout</button>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-icon">🤖</div>
+  <div class="page-label">AI TOOLKIT</div>
+  <h1 class="page-title">7 AI Tools. <span class="accent-cyan">One Click.</span></h1>
+  <p class="page-sub">Click any tool below — it will auto-ask the AI Study Guide for you instantly.</p>
+</div>
+
+<!-- TOOLS BIG GRID -->
+<div class="tools-big-grid">
+
+  <div class="tool-big t1" onclick="launchTool('Create detailed chapter notes for Class 10 Science — Matter and its Properties.')">
+    <div class="tool-big-icon">⚡</div>
+    <div class="tool-big-name">AI Notes Generator</div>
+    <div class="tool-big-desc">Auto-generate chapter-wise notes for any subject. Save hours of writing.</div>
+    <div class="tool-big-tags"><span class="ttag">Class 9–12</span><span class="ttag">All Subjects</span></div>
+    <button class="tool-launch-btn">Launch Tool →</button>
+  </div>
+
+  <div class="tool-big t2" onclick="launchTool('I have a doubt — please help me solve it step by step.')">
+    <div class="tool-big-icon">🧠</div>
+    <div class="tool-big-name">Doubt Solver</div>
+    <div class="tool-big-desc">Type any doubt and get a clear, step-by-step explanation instantly.</div>
+    <div class="tool-big-tags"><span class="ttag">Instant</span><span class="ttag">Step-by-step</span></div>
+    <button class="tool-launch-btn">Launch Tool →</button>
+  </div>
+
+  <div class="tool-big t3" onclick="launchTool('Create a 30-day study plan for Class 12 Board exams covering Physics, Chemistry, Maths and Biology.')">
+    <div class="tool-big-icon">📊</div>
+    <div class="tool-big-name">Study Planner</div>
+    <div class="tool-big-desc">Get a personalised daily study schedule for your board exams.</div>
+    <div class="tool-big-tags"><span class="ttag">Personalised</span><span class="ttag">Board Exams</span></div>
+    <button class="tool-launch-btn">Launch Tool →</button>
+  </div>
+
+  <div class="tool-big t4" onclick="launchTool('Summarise the chapter on Photosynthesis in 10 clear bullet points for Class 10 Biology.')">
+    <div class="tool-big-icon">📖</div>
+    <div class="tool-big-name">Summary AI</div>
+    <div class="tool-big-desc">Get any chapter summarised in 10 bullet points. Perfect for last-minute revision.</div>
+    <div class="tool-big-tags"><span class="ttag">Quick Revision</span><span class="ttag">All Chapters</span></div>
+    <button class="tool-launch-btn">Launch Tool →</button>
+  </div>
+
+  <div class="tool-big t5" onclick="launchTool('Give me 10 most important and likely questions for Class 10 Maths Board exam — Quadratic Equations chapter.')">
+    <div class="tool-big-icon">📚</div>
+    <div class="tool-big-name">Question Bank</div>
+    <div class="tool-big-desc">Get predicted important questions for any chapter — based on board exam patterns.</div>
+    <div class="tool-big-tags"><span class="ttag">Board Focused</span><span class="ttag">High Weightage</span></div>
+    <button class="tool-launch-btn">Launch Tool →</button>
+  </div>
+
+  <div class="tool-big t6" onclick="launchTool('Give me a complete last-minute exam strategy for Class 12 Physics Board exam. What to focus on in the last 3 days?')">
+    <div class="tool-big-icon">🎯</div>
+    <div class="tool-big-name">Exam Prep Coach</div>
+    <div class="tool-big-desc">Get a smart exam strategy — what to study, what to skip, how to score more.</div>
+    <div class="tool-big-tags"><span class="ttag">Strategy</span><span class="ttag">Last-minute</span></div>
+    <button class="tool-launch-btn">Launch Tool →</button>
+  </div>
+
+  <div class="tool-big t7" onclick="launchTool('Give me 5 practice problems on Trigonometry for Class 10 with full solutions.')">
+    <div class="tool-big-icon">🧩</div>
+    <div class="tool-big-name">Practice Problems</div>
+    <div class="tool-big-desc">Get practice problems with full solutions for any topic. The more you practice, the better you score.</div>
+    <div class="tool-big-tags"><span class="ttag">With Solutions</span><span class="ttag">All Topics</span></div>
+    <button class="tool-launch-btn">Launch Tool →</button>
+  </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="auth.js"></script>
+<script src="script.js"></script>
+
+<script>
+function launchTool(prompt) {
+  localStorage.setItem('aaa_tool_prompt', prompt);
+  window.location.href = 'study-guide.html';
+}
+</script>
+
+</body>
+</html>

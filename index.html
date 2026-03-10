@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project StudentHub — StudentHub AI</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- BACKGROUND LAYERS -->
+<div class="stars" id="stars"></div>
+<div class="nebula"></div>
+<div class="grid-overlay"></div>
+<div class="meteor-container" id="meteorContainer"></div>
+
+<!-- NAV -->
+<nav class="navbar">
+  <div class="nav-logo">AAA</div>
+  <div class="nav-links">
+    <a href="resources.html">Resources</a>
+    <a href="ai-tools.html">AI Tools</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="study-guide.html">Study Guide</a>
+  </div>
+  <div id="navAuth"><!-- auth injected by initNavAuth() --></div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="home">
+  <div class="hero-badge">🇮🇳 Built for Bharat · Free for Students</div>
+  <h1 class="logo">STUD HUB<br><span class="logo-accent">padhIQ</span></h1>
+  <p class="tagline">India's Futuristic Learning Platform<br><span class="tagline-sub">Free Resources · AI Study Guide · Local Marketplace</span></p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="window.location='study-guide.html'">Ask AI Now ✦</button>
+    <button class="btn-ghost" onclick="window.location='resources.html'">Explore →</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">9–12</span><span class="stat-label">Classes</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num">₹0</span><span class="stat-label">For Students</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num">AI</span><span class="stat-label">Powered</span></div>
+  </div>
+</header>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="section-label">WHAT WE OFFER</div>
+  <h2 class="section-title">Three pillars.<br>One platform.</h2>
+  <div class="features-grid">
+
+    <div class="feature-card card-orange">
+      <div class="feature-icon">📚</div>
+      <div class="feature-tag">FREE FOREVER</div>
+      <h3>Free Resources</h3>
+      <p>NCERT-aligned notes, past papers, and summaries for Classes 9, 10, 11 &amp; 12 — all subjects, zero cost.</p>
+      <ul class="feature-list">
+        <li>✓ Chapter-wise notes</li>
+        <li>✓ Board exam question banks</li>
+        <li>✓ Formula sheets &amp; mind maps</li>
+        <li>✓ Available offline</li>
+      </ul>
+      <a href="resources.html" class="feature-link">Browse Resources →</a>
+    </div>
+
+    <div class="feature-card card-cyan card-featured">
+      <div class="feature-glow"></div>
+      <div class="feature-icon">🤖</div>
+      <div class="feature-tag">AI POWERED</div>
+      <h3>AI Study Guide</h3>
+      <p>Ask any doubt. Get instant, accurate answers tuned for CBSE/ICSE students. Like having a personal tutor at 2 AM.</p>
+      <ul class="feature-list">
+        <li>✓ Subject-specific AI</li>
+        <li>✓ Step-by-step solutions</li>
+        <li>✓ Exam strategy advice</li>
+        <li>✓ Available 24/7</li>
+      </ul>
+      <a href="study-guide.html" class="feature-link">Try AI Now →</a>
+    </div>
+
+    <div class="feature-card card-green">
+      <div class="feature-icon">🛒</div>
+      <div class="feature-tag">LOCAL FIRST</div>
+      <h3>Marketplace</h3>
+      <p>Buy &amp; sell handwritten notes, books, and study material. Connect with local tutors in your city.</p>
+      <ul class="feature-list">
+        <li>✓ Sell your notes</li>
+        <li>✓ Buy used books cheap</li>
+        <li>✓ Find local tutors</li>
+        <li>✓ UPI payments</li>
+      </ul>
+      <a href="marketplace.html" class="feature-link">Visit Marketplace →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- AI TOOLS -->
+<section class="tools-section" id="tools">
+  <div class="section-label">AI TOOLKIT</div>
+  <h2 class="section-title">7 AI tools.<br>All in one place.</h2>
+  <div class="tool-grid">
+    <div class="tool t1" onclick="goToTool('Create detailed AI-generated notes for Class 10 Science Chapter 1.')">
+      <div class="tool-icon">⚡</div>
+      <div class="tool-name">AI Notes</div>
+      <div class="tool-desc">Auto-generate chapter notes</div>
+    </div>
+    <div class="tool t2" onclick="goToTool('Help me solve this doubt step by step.')">
+      <div class="tool-icon">🧠</div>
+      <div class="tool-name">Doubt Solver</div>
+      <div class="tool-desc">Instant doubt clearing</div>
+    </div>
+    <div class="tool t3" onclick="goToTool('Create a 30-day study plan for Class 12 Board exams.')">
+      <div class="tool-icon">📊</div>
+      <div class="tool-name">Study Planner</div>
+      <div class="tool-desc">Personalised schedule</div>
+    </div>
+    <div class="tool t4" onclick="goToTool('Summarise this chapter in 10 bullet points.')">
+      <div class="tool-icon">📖</div>
+      <div class="tool-name">Summary AI</div>
+      <div class="tool-desc">Chapter summaries fast</div>
+    </div>
+    <div class="tool t5" onclick="goToTool('Give me 10 important questions for Class 10 Maths Quadratic Equations.')">
+      <div class="tool-icon">📚</div>
+      <div class="tool-name">Question Bank</div>
+      <div class="tool-desc">Predicted exam questions</div>
+    </div>
+    <div class="tool t6" onclick="goToTool('Give me a last-minute revision strategy for Class 12 Physics Board exam.')">
+      <div class="tool-icon">🎯</div>
+      <div class="tool-name">Exam Prep</div>
+      <div class="tool-desc">Board exam strategies</div>
+    </div>
+    <div class="tool t7" onclick="goToTool('Give me 5 practice problems on quadratic equations with solutions.')">
+      <div class="tool-icon">🧩</div>
+      <div class="tool-name">Practice</div>
+      <div class="tool-desc">Solve practice sets</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKETPLACE PREVIEW -->
+<section class="marketplace-section" id="marketplace">
+  <div class="section-label">MARKETPLACE</div>
+  <h2 class="section-title">Buy. Sell. Connect.<br>Locally.</h2>
+  <div class="market-grid">
+    <div class="market-card">
+      <div class="market-badge">NOTES</div>
+      <div class="market-title">Class 12 Physics — All Chapters</div>
+      <div class="market-seller">By Priya S., Patna · ⭐ 4.9</div>
+      <div class="market-price">₹49 <span class="original">₹200</span></div>
+      <button class="market-btn">Buy Now</button>
+    </div>
+    <div class="market-card market-featured">
+      <div class="market-badge badge-cyan">TUTOR</div>
+      <div class="market-title">Maths Tutor · Class 9–12</div>
+      <div class="market-seller">Rahul Kumar · Patna · ⭐ 5.0</div>
+      <div class="market-price">₹299<span style="font-size:0.75rem;opacity:0.7">/session</span></div>
+      <button class="market-btn btn-cyan">Book Session</button>
+    </div>
+    <div class="market-card">
+      <div class="market-badge badge-green">BOOKS</div>
+      <div class="market-title">HC Verma Vol 1 + 2 — Used</div>
+      <div class="market-seller">Amit R., Bihar Sharif · ⭐ 4.7</div>
+      <div class="market-price">₹180 <span class="original">₹600</span></div>
+      <button class="market-btn">Buy Now</button>
+    </div>
+    <div class="market-card market-sell">
+      <div class="market-icon">➕</div>
+      <div class="market-title">List your notes or services</div>
+      <div class="market-seller">Earn money from what you know</div>
+      <button class="market-btn btn-outline">Sell Here →</button>
+    </div>
+  </div>
+</section>
+
+<!-- AI CHAT -->
+<section class="chat-section" id="chat">
+  <div class="section-label">AI STUDY GUIDE</div>
+  <h2 class="section-title">Your AI tutor.<br>Ask anything.</h2>
+
+  <div class="chat-container glass">
+    <div class="chat-header">
+      <div class="chat-avatar">🤖</div>
+      <div>
+        <div class="chat-name">AAA Study Guide</div>
+        <div class="chat-status"><span class="status-dot"></span> Online · Powered by Claude AI</div>
+      </div>
+      <button class="clear-btn" onclick="clearChat()">Clear</button>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+      <div class="ai-message">
+        <div class="msg-icon">🤖</div>
+        <div class="msg-content">
+          Namaste! 👋 I'm your AI Study Guide for Classes 9–12.<br><br>
+          Ask me anything — doubts, explanations, exam tips, or try one of the <strong>AI Tools</strong> above!
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-suggestions">
+      <button class="suggestion" onclick="setInput('Explain Newton\'s laws with examples')">Newton's Laws</button>
+      <button class="suggestion" onclick="setInput('How does photosynthesis work?')">Photosynthesis</button>
+      <button class="suggestion" onclick="setInput('Solve: x² + 5x + 6 = 0')">Solve Quadratic</button>
+      <button class="suggestion" onclick="setInput('Tips for Class 10 board exam')">Board Tips</button>
+    </div>
+
+    <div class="chat-input-row">
+      <input type="text" id="userInput" placeholder="Ask a study question... (e.g. Explain photosynthesis)" onkeydown="if(event.key==='Enter') sendMessage()">
+      <button class="send-btn" onclick="sendMessage()" id="sendBtn">
+        <span id="sendBtnText">Send ✦</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">Project AAA</div>
+  <p class="footer-tagline">Free education for every Indian student 🇮🇳</p>
+  <div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy</a>
+    <a href="#">Contact</a>
+    <a href="#">Sell on AAA</a>
+  </div>
+  <p class="footer-copy">© 2025 Project AAA · Built with ❤️ in India</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+function goToTool(prompt) {
+  localStorage.setItem('aaa_tool_prompt', prompt);
+  window.location.href = 'study-guide.html';
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+initNavAuth();
+</script>
+</body>
+</html>

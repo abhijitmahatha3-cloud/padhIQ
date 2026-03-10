@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Resources — Project AAA</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="nebula"></div>
+<div class="grid-overlay"></div>
+<div class="meteor-container" id="meteorContainer"></div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">AAA</a>
+  <div class="nav-links">
+    <a href="resources.html" class="nav-active">Resources</a>
+    <a href="ai-tools.html">AI Tools</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="study-guide.html">Study Guide</a>
+  </div>
+  
+  
+  <div id="navAuth"></div>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-icon">📚</div>
+  <div class="page-label">FREE RESOURCES</div>
+  <h1 class="page-title">Study Materials. <span class="accent-orange">Free Forever.</span></h1>
+  <p class="page-sub">NCERT-aligned notes, question banks & formula sheets for Classes 9, 10, 11 & 12.</p>
+</div>
+
+<!-- CLASS TABS -->
+<div class="class-tabs">
+  <button class="class-tab active" onclick="switchClass('9', this)">Class 9</button>
+  <button class="class-tab" onclick="switchClass('10', this)">Class 10</button>
+  <button class="class-tab" onclick="switchClass('11', this)">Class 11</button>
+  <button class="class-tab" onclick="switchClass('12', this)">Class 12</button>
+</div>
+
+<!-- RESOURCES GRID -->
+<div class="resources-grid" id="resourcesGrid">
+
+  <!-- CLASS 9 -->
+  <div class="res-subject" data-class="9">
+    <div class="res-subject-header">
+      <span class="res-subject-icon">🔬</span>
+      <span>Science — Class 9 · All 12 Chapters</span>
+    </div>
+    <div class="res-items">
+      <div class="res-item"><span class="res-icon">⚗️</span><span class="res-name">Ch 1–4: Matter, Mixtures, Atoms, Structure of Atom</span><span class="res-tag" style="background:rgba(255,107,53,0.12);color:var(--orange)">CHEMISTRY</span><button class="res-btn" onclick="window.location='science9.html'">Open →</button></div>
+      <div class="res-item"><span class="res-icon">🌿</span><span class="res-name">Ch 5–7: Cell, Tissues, Food Resources</span><span class="res-tag" style="background:rgba(0,255,136,0.1);color:var(--green)">BIOLOGY</span><button class="res-btn" onclick="window.location='science9.html'">Open →</button></div>
+      <div class="res-item"><span class="res-icon">⚡</span><span class="res-name">Ch 8–12: Motion, Force, Gravitation, Energy, Sound</span><span class="res-tag tag-cyan">PHYSICS</span><button class="res-btn" onclick="window.location='science9.html'">Open →</button></div>
+      <div class="res-item" style="background:rgba(0,240,255,0.04);border-radius:10px;">
+        <span class="res-icon">🧠</span>
+        <span class="res-name" style="color:var(--cyan);font-weight:700;">Notes + One-Pager + MCQ Test — All chapters inside!</span>
+        <button class="res-btn" onclick="window.location='science9.html'" style="background:rgba(0,240,255,0.1);border-color:rgba(0,240,255,0.3);color:var(--cyan);">Open Full Page →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="res-subject" data-class="9">
+    <div class="res-subject-header">
+      <span class="res-subject-icon">➗</span>
+      <span>Mathematics — Class 9</span>
+    </div>
+    <div class="res-items">
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Number Systems — Complete Notes</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Triangles & Quadrilaterals</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">🧮</span><span class="res-name">All Formulas — Maths Class 9</span><span class="res-tag tag-gold">Formula</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">❓</span><span class="res-name">Maths — 40 Practice Problems</span><span class="res-tag tag-cyan">Q Bank</span><button class="res-btn">Download</button></div>
+    </div>
+  </div>
+
+  <!-- CLASS 10 -->
+  <div class="res-subject" data-class="10" style="display:none">
+    <div class="res-subject-header">
+      <span class="res-subject-icon">⚗️</span>
+      <span>Science — Class 10</span>
+    </div>
+    <div class="res-items">
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Chemical Reactions & Equations</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Life Processes — Biology Notes</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">🧮</span><span class="res-name">Electricity & Magnetism — Formulas</span><span class="res-tag tag-gold">Formula</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">❓</span><span class="res-name">Science Board — 100 Important Q</span><span class="res-tag tag-cyan">Q Bank</span><button class="res-btn">Download</button></div>
+    </div>
+  </div>
+
+  <div class="res-subject" data-class="10" style="display:none">
+    <div class="res-subject-header">
+      <span class="res-subject-icon">➗</span>
+      <span>Mathematics — Class 10</span>
+    </div>
+    <div class="res-items">
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Quadratic Equations — Full Notes</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Trigonometry — Notes + Examples</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">🧮</span><span class="res-name">All Formulas — Maths Class 10</span><span class="res-tag tag-gold">Formula</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">❓</span><span class="res-name">Previous 5 Years Board Papers</span><span class="res-tag tag-cyan">Q Bank</span><button class="res-btn">Download</button></div>
+    </div>
+  </div>
+
+  <div class="res-subject" data-class="10" style="display:none">
+    <div class="res-subject-header">
+      <span class="res-subject-icon">🌍</span>
+      <span>Social Science — Class 10</span>
+    </div>
+    <div class="res-items">
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Nationalism in India — Notes</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Resources & Development</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">❓</span><span class="res-name">SST Board — 80 Important Questions</span><span class="res-tag tag-cyan">Q Bank</span><button class="res-btn">Download</button></div>
+    </div>
+  </div>
+
+  <!-- CLASS 11 -->
+  <div class="res-subject" data-class="11" style="display:none">
+    <div class="res-subject-header">
+      <span class="res-subject-icon">⚡</span>
+      <span>Physics — Class 11</span>
+    </div>
+    <div class="res-items">
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Laws of Motion — Complete Notes</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Work, Energy & Power</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">🧮</span><span class="res-name">Physics Class 11 — All Formulas</span><span class="res-tag tag-gold">Formula</span><button class="res-btn">Download</button></div>
+    </div>
+  </div>
+
+  <div class="res-subject" data-class="11" style="display:none">
+    <div class="res-subject-header">
+      <span class="res-subject-icon">🧪</span>
+      <span>Chemistry — Class 11</span>
+    </div>
+    <div class="res-items">
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Atomic Structure — Detailed Notes</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Periodic Table & Periodicity</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">🧮</span><span class="res-name">Chemistry Formulas & Equations</span><span class="res-tag tag-gold">Formula</span><button class="res-btn">Download</button></div>
+    </div>
+  </div>
+
+  <!-- CLASS 12 -->
+  <div class="res-subject" data-class="12" style="display:none">
+    <div class="res-subject-header">
+      <span class="res-subject-icon">⚡</span>
+      <span>Physics — Class 12</span>
+    </div>
+    <div class="res-items">
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Electrostatics — Full Chapter Notes</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Optics — Ray & Wave Optics</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">🧮</span><span class="res-name">Physics Class 12 — Master Formula Sheet</span><span class="res-tag tag-gold">Formula</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">❓</span><span class="res-name">Physics Board — 120 Important Q</span><span class="res-tag tag-cyan">Q Bank</span><button class="res-btn">Download</button></div>
+    </div>
+  </div>
+
+  <div class="res-subject" data-class="12" style="display:none">
+    <div class="res-subject-header">
+      <span class="res-subject-icon">🧪</span>
+      <span>Chemistry — Class 12</span>
+    </div>
+    <div class="res-items">
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Organic Chemistry — Reaction Notes</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">📄</span><span class="res-name">Electrochemistry — Full Notes</span><span class="res-tag">Notes</span><button class="res-btn">Download</button></div>
+      <div class="res-item"><span class="res-icon">🧮</span><span class="res-name">Chemistry Class 12 — Formula Sheet</span><span class="res-tag tag-gold">Formula</span><button class="res-btn">Download</button></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+function switchClass(cls, btn) {
+  document.querySelectorAll('.class-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.res-subject').forEach(s => {
+    s.style.display = s.dataset.class === cls ? 'block' : 'none';
+  });
+}
+</script>
+<script>initNavAuth();</script>
+</body>
+</html>
