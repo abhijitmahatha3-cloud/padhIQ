@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us — Project AAA · padhIQ</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+
+/* ── ABOUT PAGE SPECIFIC ─────────────────────────── */
+
+/* Origin Story */
+.origin-section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem;
+}
+
+.origin-card {
+  background: rgba(10,22,40,0.7);
+  border: 1px solid rgba(0,240,255,0.15);
+  border-radius: 24px;
+  padding: 3rem;
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.7s 0.2s ease both;
+}
+
+.origin-card::before {
+  content: '"';
+  position: absolute;
+  top: -0.5rem;
+  left: 2rem;
+  font-size: 12rem;
+  font-family: 'Orbitron', monospace;
+  color: rgba(0,240,255,0.04);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.origin-text {
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: rgba(226,232,240,0.85);
+  position: relative;
+  z-index: 1;
+}
+
+.origin-text strong {
+  color: var(--cyan);
+}
+
+.origin-highlight {
+  display: inline-block;
+  background: rgba(0,240,255,0.08);
+  border: 1px solid rgba(0,240,255,0.2);
+  border-radius: 8px;
+  padding: 0.15rem 0.6rem;
+  color: var(--cyan);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+/* AAA Meaning */
+.aaa-banner {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin: 3rem auto 0;
+  max-width: 600px;
+}
+
+.aaa-letter {
+  flex: 1;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  position: relative;
+}
+
+.aaa-letter:not(:last-child)::after {
+  content: '+';
+  position: absolute;
+  right: -0.3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 1.2rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.aaa-big {
+  font-family: 'Orbitron', monospace;
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--cyan), var(--green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.aaa-name {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 0.4rem;
+  letter-spacing: 0.05em;
+}
+
+/* Team Cards */
+.team-section {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .team-grid { grid-template-columns: 1fr; }
+}
+
+.member-card {
+  background: rgba(10,22,40,0.7);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem 1.75rem;
+  backdrop-filter: blur(16px);
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: fadeUp 0.6s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.member-card:hover {
+  transform: translateY(-6px);
+}
+
+.member-card.card-lead {
+  border-color: rgba(0,240,255,0.3);
+  background: rgba(0,240,255,0.03);
+}
+.member-card.card-lead:hover {
+  box-shadow: 0 20px 60px rgba(0,240,255,0.12);
+}
+
+.member-card.card-2 {
+  border-color: rgba(0,255,136,0.2);
+  animation-delay: 0.1s;
+}
+.member-card.card-2:hover {
+  box-shadow: 0 20px 60px rgba(0,255,136,0.08);
+}
+
+.member-card.card-3 {
+  border-color: rgba(255,107,53,0.2);
+  animation-delay: 0.2s;
+}
+.member-card.card-3:hover {
+  box-shadow: 0 20px 60px rgba(255,107,53,0.08);
+}
+
+/* Avatar */
+.member-avatar {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.avatar-lead {
+  background: rgba(0,240,255,0.1);
+  border: 2px solid rgba(0,240,255,0.3);
+  box-shadow: 0 0 30px rgba(0,240,255,0.15);
+}
+.avatar-2 {
+  background: rgba(0,255,136,0.08);
+  border: 2px solid rgba(0,255,136,0.25);
+}
+.avatar-3 {
+  background: rgba(255,107,53,0.08);
+  border: 2px solid rgba(255,107,53,0.25);
+}
+
+.member-role-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 0.2rem 0.65rem;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.badge-lead  { background: rgba(0,240,255,0.1);  color: var(--cyan);   border: 1px solid rgba(0,240,255,0.2); }
+.badge-green { background: rgba(0,255,136,0.08); color: var(--green);  border: 1px solid rgba(0,255,136,0.2); }
+.badge-orange{ background: rgba(255,107,53,0.1); color: var(--orange); border: 1px solid rgba(255,107,53,0.2); }
+
+.member-name {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.3rem;
+}
+
+.member-initial {
+  font-size: 2.5rem;
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  color: var(--cyan);
+  opacity: 0.15;
+  position: absolute;
+  bottom: 1rem;
+  right: 1.5rem;
+  line-height: 1;
+}
+
+.member-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.member-meta span::before {
+  margin-right: 0.4rem;
+}
+
+.member-desc {
+  font-size: 0.85rem;
+  color: rgba(226,232,240,0.7);
+  line-height: 1.7;
+}
+
+.member-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+
+.mtag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.05);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+/* Tech Stack */
+.stack-section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem;
+}
+
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.stack-item {
+  background: rgba(10,22,40,0.6);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s;
+  animation: fadeUp 0.5s ease both;
+}
+
+.stack-item:hover {
+  border-color: rgba(0,240,255,0.3);
+  background: rgba(0,240,255,0.04);
+  transform: translateY(-3px);
+}
+
+.stack-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
+.stack-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: #fff;
+}
+.stack-desc {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
+
+/* Mission */
+.mission-section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem;
+}
+
+.mission-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.mission-item {
+  background: rgba(10,22,40,0.6);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  animation: fadeUp 0.5s ease both;
+  transition: transform 0.2s;
+}
+.mission-item:hover { transform: translateY(-4px); }
+
+.mission-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.mission-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.mission-text {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Contact */
+.contact-section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 1.5rem 6rem;
+  text-align: center;
+}
+
+.contact-card {
+  background: rgba(10,22,40,0.7);
+  border: 1px solid rgba(0,240,255,0.15);
+  border-radius: 20px;
+  padding: 2.5rem;
+  backdrop-filter: blur(16px);
+}
+
+.contact-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 999px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: rgba(255,255,255,0.03);
+}
+.contact-btn:hover {
+  border-color: rgba(0,240,255,0.4);
+  color: var(--cyan);
+  background: rgba(0,240,255,0.06);
+  transform: translateY(-2px);
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  max-width: 600px;
+  margin: 2rem auto 0;
+  padding-left: 2rem;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, var(--cyan), transparent);
+}
+.tl-item {
+  position: relative;
+  padding: 0 0 1.75rem 1.5rem;
+  animation: fadeUp 0.5s ease both;
+}
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -0.3rem; top: 0.35rem;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+}
+.tl-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--cyan);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.3rem;
+}
+.tl-text {
+  font-size: 0.88rem;
+  color: rgba(226,232,240,0.8);
+  line-height: 1.6;
+}
+.tl-text strong { color: #fff; }
+
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="nebula"></div>
+<div class="grid-overlay"></div>
+<div class="meteor-container" id="meteorContainer"></div>
+
+<!-- NAV -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">AAA</a>
+  <div class="nav-links">
+    <a href="resources.html">Resources</a>
+    <a href="study-guide.html">AI Guide</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="about.html" class="nav-active">About</a>
+  </div>
+  <button class="nav-cta" onclick="window.location='index.html'">← Home</button>
+  <div id="navAuth"></div>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero" style="padding-bottom:2rem;">
+  <div class="page-hero-icon">🚀</div>
+  <div class="page-label">OUR STORY</div>
+  <h1 class="page-title">Three Brothers.<br><span class="accent-cyan">One Mission.</span></h1>
+  <p class="page-sub">We built padhIQ because we believe every Indian student deserves free, quality education — not just those who can afford it.</p>
+</div>
+
+<!-- AAA MEANING -->
+<div style="text-align:center;padding:0 1.5rem 1rem;">
+  <div class="aaa-banner">
+    <div class="aaa-letter">
+      <div class="aaa-big">A</div>
+      <div class="aaa-name">Abhijit</div>
+    </div>
+    <div class="aaa-letter">
+      <div class="aaa-big">A</div>
+      <div class="aaa-name">Arup</div>
+    </div>
+    <div class="aaa-letter">
+      <div class="aaa-big">A</div>
+      <div class="aaa-name">Aditya</div>
+    </div>
+  </div>
+  <p style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--muted);letter-spacing:0.15em;margin-top:1rem;">PROJECT AAA — NAMED AFTER THREE BROTHERS FROM BOKARO</p>
+</div>
+
+<!-- ORIGIN STORY -->
+<section style="padding:3rem 0 0;">
+  <div class="section-label" style="text-align:center;">THE ORIGIN</div>
+  <h2 class="section-title" style="text-align:center;">Why we built this.</h2>
+</section>
+
+<div class="origin-section">
+  <div class="origin-card">
+    <p class="origin-text">
+      Growing up in <strong>Bokaro, Jharkhand</strong>, we saw the same problem everywhere around us — brilliant students falling behind not because they lacked talent, but because quality study resources cost money their families didn't have. Coaching centres charge ₹50,000 a year. Good books aren't always available. And when you have a doubt at 11 PM before your board exam, there's nobody to ask.<br><br>
+
+      <strong>Abhijit</strong>, a Class 12 student himself, decided to do something about it. Armed with just a laptop and determination, he started building <span class="origin-highlight">padhIQ</span> — a platform that combines free NCERT resources, an AI tutor available 24/7, and a local marketplace where students can buy and sell study material at fair prices.<br><br>
+
+      The name <strong>Project AAA</strong> came naturally — it stands for the three of us. <strong>Aditya, Arup, and Abhijit</strong> — three brothers who believe education should be a right, not a privilege. The younger two (Class 7 and Class 8) became the first beta testers, pointing out every bug, every confusing UI, every missing topic.<br><br>
+
+      This isn't a startup. It isn't a business. It's a <strong>student's promise to other students</strong> — that no one should have to study alone, or struggle because they couldn't afford help. 🇮🇳
+    </p>
+  </div>
+</div>
+
+<!-- TEAM -->
+<section style="padding:3rem 0 0;">
+  <div class="section-label" style="text-align:center;">THE TEAM</div>
+  <h2 class="section-title" style="text-align:center;">Meet the brothers.</h2>
+</section>
+
+<div class="team-section">
+  <div class="team-grid">
+
+    <!-- Abhijit -->
+    <div class="member-card card-lead">
+      <div class="member-avatar avatar-lead">👨‍💻</div>
+      <div class="member-role-badge badge-lead">⚡ FOUNDER & DEVELOPER</div>
+      <div class="member-name">Abhijit Mahatha</div>
+      <div class="member-meta">
+        <span>📚 Class 12 · CBSE</span>
+        <span>📍 Bokaro, Jharkhand</span>
+      </div>
+      <div class="member-desc">
+        The mind behind padhIQ. Taught himself web development, AI integration, and cloud deployment — all while preparing for his own Class 12 board exams. Built the entire platform from scratch: frontend, backend, AI engine, and deployment.
+      </div>
+      <div class="member-tags">
+        <span class="mtag">HTML/CSS/JS</span>
+        <span class="mtag">Groq AI</span>
+        <span class="mtag">Supabase</span>
+        <span class="mtag">Vercel</span>
+      </div>
+      <div class="member-initial">A</div>
+    </div>
+
+    <!-- Arup -->
+    <div class="member-card card-2">
+      <div class="member-avatar avatar-2">🎯</div>
+      <div class="member-role-badge badge-green">🧪 BETA TESTER</div>
+      <div class="member-name">Arup Mahatha</div>
+      <div class="member-meta">
+        <span>📚 Class 8 · CBSE</span>
+        <span>📍 Bokaro, Jharkhand</span>
+      </div>
+      <div class="member-desc">
+        The platform's first real user. His questions, doubts, and feedback shaped how the AI Study Guide works. If the AI can answer Arup's Class 8 questions clearly, it can help anyone.
+      </div>
+      <div class="member-tags">
+        <span class="mtag">Testing</span>
+        <span class="mtag">Feedback</span>
+      </div>
+      <div class="member-initial" style="color:var(--green);">A</div>
+    </div>
+
+    <!-- Aditya -->
+    <div class="member-card card-3">
+      <div class="member-avatar avatar-3">⭐</div>
+      <div class="member-role-badge badge-orange">🌟 INSPIRATION</div>
+      <div class="member-name">Aditya Sharma</div>
+      <div class="member-meta">
+        <span>📚 Class 7 · CBSE</span>
+        <span>📍 Bokaro, Jharkhand</span>
+      </div>
+      <div class="member-desc">
+        The youngest of the three and the heart of Project AAA. His curiosity and endless questions remind us every day exactly why we're building this platform.
+      </div>
+      <div class="member-tags">
+        <span class="mtag">Ideas</span>
+        <span class="mtag">Motivation</span>
+      </div>
+      <div class="member-initial" style="color:var(--orange);">A</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TIMELINE -->
+<section style="padding:3rem 0 0;text-align:center;">
+  <div class="section-label" style="text-align:center;">JOURNEY</div>
+  <h2 class="section-title" style="text-align:center;">How it happened.</h2>
+</section>
+
+<div class="origin-section" style="padding-bottom:3rem;">
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-date">// THE PROBLEM</div>
+      <div class="tl-text"><strong>Realised the gap</strong> — quality education in Bokaro was locked behind expensive coaching fees. Most students couldn't afford it.</div>
+    </div>
+    <div class="tl-item" style="animation-delay:0.1s;">
+      <div class="tl-date">// THE IDEA</div>
+      <div class="tl-text"><strong>Started sketching padhIQ</strong> — a free platform with NCERT notes, AI doubt-solving, and a local marketplace. No coaching needed.</div>
+    </div>
+    <div class="tl-item" style="animation-delay:0.15s;">
+      <div class="tl-date">// THE BUILD</div>
+      <div class="tl-text"><strong>Built the entire site</strong> solo — cosmic dark theme, AI chat, marketplace, login system. Every line of code written between study sessions.</div>
+    </div>
+    <div class="tl-item" style="animation-delay:0.2s;">
+      <div class="tl-date">// THE LAUNCH</div>
+      <div class="tl-text"><strong>Deployed on Vercel</strong> — live at padh-iq.vercel.app. Free for every student in India, powered by Groq AI and Supabase.</div>
+    </div>
+    <div class="tl-item" style="animation-delay:0.25s;">
+      <div class="tl-date">// THE FUTURE</div>
+      <div class="tl-text"><strong>Growing padhIQ</strong> — more subjects, video explanations, quiz mode, student profiles, and eventually reaching every corner of India. 🇮🇳</div>
+    </div>
+  </div>
+</div>
+
+<!-- TECH STACK -->
+<section style="padding:3rem 0 0;text-align:center;">
+  <div class="section-label" style="text-align:center;">TECH STACK</div>
+  <h2 class="section-title" style="text-align:center;">Built with.</h2>
+</section>
+
+<div class="stack-section">
+  <div class="stack-grid">
+    <div class="stack-item" style="animation-delay:0.05s;">
+      <div class="stack-icon">🌐</div>
+      <div class="stack-name">HTML / CSS / JS</div>
+      <div class="stack-desc">Frontend</div>
+    </div>
+    <div class="stack-item" style="animation-delay:0.1s;">
+      <div class="stack-icon">🤖</div>
+      <div class="stack-name">Groq AI</div>
+      <div class="stack-desc">Llama 3.1 · Free</div>
+    </div>
+    <div class="stack-item" style="animation-delay:0.15s;">
+      <div class="stack-icon">🔐</div>
+      <div class="stack-name">Supabase</div>
+      <div class="stack-desc">Auth & Database</div>
+    </div>
+    <div class="stack-item" style="animation-delay:0.2s;">
+      <div class="stack-icon">▲</div>
+      <div class="stack-name">Vercel</div>
+      <div class="stack-desc">Hosting · Free</div>
+    </div>
+    <div class="stack-item" style="animation-delay:0.25s;">
+      <div class="stack-icon">🐙</div>
+      <div class="stack-name">GitHub</div>
+      <div class="stack-desc">Version Control</div>
+    </div>
+    <div class="stack-item" style="animation-delay:0.3s;">
+      <div class="stack-icon">🎨</div>
+      <div class="stack-name">Custom CSS</div>
+      <div class="stack-desc">Cosmic Theme</div>
+    </div>
+  </div>
+</div>
+
+<!-- MISSION -->
+<section style="padding:3rem 0 0;text-align:center;">
+  <div class="section-label" style="text-align:center;">OUR VALUES</div>
+  <h2 class="section-title" style="text-align:center;">What we stand for.</h2>
+</section>
+
+<div class="mission-section">
+  <div class="mission-grid">
+    <div class="mission-item" style="animation-delay:0.05s;">
+      <div class="mission-icon">🆓</div>
+      <div class="mission-title">Free Forever</div>
+      <div class="mission-text">Every resource, every AI answer, every feature — free for students. Always. No hidden fees, no premium tiers for basic education.</div>
+    </div>
+    <div class="mission-item" style="animation-delay:0.1s;">
+      <div class="mission-icon">🇮🇳</div>
+      <div class="mission-title">Built for Bharat</div>
+      <div class="mission-text">NCERT-aligned, Indian examples, Hindi/Hinglish support. Not a foreign platform adapted for India — born in India, for India.</div>
+    </div>
+    <div class="mission-item" style="animation-delay:0.15s;">
+      <div class="mission-icon">🤝</div>
+      <div class="mission-title">Student to Student</div>
+      <div class="mission-text">We're students ourselves. We know what it's like to be stuck on a problem at midnight. That's exactly why we built a 24/7 AI tutor.</div>
+    </div>
+    <div class="mission-item" style="animation-delay:0.2s;">
+      <div class="mission-icon">📈</div>
+      <div class="mission-title">Always Growing</div>
+      <div class="mission-text">More chapters, more subjects, more features — every week. This platform grows with every student who uses it and gives feedback.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section style="padding:3rem 0 0;text-align:center;">
+  <div class="section-label" style="text-align:center;">GET IN TOUCH</div>
+  <h2 class="section-title" style="text-align:center;">Say hello.</h2>
+</section>
+
+<div class="contact-section">
+  <div class="contact-card">
+    <p style="color:var(--muted);font-size:0.92rem;line-height:1.7;max-width:500px;margin:0 auto;">
+      Have a suggestion, found a bug, or just want to say hi? We'd love to hear from you. padhIQ is built by students for students — your feedback shapes what we build next.
+    </p>
+    <div class="contact-links">
+      <a href="https://github.com/abhijitmahatha3-cloud/padhIQ" target="_blank" class="contact-btn">
+        🐙 GitHub
+      </a>
+      <a href="mailto:contact@padhiq.in" class="contact-btn">
+        ✉️ Email Us
+      </a>
+      <a href="study-guide.html" class="contact-btn">
+        🤖 Try AI Guide
+      </a>
+    </div>
+    <p style="margin-top:1.75rem;font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:rgba(100,116,139,0.5);letter-spacing:0.1em;">
+      © 2025 PROJECT AAA · MADE WITH ❤️ IN BOKARO, JHARKHAND 🇮🇳
+    </p>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>initNavAuth();</script>
+
+</body>
+</html>
