@@ -191,7 +191,7 @@ function loadDash() {
   document.getElementById('sStreak').textContent    = d.streak.count;
   document.getElementById('sQuestions').textContent = d.questionsAsked;
   document.getElementById('sSessions').textContent  = Math.max(d.totalSessions, d.questionsAsked > 0 ? 1 : 0);
-  const top = Progress.topSubject(d);
+  const top = Progress.getTopSubject(d);
   document.getElementById('sTopSub').textContent    = top || '—';
 
   // Hero sub
