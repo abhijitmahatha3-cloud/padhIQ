@@ -473,3 +473,44 @@
   .res-item { flex-wrap: wrap; }
   .res-btn { width: 100%; text-align: center; }
 }
+
+
+/* ── BACK / HOME BUTTON ─────────────────────────── */
+.back-home-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5.5rem 1.5rem 0;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+  color: var(--muted);
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  border-color: rgba(0,240,255,0.3);
+  color: var(--cyan);
+  background: rgba(0,240,255,0.05);
+}
+
+.back-btn-home {
+  border-color: rgba(0,240,255,0.2);
+  color: var(--cyan);
+  background: rgba(0,240,255,0.05);
+}
+
