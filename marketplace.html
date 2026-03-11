@@ -3,10 +3,147 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marketplace — Project AAA</title>
+<title>Marketplace — padhIQ</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="pages.css">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* ── Layout ── */
+.mkt-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 6rem}
+
+/* ── Upload button bar ── */
+.mkt-topbar{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+  margin-bottom:1.5rem;
+}
+.upload-btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.65rem 1.4rem;border-radius:999px;
+  background:linear-gradient(135deg,var(--cyan),var(--green));
+  color:#020617;font-family:'Syne',sans-serif;font-weight:800;font-size:.83rem;
+  border:none;cursor:pointer;transition:transform .2s,box-shadow .2s;
+}
+.upload-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,240,255,.25)}
+
+/* ── Filters ── */
+.filter-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.filter-pill{
+  padding:.35rem .85rem;border-radius:999px;border:1px solid var(--border);
+  background:rgba(255,255,255,.03);color:var(--muted);font-family:'Syne',sans-serif;
+  font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;
+}
+.filter-pill:hover,.filter-pill.active{
+  border-color:rgba(0,240,255,.35);background:rgba(0,240,255,.08);color:var(--cyan);
+}
+
+/* ── Cards grid ── */
+.mkt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem}
+
+.mkt-card{
+  background:rgba(10,22,40,.7);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;backdrop-filter:blur(14px);transition:transform .2s,box-shadow .2s;
+  animation:fadeUp .5s ease both;display:flex;flex-direction:column;
+}
+.mkt-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,240,255,.08);border-color:rgba(0,240,255,.2)}
+
+.mkt-card-head{padding:1.25rem 1.25rem .75rem;flex:1}
+.mkt-card-type{
+  display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.58rem;
+  font-weight:700;letter-spacing:.12em;padding:.18rem .55rem;border-radius:4px;
+  margin-bottom:.75rem;text-transform:uppercase;
+}
+.type-notes   {background:rgba(0,240,255,.08);color:var(--cyan);   border:1px solid rgba(0,240,255,.2)}
+.type-tutor   {background:rgba(255,107,53,.08);color:var(--orange);border:1px solid rgba(255,107,53,.2)}
+.type-books   {background:rgba(0,255,136,.08); color:var(--green); border:1px solid rgba(0,255,136,.2)}
+.type-guide   {background:rgba(180,100,255,.1);color:#c084fc;      border:1px solid rgba(180,100,255,.2)}
+
+.mkt-card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:#fff;margin-bottom:.4rem}
+.mkt-card-desc {font-size:.78rem;color:var(--muted);line-height:1.6;margin-bottom:.75rem}
+.mkt-card-tags {display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem}
+.mkt-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:.15rem .5rem;
+  border-radius:4px;background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)}
+
+.mkt-card-meta{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);
+  display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.mkt-rating{color:#fbbf24}
+
+.mkt-card-foot{
+  padding:.75rem 1.25rem;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.mkt-price{font-family:'Orbitron',monospace;font-weight:700;font-size:1rem;color:var(--cyan)}
+.mkt-price.free{color:var(--green)}
+.mkt-contact-btn{
+  padding:.45rem 1rem;border-radius:999px;font-family:'Syne',sans-serif;font-weight:700;font-size:.75rem;
+  border:1px solid rgba(0,240,255,.25);background:rgba(0,240,255,.06);color:var(--cyan);
+  cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:.35rem;
+}
+.mkt-contact-btn:hover{background:rgba(0,240,255,.14);border-color:rgba(0,240,255,.45);transform:scale(1.03)}
+
+/* ── Upload Modal ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(2,6,23,.88);backdrop-filter:blur(10px);
+  z-index:500;display:none;align-items:center;justify-content:center;padding:1.5rem;
+}
+.modal-overlay.open{display:flex}
+.modal-box{
+  background:rgba(10,22,40,.95);border:1px solid rgba(0,240,255,.2);border-radius:20px;
+  padding:2rem;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;
+  animation:fadeUp .3s ease both;
+}
+.modal-title{font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:1.5rem}
+.modal-close{float:right;background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;margin-top:-.25rem}
+.modal-close:hover{color:#fff}
+
+.form-group{margin-bottom:1rem}
+.form-label{font-family:'Syne',sans-serif;font-weight:700;font-size:.75rem;color:var(--muted);
+  letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:.4rem}
+.form-input,.form-select,.form-textarea{
+  width:100%;padding:.65rem .9rem;background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:10px;color:var(--text);
+  font-family:'Syne',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s;
+  box-sizing:border-box;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(0,240,255,.4)}
+.form-select{cursor:pointer}
+.form-select option{background:#0a1628}
+.form-textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+.submit-btn{
+  width:100%;padding:.75rem;border-radius:999px;
+  background:linear-gradient(135deg,var(--cyan),var(--green));
+  color:#020617;font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;
+  border:none;cursor:pointer;margin-top:.5rem;transition:transform .2s,box-shadow .2s;
+}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,240,255,.25)}
+
+/* ── Contact Modal ── */
+.contact-modal .modal-box{max-width:420px}
+.contact-opt{
+  display:flex;align-items:center;gap:1rem;padding:1rem;
+  border:1px solid var(--border);border-radius:12px;text-decoration:none;
+  background:rgba(255,255,255,.02);transition:all .2s;margin-bottom:.75rem;
+}
+.contact-opt:hover{border-color:rgba(0,240,255,.3);background:rgba(0,240,255,.05)}
+.contact-opt-icon{font-size:1.5rem}
+.contact-opt-info strong{display:block;font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;color:#fff}
+.contact-opt-info span{font-size:.75rem;color:var(--muted)}
+
+/* ── Empty state ── */
+.mkt-empty{text-align:center;padding:4rem 1.5rem;color:var(--muted)}
+.mkt-empty .ei{font-size:3rem;margin-bottom:1rem;opacity:.3}
+
+/* ── Success toast ── */
+.toast{
+  position:fixed;bottom:2rem;right:2rem;z-index:600;
+  background:rgba(0,255,136,.12);border:1px solid rgba(0,255,136,.3);
+  color:var(--green);padding:.75rem 1.25rem;border-radius:12px;
+  font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;
+  animation:fadeUp .3s ease both;display:none;
+}
+.toast.show{display:block}
+</style>
 </head>
 <body>
 <div class="stars" id="stars"></div>
@@ -14,7 +151,6 @@
 <div class="grid-overlay"></div>
 <div class="meteor-container" id="meteorContainer"></div>
 
-<!-- NAV -->
 <nav class="navbar">
   <a href="index.html" class="nav-logo">AAA</a>
   <div class="nav-links">
@@ -22,132 +158,303 @@
     <a href="ai-tools.html">AI Tools</a>
     <a href="marketplace.html" class="nav-active">Marketplace</a>
     <a href="study-guide.html">Study Guide</a>
+    <a href="about.html">About</a>
   </div>
-  
-  
   <div id="navAuth"></div>
 </nav>
-<!-- BACK / HOME BAR -->
+
 <div class="back-home-bar">
   <a href="javascript:history.back()" class="back-btn">← Back</a>
   <a href="index.html" class="back-btn back-btn-home">🏠 Home</a>
 </div>
 
-<!-- PAGE HERO -->
-<div class="page-hero">
+<div class="page-hero" style="padding-bottom:1.5rem">
   <div class="page-hero-icon">🛒</div>
-  <div class="page-label">LOCAL MARKETPLACE</div>
-  <h1 class="page-title">Buy. Sell. <span class="accent-green">Connect.</span></h1>
-  <p class="page-sub">Notes, books, tutors — all from your city. Pay with UPI.</p>
+  <div class="page-label">STUDENT MARKETPLACE</div>
+  <h1 class="page-title">Buy · Sell · <span class="accent-cyan">Learn.</span></h1>
+  <p class="page-sub">Notes, tutors, books — listed by students, for students. Everything free or at fair prices.</p>
 </div>
 
-<!-- FILTER BAR -->
-<div class="filter-bar">
-  <button class="filter-btn active" onclick="filterCards('all', this)">All</button>
-  <button class="filter-btn" onclick="filterCards('notes', this)">📄 Notes</button>
-  <button class="filter-btn" onclick="filterCards('tutor', this)">👨‍🏫 Tutors</button>
-  <button class="filter-btn" onclick="filterCards('books', this)">📚 Books</button>
-  <button class="filter-btn" onclick="filterCards('sell', this)">➕ Sell</button>
+<div class="mkt-wrap">
+
+  <!-- TOP BAR -->
+  <div class="mkt-topbar">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted)" id="listingCount">Loading listings…</div>
+    <button class="upload-btn" onclick="openUpload()">+ List Something</button>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-row">
+    <button class="filter-pill active" onclick="filterBy('all',this)">All</button>
+    <button class="filter-pill" onclick="filterBy('notes',this)">📄 Notes</button>
+    <button class="filter-pill" onclick="filterBy('tutor',this)">👨‍🏫 Tutors</button>
+    <button class="filter-pill" onclick="filterBy('books',this)">📚 Books</button>
+    <button class="filter-pill" onclick="filterBy('guide',this)">📋 Study Guides</button>
+    <button class="filter-pill" onclick="filterBy('free',this)">🆓 Free Only</button>
+  </div>
+
+  <!-- GRID -->
+  <div class="mkt-grid" id="mktGrid"></div>
+
 </div>
 
-<!-- MARKET GRID -->
-<div class="market-page-grid" id="marketGrid">
-
-  <div class="mcard" data-cat="notes">
-    <div class="mcard-badge badge-orange">NOTES</div>
-    <div class="mcard-title">Class 12 Physics — All Chapters</div>
-    <div class="mcard-seller">Priya S. · Patna · ⭐ 4.9 (34 reviews)</div>
-    <div class="mcard-desc">Complete handwritten notes covering all NCERT chapters. Board exam focused with diagrams.</div>
-    <div class="mcard-price">₹49 <span class="mcard-original">₹200</span> <span class="mcard-save">75% off</span></div>
-    <button class="mcard-btn btn-orange">Buy Now — ₹49</button>
+<!-- UPLOAD MODAL -->
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeUpload()">✕</button>
+    <div class="modal-title">📤 List Something</div>
+    <div class="form-group">
+      <label class="form-label">Title *</label>
+      <input class="form-input" id="fTitle" placeholder="e.g. Class 12 Physics Notes — Electrostatics">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Category *</label>
+        <select class="form-select" id="fType">
+          <option value="notes">📄 Notes</option>
+          <option value="tutor">👨‍🏫 Tutor</option>
+          <option value="books">📚 Books</option>
+          <option value="guide">📋 Study Guide</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Price (₹)</label>
+        <input class="form-input" id="fPrice" type="number" placeholder="0 for free" min="0">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Class</label>
+        <select class="form-select" id="fClass">
+          <option value="">Any</option>
+          <option value="9">Class 9</option>
+          <option value="10">Class 10</option>
+          <option value="11">Class 11</option>
+          <option value="12">Class 12</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Subject</label>
+        <select class="form-select" id="fSubject">
+          <option value="">All Subjects</option>
+          <option value="Physics">Physics</option>
+          <option value="Chemistry">Chemistry</option>
+          <option value="Biology">Biology</option>
+          <option value="Maths">Maths</option>
+          <option value="History">History</option>
+          <option value="Geography">Geography</option>
+          <option value="Economics">Economics</option>
+          <option value="English">English</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description *</label>
+      <textarea class="form-textarea" id="fDesc" placeholder="Describe what you're offering — topics covered, condition (for books), your experience (for tutors)…"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Your Name *</label>
+      <input class="form-input" id="fName" placeholder="Your name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Contact (WhatsApp / Email) *</label>
+      <input class="form-input" id="fContact" placeholder="e.g. +91 98765 43210 or email@example.com">
+    </div>
+    <button class="submit-btn" onclick="submitListing()">✦ Post Listing</button>
   </div>
-
-  <div class="mcard mcard-featured" data-cat="tutor">
-    <div class="mcard-badge badge-cyan">⭐ TOP TUTOR</div>
-    <div class="mcard-title">Maths Tutor · Class 9–12 · CBSE</div>
-    <div class="mcard-seller">Rahul Kumar · Patna · ⭐ 5.0 (61 reviews)</div>
-    <div class="mcard-desc">7 years experience. Online + offline sessions. 100% board result improvement guaranteed.</div>
-    <div class="mcard-price">₹299<span style="font-size:0.8rem;opacity:0.6">/session</span></div>
-    <button class="mcard-btn btn-cyan">Book Session</button>
-  </div>
-
-  <div class="mcard" data-cat="books">
-    <div class="mcard-badge badge-green">BOOKS</div>
-    <div class="mcard-title">HC Verma Vol 1 + 2 (Used, Good Condition)</div>
-    <div class="mcard-seller">Amit R. · Bihar Sharif · ⭐ 4.7 (12 reviews)</div>
-    <div class="mcard-desc">Lightly used. All pages intact. Perfect for JEE/NEET preparation alongside boards.</div>
-    <div class="mcard-price">₹180 <span class="mcard-original">₹600</span> <span class="mcard-save">70% off</span></div>
-    <button class="mcard-btn btn-green">Buy Now — ₹180</button>
-  </div>
-
-  <div class="mcard" data-cat="notes">
-    <div class="mcard-badge badge-orange">NOTES</div>
-    <div class="mcard-title">Class 10 Science — Chapter-wise Notes</div>
-    <div class="mcard-seller">Sneha M. · Muzaffarpur · ⭐ 4.8 (22 reviews)</div>
-    <div class="mcard-desc">Typed notes with diagrams. Covers Biology, Chemistry, Physics. Board exam questions included.</div>
-    <div class="mcard-price">₹39 <span class="mcard-original">₹150</span> <span class="mcard-save">74% off</span></div>
-    <button class="mcard-btn btn-orange">Buy Now — ₹39</button>
-  </div>
-
-  <div class="mcard" data-cat="tutor">
-    <div class="mcard-badge badge-cyan">TUTOR</div>
-    <div class="mcard-title">Chemistry Tutor · Class 11–12</div>
-    <div class="mcard-seller">Dr. Kavya T. · Patna · ⭐ 4.9 (45 reviews)</div>
-    <div class="mcard-desc">M.Sc Chemistry. Specialises in Organic Chemistry and board exam preparation. Online sessions.</div>
-    <div class="mcard-price">₹349<span style="font-size:0.8rem;opacity:0.6">/session</span></div>
-    <button class="mcard-btn btn-cyan">Book Session</button>
-  </div>
-
-  <div class="mcard" data-cat="books">
-    <div class="mcard-badge badge-green">BOOKS</div>
-    <div class="mcard-title">RD Sharma Class 10 Maths</div>
-    <div class="mcard-seller">Vikram S. · Gaya · ⭐ 4.6 (8 reviews)</div>
-    <div class="mcard-desc">Good condition, minimal writing. Best book for Class 10 Maths practice. Latest edition.</div>
-    <div class="mcard-price">₹120 <span class="mcard-original">₹380</span> <span class="mcard-save">68% off</span></div>
-    <button class="mcard-btn btn-green">Buy Now — ₹120</button>
-  </div>
-
-  <div class="mcard" data-cat="notes">
-    <div class="mcard-badge badge-orange">NOTES</div>
-    <div class="mcard-title">Class 12 Economics — Macro + Micro</div>
-    <div class="mcard-seller">Ananya B. · Nalanda · ⭐ 4.7 (18 reviews)</div>
-    <div class="mcard-desc">Concise notes with diagrams. Covers full NCERT + extra questions. Board topper's notes!</div>
-    <div class="mcard-price">₹35 <span class="mcard-original">₹120</span> <span class="mcard-save">71% off</span></div>
-    <button class="mcard-btn btn-orange">Buy Now — ₹35</button>
-  </div>
-
-  <!-- SELL CARD -->
-  <div class="mcard mcard-sell" data-cat="sell">
-    <div class="sell-icon">➕</div>
-    <h3 class="sell-title">Sell Your Notes or Services</h3>
-    <p class="sell-desc">Are you a topper or tutor? Earn money by listing your notes, books, or teaching services.</p>
-    <ul class="sell-perks">
-      <li>✓ Free to list</li>
-      <li>✓ UPI payments direct to you</li>
-      <li>✓ Reach thousands of students</li>
-    </ul>
-    <button class="mcard-btn btn-outline-cyan">Start Selling →</button>
-  </div>
-
 </div>
+
+<!-- CONTACT MODAL -->
+<div class="modal-overlay contact-modal" id="contactModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeContact()">✕</button>
+    <div class="modal-title" id="cModalTitle">Contact Seller</div>
+    <p style="font-size:.83rem;color:var(--muted);margin-bottom:1.25rem" id="cModalDesc"></p>
+    <a class="contact-opt" id="cWhatsApp" href="#" target="_blank">
+      <span class="contact-opt-icon">💬</span>
+      <div class="contact-opt-info"><strong>WhatsApp</strong><span>Send a message directly</span></div>
+    </a>
+    <a class="contact-opt" id="cEmail" href="#" target="_blank">
+      <span class="contact-opt-icon">✉️</span>
+      <div class="contact-opt-info"><strong>Email</strong><span>Send an email</span></div>
+    </a>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);margin-top:1rem;padding:.75rem;background:rgba(255,255,255,.03);border-radius:8px">
+      💡 Tip: Always meet in a public place for book exchanges. Never pay before receiving the item.
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Listing posted!</div>
 
 <script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
 <script>
-function filterCards(cat, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.mcard').forEach(card => {
-    if (cat === 'all' || card.dataset.cat === cat) {
-      card.style.display = 'flex';
-      card.style.animation = 'fadeUp 0.4s ease both';
-    } else {
-      card.style.display = 'none';
-    }
-  });
+initNavAuth();
+
+// ── Seed listings (starter data + user submissions) ──
+const SEED = [
+  {id:'s1',title:'Class 12 Physics — Complete Notes',type:'notes',price:0,cls:'12',subject:'Physics',
+   desc:'Handwritten + typed notes covering all 15 NCERT chapters. Includes diagrams, formulas, and previous year Q patterns.',
+   seller:'Rohit S.',contact:'wa:+919876543210',rating:4.8,reviews:12,date:'2025-01-10'},
+  {id:'s2',title:'Chemistry Organic Reactions Cheatsheet',type:'notes',price:29,cls:'12',subject:'Chemistry',
+   desc:'One-page cheatsheets for all major organic reactions — named reactions, reagents, products. Perfect last-minute revision.',
+   seller:'Priya M.',contact:'wa:+919876543211',rating:4.9,reviews:8,date:'2025-01-12'},
+  {id:'s3',title:'Maths Class 10 — Full Year Notes',type:'notes',price:0,cls:'10',subject:'Maths',
+   desc:'All 15 chapters covered. Solved examples + practice problems. Scored 98 in boards with these notes!',
+   seller:'Aarav K.',contact:'mail:aarav@gmail.com',rating:4.7,reviews:21,date:'2025-01-08'},
+  {id:'s4',title:'Physics Tutor — Class 11 & 12 CBSE',type:'tutor',price:200,cls:'11',subject:'Physics',
+   desc:'B.Tech from NIT Jamshedpur. Teaching Physics for 3 years. Online sessions via Google Meet. Flexible timings.',
+   seller:'Vikram T.',contact:'wa:+919876543212',rating:5.0,reviews:6,date:'2025-01-14'},
+  {id:'s5',title:'HC Verma Vol 1 & 2 (Good Condition)',type:'books',price:150,cls:'11',subject:'Physics',
+   desc:'Both volumes, minor pencil marks removed. Selling because finished Class 12. Original price ₹450.',
+   seller:'Sneha P.',contact:'wa:+919876543213',rating:null,reviews:0,date:'2025-01-15'},
+  {id:'s6',title:'Biology NCERT Class 11 — Chapter Notes',type:'guide',price:0,cls:'11',subject:'Biology',
+   desc:'Chapter-wise summary of all NCERT Class 11 Biology chapters. Great for quick revision before exams.',
+   seller:'Ananya R.',contact:'mail:ananya@gmail.com',rating:4.6,reviews:4,date:'2025-01-09'},
+  {id:'s7',title:'Maths Olympiad Prep Guide — Class 9',type:'guide',price:49,cls:'9',subject:'Maths',
+   desc:'Covers Number Theory, Geometry basics, Combinatorics for IMO/NTSE level problems. 80 pages.',
+   seller:'Dev S.',contact:'wa:+919876543214',rating:4.8,reviews:3,date:'2025-01-11'},
+  {id:'s8',title:'Economics Class 12 — Short Notes',type:'notes',price:0,cls:'12',subject:'Economics',
+   desc:'Macro + Micro Economics in 30 pages. All NCERT diagrams explained. Focus on frequently asked 6-mark questions.',
+   seller:'Riya J.',contact:'mail:riya@gmail.com',rating:4.5,reviews:9,date:'2025-01-07'},
+];
+
+const STORAGE_KEY = 'padhiq_mkt_listings';
+
+function getListings() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    return [...saved, ...SEED];
+  } catch { return SEED; }
 }
+
+function saveListings(arr) {
+  const userOnly = arr.filter(l=>!l.id.startsWith('s'));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(userOnly));
+}
+
+let currentFilter = 'all';
+let allListings = getListings();
+
+function renderCards(listings) {
+  const grid = document.getElementById('mktGrid');
+  document.getElementById('listingCount').textContent = `${listings.length} listing${listings.length!==1?'s':''} found`;
+  if (listings.length === 0) {
+    grid.innerHTML=`<div class="mkt-empty" style="grid-column:1/-1"><div class="ei">🔍</div><p>No listings match this filter.<br>Be the first to add one!</p></div>`;
+    return;
+  }
+  const typeLabel = {notes:'📄 Notes',tutor:'👨‍🏫 Tutor',books:'📚 Books',guide:'📋 Study Guide'};
+  grid.innerHTML = listings.map((l,i)=>`
+    <div class="mkt-card" style="animation-delay:${i*0.05}s">
+      <div class="mkt-card-head">
+        <div class="mkt-card-type type-${l.type}">${typeLabel[l.type]||l.type}</div>
+        <div class="mkt-card-title">${l.title}</div>
+        <div class="mkt-card-desc">${l.desc}</div>
+        <div class="mkt-card-tags">
+          ${l.cls?`<span class="mkt-tag">Class ${l.cls}</span>`:''}
+          ${l.subject?`<span class="mkt-tag">${l.subject}</span>`:''}
+        </div>
+        <div class="mkt-card-meta">
+          <span>👤 ${l.seller}</span>
+          ${l.rating?`<span class="mkt-rating">★ ${l.rating}</span><span>(${l.reviews})</span>`:'<span>New listing</span>'}
+        </div>
+      </div>
+      <div class="mkt-card-foot">
+        <div class="mkt-price ${l.price===0?'free':''}">${l.price===0?'FREE':'₹'+l.price}</div>
+        <button class="mkt-contact-btn" onclick='openContact(${JSON.stringify(l)})'>Contact →</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterBy(type, el) {
+  currentFilter = type;
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  let filtered = allListings;
+  if (type==='free')  filtered = allListings.filter(l=>l.price===0);
+  else if (type!=='all') filtered = allListings.filter(l=>l.type===type);
+  renderCards(filtered);
+}
+
+// ── Upload ──
+function openUpload()  { document.getElementById('uploadModal').classList.add('open'); }
+function closeUpload() { document.getElementById('uploadModal').classList.remove('open'); }
+
+function submitListing() {
+  const title   = document.getElementById('fTitle').value.trim();
+  const type    = document.getElementById('fType').value;
+  const price   = parseInt(document.getElementById('fPrice').value)||0;
+  const cls     = document.getElementById('fClass').value;
+  const subject = document.getElementById('fSubject').value;
+  const desc    = document.getElementById('fDesc').value.trim();
+  const name    = document.getElementById('fName').value.trim();
+  const contact = document.getElementById('fContact').value.trim();
+
+  if (!title||!desc||!name||!contact) {
+    alert('Please fill in all required fields (*)');return;
+  }
+
+  const isWA = /^\+?[\d\s\-()]{7,}$/.test(contact);
+  const newListing = {
+    id:'u'+Date.now(), title, type, price, cls, subject, desc,
+    seller:name, contact:(isWA?'wa:':'')+contact.replace(/\s/g,''),
+    rating:null, reviews:0, date:new Date().toISOString().slice(0,10)
+  };
+
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+  saved.unshift(newListing);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+  allListings = getListings();
+  closeUpload();
+  filterBy('all', document.querySelector('.filter-pill'));
+
+  // Clear form
+  ['fTitle','fPrice','fDesc','fName','fContact'].forEach(id=>document.getElementById(id).value='');
+
+  // Toast
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── Contact ──
+function openContact(listing) {
+  document.getElementById('cModalTitle').textContent  = `Contact: ${listing.seller}`;
+  document.getElementById('cModalDesc').textContent   = `"${listing.title}"${listing.price===0?' · FREE':' · ₹'+listing.price}`;
+
+  const raw = listing.contact || '';
+  const waBtn = document.getElementById('cWhatsApp');
+  const emBtn = document.getElementById('cEmail');
+
+  if (raw.startsWith('wa:')) {
+    const num = raw.replace('wa:','').replace(/\D/g,'');
+    waBtn.href=`https://wa.me/${num}?text=Hi!%20I%20saw%20your%20listing%20on%20padhIQ%3A%20${encodeURIComponent(listing.title)}`;
+    waBtn.style.display='flex';
+    emBtn.style.display='none';
+  } else if (raw.startsWith('mail:')) {
+    const em = raw.replace('mail:','');
+    emBtn.href=`mailto:${em}?subject=padhIQ%20Marketplace%3A%20${encodeURIComponent(listing.title)}`;
+    emBtn.style.display='flex';
+    waBtn.style.display='none';
+  } else {
+    waBtn.style.display='none'; emBtn.style.display='none';
+  }
+  document.getElementById('contactModal').classList.add('open');
+}
+function closeContact() { document.getElementById('contactModal').classList.remove('open'); }
+
+// Close modals on overlay click
+['uploadModal','contactModal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',function(e){
+    if(e.target===this) this.classList.remove('open');
+  });
+});
+
+// Init
+renderCards(allListings);
 </script>
-<script>initNavAuth();</script>
 </body>
 </html>
