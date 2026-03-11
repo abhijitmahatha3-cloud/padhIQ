@@ -17,12 +17,14 @@
 
 <!-- NAV -->
 <nav class="navbar">
-  <div class="nav-logo">AAA</div>
+  <a href="index.html" class="nav-logo">AAA</a>
   <div class="nav-links">
     <a href="resources.html">Resources</a>
     <a href="ai-tools.html">AI Tools</a>
-    <a href="marketplace.html">Marketplace</a>
-    <a href="study-guide.html">Study Guide</a>
+    <a href="doubt-solver.html">📸 Doubt</a>
+    <a href="exam-predictor.html">🔮 Predictor</a>
+    <a href="gamified.html">🎮 XP</a>
+    <a href="study-planner.html">📅 Planner</a>
     <a href="about.html">About</a>
   </div>
   <div id="navAuth"><!-- auth injected by initNavAuth() --></div>
@@ -103,25 +105,25 @@
   <div class="section-label">AI TOOLKIT</div>
   <h2 class="section-title">7 AI tools.<br>All in one place.</h2>
   <div class="tool-grid">
-    <div class="tool t1" onclick="goToTool('Create detailed AI-generated notes for Class 10 Science Chapter 1.')">
-      <div class="tool-icon">⚡</div>
-      <div class="tool-name">AI Notes</div>
-      <div class="tool-desc">Auto-generate chapter notes</div>
-    </div>
-    <div class="tool t2" onclick="goToTool('Help me solve this doubt step by step.')">
-      <div class="tool-icon">🧠</div>
+    <div class="tool t1" onclick="window.location='doubt-solver.html'">
+      <div class="tool-icon">📸</div>
       <div class="tool-name">Doubt Solver</div>
-      <div class="tool-desc">Instant doubt clearing</div>
+      <div class="tool-desc">Upload photo → instant solution</div>
     </div>
-    <div class="tool t3" onclick="goToTool('Create a 30-day study plan for Class 12 Board exams.')">
-      <div class="tool-icon">📊</div>
+    <div class="tool t2" onclick="window.location='exam-predictor.html'">
+      <div class="tool-icon">🔮</div>
+      <div class="tool-name">Exam Predictor</div>
+      <div class="tool-desc">Predict board exam questions</div>
+    </div>
+    <div class="tool t3" onclick="window.location='gamified.html'">
+      <div class="tool-icon">🎮</div>
+      <div class="tool-name">XP & Badges</div>
+      <div class="tool-desc">Gamified learning quizzes</div>
+    </div>
+    <div class="tool t4" onclick="window.location='study-planner.html'">
+      <div class="tool-icon">📅</div>
       <div class="tool-name">Study Planner</div>
-      <div class="tool-desc">Personalised schedule</div>
-    </div>
-    <div class="tool t4" onclick="goToTool('Summarise this chapter in 10 bullet points.')">
-      <div class="tool-icon">📖</div>
-      <div class="tool-name">Summary AI</div>
-      <div class="tool-desc">Chapter summaries fast</div>
+      <div class="tool-desc">AI-generated 30-day plan</div>
     </div>
     <div class="tool t5" onclick="goToTool('Give me 10 important questions for Class 10 Maths Quadratic Equations.')">
       <div class="tool-icon">📚</div>
@@ -222,9 +224,9 @@
   <div class="footer-logo">Project AAA</div>
   <p class="footer-tagline">Free education for every Indian student 🇮🇳</p>
   <div class="footer-links">
-    <a href="#">About</a>
+    <a href="about.html">About</a>
     <a href="#">Privacy</a>
-    <a href="#">Contact</a>
+    <a href="about.html">Contact</a>
     <a href="#">Sell on AAA</a>
   </div>
   <p class="footer-copy">© 2025 Project AAA · Built with ❤️ in India</p>

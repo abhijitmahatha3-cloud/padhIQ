@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gamified Learning — padhIQ</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+.game-wrap { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+/* PLAYER CARD */
+.player-card {
+  background: linear-gradient(135deg, rgba(0,240,255,0.06), rgba(0,100,255,0.04));
+  border: 1px solid rgba(0,240,255,0.2);
+  border-radius: 20px; padding: 1.75rem;
+  margin-bottom: 2rem; position: relative; overflow: hidden;
+}
+.player-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, rgba(0,240,255,0.05), transparent 70%);
+}
+.player-top { display: flex; align-items: center; gap: 1.25rem; position: relative; }
+.player-avatar {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(0,240,255,0.2), rgba(0,100,255,0.1));
+  border: 2px solid rgba(0,240,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; flex-shrink: 0;
+}
+.player-info { flex: 1; }
+.player-name { font-family: 'Orbitron', monospace; font-size: 1.1rem; color: #fff; font-weight: 700; }
+.player-level { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--cyan); margin-top: 2px; }
+.player-xp-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
+.xp-bar-wrap { flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+.xp-bar { height: 100%; background: linear-gradient(90deg, var(--cyan), #00aaff); border-radius: 3px; transition: width 1s ease; }
+.xp-text { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); white-space: nowrap; }
+.player-stats { display: flex; gap: 1.5rem; margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid rgba(255,255,255,0.07); position: relative; }
+.pstat { text-align: center; }
+.pstat-val { font-family: 'Orbitron', monospace; font-size: 1.1rem; color: #fff; font-weight: 700; }
+.pstat-label { font-size: 0.68rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+.streak-badge {
+  position: absolute; top: 0; right: 0;
+  background: linear-gradient(135deg, rgba(255,120,0,0.15), rgba(255,60,0,0.1));
+  border: 1px solid rgba(255,120,0,0.3);
+  border-radius: 10px; padding: 0.5rem 0.9rem; text-align: center;
+}
+.streak-fire { font-size: 1.4rem; }
+.streak-num { font-family: 'Orbitron', monospace; font-size: 1rem; color: #ff7800; font-weight: 700; }
+.streak-txt { font-size: 0.65rem; color: rgba(255,120,0,0.7); font-family: 'JetBrains Mono', monospace; }
+
+/* QUIZ SECTION */
+.section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.section-head-title { font-family: 'Orbitron', monospace; font-size: 0.78rem; letter-spacing: 0.15em; color: var(--cyan); }
+.section-head-xp { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: rgba(255,165,0,0.8); background: rgba(255,165,0,0.08); padding: 0.25rem 0.7rem; border-radius: 999px; border: 1px solid rgba(255,165,0,0.2); }
+
+.quiz-card {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 1.75rem; margin-bottom: 2rem;
+}
+.quiz-subject-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.q-subj-btn { padding: 0.35rem 0.9rem; border-radius: 999px; border: 1px solid var(--border); background: var(--glass); color: var(--muted); font-size: 0.78rem; font-family: 'Syne', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.q-subj-btn.active, .q-subj-btn:hover { background: rgba(255,165,0,0.1); border-color: rgba(255,165,0,0.3); color: #ffa500; }
+
+.quiz-question { font-size: 1rem; color: #fff; font-weight: 600; margin-bottom: 1.25rem; line-height: 1.5; }
+.quiz-options { display: grid; gap: 0.6rem; margin-bottom: 1.25rem; }
+.quiz-opt {
+  padding: 0.8rem 1.1rem; border-radius: 10px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+  color: #e2e8f0; font-size: 0.88rem; cursor: pointer; transition: all 0.25s;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.quiz-opt:hover:not(.locked) { border-color: rgba(255,165,0,0.4); background: rgba(255,165,0,0.05); }
+.quiz-opt.correct { background: rgba(0,255,100,0.08); border-color: rgba(0,255,100,0.4); color: #00d96b; }
+.quiz-opt.wrong { background: rgba(255,80,80,0.08); border-color: rgba(255,80,80,0.3); color: #ff5050; }
+.opt-letter { min-width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 700; }
+
+.quiz-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
+.quiz-feedback { font-size: 0.85rem; color: var(--muted); min-height: 20px; }
+.quiz-feedback.correct-fb { color: #00d96b; }
+.quiz-feedback.wrong-fb { color: #ff5050; }
+.next-btn { padding: 0.65rem 1.5rem; border-radius: 10px; background: linear-gradient(135deg, rgba(255,165,0,0.15), rgba(255,120,0,0.08)); border: 1px solid rgba(255,165,0,0.3); color: #ffa500; font-family: 'Orbitron', monospace; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; display: none; }
+.next-btn:hover { background: rgba(255,165,0,0.2); transform: translateY(-1px); }
+.next-btn.show { display: block; }
+
+/* XP POPUP */
+.xp-popup {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0);
+  background: linear-gradient(135deg, rgba(0,240,255,0.15), rgba(0,100,255,0.1));
+  border: 2px solid rgba(0,240,255,0.5);
+  border-radius: 20px; padding: 2rem 3rem;
+  text-align: center; z-index: 1000;
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events: none;
+}
+.xp-popup.show { transform: translate(-50%,-50%) scale(1); }
+.xp-popup-val { font-family: 'Orbitron', monospace; font-size: 2.5rem; color: var(--cyan); font-weight: 900; }
+.xp-popup-label { font-size: 0.9rem; color: #e2e8f0; margin-top: 0.25rem; }
+
+/* BADGES */
+.badges-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: 0.75rem; margin-bottom: 2rem; }
+.badge-item {
+  padding: 1.1rem 0.75rem; border-radius: 14px; text-align: center;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+  transition: all 0.3s;
+}
+.badge-item.earned { background: rgba(255,215,0,0.06); border-color: rgba(255,215,0,0.25); }
+.badge-item.locked { opacity: 0.35; filter: grayscale(80%); }
+.badge-icon { font-size: 2rem; margin-bottom: 0.4rem; }
+.badge-name { font-size: 0.75rem; color: #e2e8f0; font-weight: 600; font-family: 'Syne', sans-serif; }
+.badge-desc { font-size: 0.65rem; color: var(--muted); margin-top: 0.2rem; }
+
+/* LEADERBOARD */
+.leaderboard { margin-bottom: 2rem; }
+.lb-row {
+  display: flex; align-items: center; gap: 1rem; padding: 0.85rem 1rem;
+  border-radius: 12px; margin-bottom: 0.5rem;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  transition: all 0.2s;
+}
+.lb-row.you { background: rgba(0,240,255,0.05); border-color: rgba(0,240,255,0.2); }
+.lb-rank { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 700; min-width: 24px; text-align: center; }
+.lb-rank.gold { color: #ffd700; }
+.lb-rank.silver { color: #c0c0c0; }
+.lb-rank.bronze { color: #cd7f32; }
+.lb-avatar { font-size: 1.2rem; }
+.lb-name { flex: 1; color: #e2e8f0; font-size: 0.88rem; font-weight: 600; }
+.lb-xp { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--cyan); }
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="nebula"></div>
+<div class="grid-overlay"></div>
+
+<!-- XP Popup -->
+<div class="xp-popup" id="xpPopup">
+  <div class="xp-popup-val" id="xpPopupVal">+5 XP</div>
+  <div class="xp-popup-label" id="xpPopupLabel">Correct Answer!</div>
+</div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">AAA</a>
+  <div class="nav-links">
+    <a href="resources.html">Resources</a>
+    <a href="ai-tools.html">AI Tools</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="study-guide.html">Study Guide</a>
+    <a href="about.html">About</a>
+  </div>
+  <div id="navAuth"></div>
+</nav>
+
+<div class="back-home-bar">
+  <a href="javascript:history.back()" class="back-btn">← Back</a>
+  <a href="index.html" class="back-btn back-btn-home">🏠 Home</a>
+</div>
+
+
+
+<div class="page-hero" style="padding-bottom:2rem;">
+  <div class="page-hero-icon">🎮</div>
+  <div class="page-label">GAMIFIED LEARNING</div>
+  <h1 class="page-title">Study. <span class="accent-cyan">Level Up.</span> Win.</h1>
+  <p class="page-sub">Earn XP, unlock badges, build streaks. Turn studying into a game you actually want to play.</p>
+</div>
+
+<div class="game-wrap">
+
+  <!-- Player Card -->
+  <div class="player-card">
+    <div class="player-top">
+      <div class="player-avatar" id="playerAvatarEl">🧑‍🎓</div>
+      <div class="player-info">
+        <div class="player-name" id="playerNameEl">Student</div>
+        <div class="player-level" id="playerLevelEl">Level 1 · Rookie Scholar</div>
+        <div class="player-xp-row">
+          <div class="xp-bar-wrap"><div class="xp-bar" id="xpBar" style="width:0%"></div></div>
+          <span class="xp-text" id="xpText">0 / 100 XP</span>
+        </div>
+      </div>
+      <div class="streak-badge">
+        <div class="streak-fire">🔥</div>
+        <div class="streak-num" id="streakNum">0</div>
+        <div class="streak-txt">day streak</div>
+      </div>
+    </div>
+    <div class="player-stats">
+      <div class="pstat"><div class="pstat-val" id="totalXpEl">0</div><div class="pstat-label">TOTAL XP</div></div>
+      <div class="pstat"><div class="pstat-val" id="questionsEl">0</div><div class="pstat-label">SOLVED</div></div>
+      <div class="pstat"><div class="pstat-val" id="accuracyEl">0%</div><div class="pstat-label">ACCURACY</div></div>
+      <div class="pstat"><div class="pstat-val" id="badgesEl">0</div><div class="pstat-label">BADGES</div></div>
+    </div>
+  </div>
+
+  <!-- Daily Quiz -->
+  <div class="section-head">
+    <div class="section-head-title">DAILY QUIZ CHALLENGE</div>
+    <div class="section-head-xp">+5 XP per correct answer</div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-subject-row" id="quizSubjectRow">
+      <button class="q-subj-btn active" data-s="Science">🔬 Science</button>
+      <button class="q-subj-btn" data-s="Maths">📐 Maths</button>
+      <button class="q-subj-btn" data-s="Physics">⚡ Physics</button>
+      <button class="q-subj-btn" data-s="Chemistry">🧪 Chemistry</button>
+      <button class="q-subj-btn" data-s="History">📜 History</button>
+    </div>
+    <div id="quizQ" class="quiz-question">Loading question...</div>
+    <div id="quizOpts" class="quiz-options"></div>
+    <div class="quiz-footer">
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+    </div>
+  </div>
+
+  <!-- Badges -->
+  <div class="section-head">
+    <div class="section-head-title">YOUR BADGES</div>
+    <div class="section-head-xp" id="badgeCountEl">0 earned</div>
+  </div>
+  <div class="badges-grid" id="badgesGrid"></div>
+
+  <!-- Leaderboard -->
+  <div class="section-head">
+    <div class="section-head-title">LEADERBOARD</div>
+    <div class="section-head-xp">This Week</div>
+  </div>
+  <div class="leaderboard" id="leaderboard"></div>
+
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+(function initStars() {
+  const container = document.getElementById('stars');
+  if (!container) return;
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
+  container.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  function resize() {
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight; stars = [];
+    for (let i = 0; i < 150; i++)
+      stars.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1.2+0.2, o:Math.random()*0.7+0.2, spd:Math.random()*0.003+0.001 });
+  }
+  function draw(t) {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    stars.forEach(s => {
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${s.o*(0.8+0.2*Math.sin(t*s.spd*1000))})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', resize); resize(); requestAnimationFrame(draw);
+})();
+
+// ─── GAME STATE ───────────────────────────────────────────────
+const LEVELS = [
+  {name:'Rookie Scholar', min:0, max:100, avatar:'🧑‍🎓'},
+  {name:'Smart Thinker', min:100, max:250, avatar:'🤓'},
+  {name:'Rising Star', min:250, max:500, avatar:'⭐'},
+  {name:'Knowledge Warrior', min:500, max:1000, avatar:'⚔️'},
+  {name:'Brain Master', min:1000, max:2000, avatar:'🧠'},
+  {name:'Legend Scholar', min:2000, max:Infinity, avatar:'🏆'},
+];
+
+const BADGES_DEF = [
+  {id:'first_q', icon:'🎯', name:'First Blood', desc:'Solve 1 question', cond: s => s.solved >= 1},
+  {id:'q10', icon:'🔟', name:'Ten Strong', desc:'Solve 10 questions', cond: s => s.solved >= 10},
+  {id:'q50', icon:'💪', name:'Fifty Fighter', desc:'Solve 50 questions', cond: s => s.solved >= 50},
+  {id:'streak3', icon:'🔥', name:'On Fire', desc:'3-day streak', cond: s => s.streak >= 3},
+  {id:'streak7', icon:'💥', name:'Week Warrior', desc:'7-day streak', cond: s => s.streak >= 7},
+  {id:'acc90', icon:'🎖️', name:'Sharpshooter', desc:'90% accuracy', cond: s => s.accuracy >= 90 && s.solved >= 5},
+  {id:'xp100', icon:'✨', name:'Century', desc:'Earn 100 XP', cond: s => s.totalXp >= 100},
+  {id:'xp500', icon:'🌟', name:'XP King', desc:'Earn 500 XP', cond: s => s.totalXp >= 500},
+  {id:'chapter', icon:'📖', name:'Chapter Pro', desc:'Complete a chapter', cond: s => s.chapters >= 1},
+  {id:'multi_sub', icon:'🌈', name:'All-Rounder', desc:'Try 3 subjects', cond: s => s.subjects?.size >= 3},
+];
+
+let state = JSON.parse(localStorage.getItem('padhiq_game') || 'null') || {
+  xp: 0, totalXp: 0, level: 0, solved: 0, correct: 0, streak: 0,
+  lastDate: null, badges: [], chapters: 0, subjects: []
+};
+if (!Array.isArray(state.subjects)) state.subjects = [];
+
+let currentQ = null;
+let currentSubject = 'Science';
+let answered = false;
+
+// ─── SAVE & RENDER ────────────────────────────────────────────
+function saveState() {
+  const save = {...state, subjects: [...new Set(state.subjects)]};
+  localStorage.setItem('padhiq_game', JSON.stringify(save));
+}
+
+function getLevel() {
+  return LEVELS.findIndex(l => state.totalXp >= l.min && state.totalXp < l.max);
+}
+
+function renderPlayer() {
+  const li = Math.max(0, getLevel());
+  const lv = LEVELS[li];
+  const nextLv = LEVELS[Math.min(li+1, LEVELS.length-1)];
+  const xpInLevel = state.totalXp - lv.min;
+  const xpNeeded = nextLv.min - lv.min;
+  const pct = Math.min(100, Math.round((xpInLevel / xpNeeded) * 100));
+
+  document.getElementById('playerAvatarEl').textContent = lv.avatar;
+  document.getElementById('playerLevelEl').textContent = `Level ${li+1} · ${lv.name}`;
+  document.getElementById('xpBar').style.width = pct + '%';
+  document.getElementById('xpText').textContent = `${xpInLevel} / ${xpNeeded} XP`;
+  document.getElementById('totalXpEl').textContent = state.totalXp;
+  document.getElementById('questionsEl').textContent = state.solved;
+  document.getElementById('streakNum').textContent = state.streak;
+  const acc = state.solved > 0 ? Math.round((state.correct / state.solved) * 100) : 0;
+  state.accuracy = acc;
+  document.getElementById('accuracyEl').textContent = acc + '%';
+
+  const earned = BADGES_DEF.filter(b => checkBadge(b)).length;
+  document.getElementById('badgesEl').textContent = earned;
+  document.getElementById('badgeCountEl').textContent = earned + ' earned';
+}
+
+function checkBadge(b) {
+  const s = { ...state, subjects: new Set(state.subjects) };
+  return b.cond(s);
+}
+
+function renderBadges() {
+  document.getElementById('badgesGrid').innerHTML = BADGES_DEF.map(b => {
+    const earned = checkBadge(b);
+    return `<div class="badge-item ${earned ? 'earned' : 'locked'}">
+      <div class="badge-icon">${b.icon}</div>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-desc">${b.desc}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderLeaderboard() {
+  const fakeLeaders = [
+    {name:'Rahul K.', xp: 1240, avatar:'⭐'},
+    {name:'Priya S.', xp: 980, avatar:'🌟'},
+    {name:'Amit R.', xp: 720, avatar:'💪'},
+    {name:'You', xp: state.totalXp, avatar:'🧑‍🎓', you: true},
+    {name:'Ananya M.', xp: 450, avatar:'🎯'},
+    {name:'Rohit B.', xp: 310, avatar:'✨'},
+  ];
+  fakeLeaders.sort((a,b) => b.xp - a.xp);
+
+  document.getElementById('leaderboard').innerHTML = fakeLeaders.map((p, i) => {
+    const rankClass = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+    return `<div class="lb-row ${p.you?'you':''}">
+      <div class="lb-rank ${rankClass}">${medal}</div>
+      <div class="lb-avatar">${p.avatar}</div>
+      <div class="lb-name">${p.name}${p.you?' (You)':''}</div>
+      <div class="lb-xp">${p.xp} XP</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── STREAK CHECK ─────────────────────────────────────────────
+function checkStreak() {
+  const today = new Date().toDateString();
+  if (state.lastDate !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (state.lastDate === yesterday) {
+      state.streak++;
+    } else if (state.lastDate !== today) {
+      state.streak = 1;
+    }
+    state.lastDate = today;
+    saveState();
+  }
+}
+
+// ─── QUIZ QUESTIONS ───────────────────────────────────────────
+const questionsDB = {
+  Science: [
+    {q:'Which gas is produced during photosynthesis?', opts:['CO₂','O₂','N₂','H₂'], ans:1},
+    {q:'The SI unit of force is?', opts:['Joule','Watt','Newton','Pascal'], ans:2},
+    {q:'DNA stands for?', opts:['Deoxyribose Nucleic Acid','Di-nitrogen Acid','Dynamic Nuclei Array','None'], ans:0},
+    {q:'Which organelle is called the powerhouse of the cell?', opts:['Nucleus','Ribosome','Mitochondria','Vacuole'], ans:2},
+    {q:'Speed of light in vacuum is approximately?', opts:['3×10⁶ m/s','3×10⁸ m/s','3×10¹⁰ m/s','3×10⁴ m/s'], ans:1},
+  ],
+  Maths: [
+    {q:'What is the value of π (pi) approximately?', opts:['2.14','3.14','4.14','1.14'], ans:1},
+    {q:'The sum of angles in a triangle is?', opts:['90°','180°','270°','360°'], ans:1},
+    {q:'Solve: If x² = 25, then x = ?', opts:['5 only','±5','−5 only','25'], ans:1},
+    {q:'The slope of a horizontal line is?', opts:['1','∞','−1','0'], ans:3},
+    {q:'√144 = ?', opts:['11','12','13','14'], ans:1},
+  ],
+  Physics: [
+    {q:'Ohm\'s Law states: V = ?', opts:['I/R','I×R','I+R','I−R'], ans:1},
+    {q:'Unit of electric resistance is?', opts:['Volt','Ampere','Ohm','Watt'], ans:2},
+    {q:'Which type of mirror is used in vehicles as rear-view mirror?', opts:['Concave','Convex','Plane','None'], ans:1},
+    {q:'F = ma. If m=5kg and a=3m/s², F=?', opts:['8N','15N','2N','10N'], ans:1},
+    {q:'Sound travels fastest in?', opts:['Air','Water','Steel','Vacuum'], ans:2},
+  ],
+  Chemistry: [
+    {q:'Chemical formula of water is?', opts:['H₂O','HO₂','H₃O','H₂O₂'], ans:0},
+    {q:'Atomic number of Carbon is?', opts:['4','6','8','12'], ans:1},
+    {q:'pH of pure water is?', opts:['0','7','14','1'], ans:1},
+    {q:'What is the valency of Oxygen?', opts:['1','2','3','4'], ans:1},
+    {q:'NaCl is the chemical formula of?', opts:['Sugar','Baking Soda','Common Salt','Vinegar'], ans:2},
+  ],
+  History: [
+    {q:'In which year did India gain independence?', opts:['1945','1947','1950','1942'], ans:1},
+    {q:'The French Revolution began in?', opts:['1789','1776','1800','1815'], ans:0},
+    {q:'Who was the first Prime Minister of India?', opts:['Gandhi','Nehru','Patel','Ambedkar'], ans:1},
+    {q:'The Quit India Movement was launched in?', opts:['1940','1942','1944','1945'], ans:1},
+    {q:'World War II ended in?', opts:['1943','1944','1945','1946'], ans:2},
+  ],
+};
+
+let usedIndices = {};
+
+function getQuestion(subj) {
+  const qs = questionsDB[subj] || questionsDB.Science;
+  if (!usedIndices[subj]) usedIndices[subj] = [];
+  const avail = qs.map((_, i) => i).filter(i => !usedIndices[subj].includes(i));
+  if (avail.length === 0) { usedIndices[subj] = []; return getQuestion(subj); }
+  const idx = avail[Math.floor(Math.random() * avail.length)];
+  usedIndices[subj].push(idx);
+  return qs[idx];
+}
+
+function loadQuestion() {
+  answered = false;
+  currentQ = getQuestion(currentSubject);
+  document.getElementById('quizQ').textContent = currentQ.q;
+  document.getElementById('quizFeedback').textContent = '';
+  document.getElementById('quizFeedback').className = 'quiz-feedback';
+  document.getElementById('nextBtn').classList.remove('show');
+  
+  document.getElementById('quizOpts').innerHTML = currentQ.opts.map((opt, i) => `
+    <div class="quiz-opt" onclick="answerQ(this, ${i})">
+      <div class="opt-letter">${String.fromCharCode(65+i)}</div>
+      ${opt}
+    </div>
+  `).join('');
+}
+
+function answerQ(el, chosen) {
+  if (answered) return;
+  answered = true;
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach(o => o.classList.add('locked'));
+
+  state.solved++;
+  if (!state.subjects.includes(currentSubject)) state.subjects.push(currentSubject);
+
+  if (chosen === currentQ.ans) {
+    el.classList.add('correct');
+    state.correct++;
+    state.xp += 5; state.totalXp += 5;
+    document.getElementById('quizFeedback').textContent = '✅ Correct! +5 XP';
+    document.getElementById('quizFeedback').className = 'quiz-feedback correct-fb';
+    showXpPopup('+5 XP', 'Correct Answer! 🎯');
+  } else {
+    el.classList.add('wrong');
+    opts[currentQ.ans].classList.add('correct');
+    document.getElementById('quizFeedback').textContent = `❌ Wrong! Answer was: ${currentQ.opts[currentQ.ans]}`;
+    document.getElementById('quizFeedback').className = 'quiz-feedback wrong-fb';
+  }
+
+  document.getElementById('nextBtn').classList.add('show');
+  saveState();
+  renderPlayer();
+  renderBadges();
+  renderLeaderboard();
+}
+
+function nextQuestion() { loadQuestion(); }
+
+function showXpPopup(val, label) {
+  const popup = document.getElementById('xpPopup');
+  document.getElementById('xpPopupVal').textContent = val;
+  document.getElementById('xpPopupLabel').textContent = label;
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 1800);
+}
+
+// Subject switching
+document.querySelectorAll('.q-subj-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.q-subj-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentSubject = btn.dataset.s;
+    loadQuestion();
+  });
+});
+
+// ─── INIT ─────────────────────────────────────────────────────
+checkStreak();
+renderPlayer();
+renderBadges();
+renderLeaderboard();
+loadQuestion();
+
+if (typeof initNavAuth === 'function') initNavAuth();
+</script>
+</body>
+</html>

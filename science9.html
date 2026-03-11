@@ -524,13 +524,19 @@ tr:hover td{background:rgba(0,240,255,.03)}
 <nav class="navbar">
   <a href="index.html" class="nav-logo">AAA</a>
   <div class="nav-links">
-    <a href="resources.html" class="nav-active">Resources</a>
+    <a href="resources.html">Resources</a>
     <a href="ai-tools.html">AI Tools</a>
     <a href="marketplace.html">Marketplace</a>
     <a href="study-guide.html">Study Guide</a>
+    <a href="about.html">About</a>
   </div>
-  <button class="nav-cta" onclick="window.location='resources.html'">← Resources</button>
+  <div id="navAuth"></div>
 </nav>
+
+<div class="back-home-bar">
+  <a href="javascript:history.back()" class="back-btn">← Back</a>
+  <a href="index.html" class="back-btn back-btn-home">🏠 Home</a>
+</div>
 
 <!-- INDEX VIEW -->
 <div id="indexView">
@@ -5410,5 +5416,8 @@ function retakeTest(n) {
 }
 </script>
 <button class="print-btn" onclick="window.print()" title="Print / Save as PDF">🖨️</button>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>initNavAuth();</script>
 </body>
 </html>

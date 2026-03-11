@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Study Planner — padhIQ</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+.planner-wrap { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+/* INPUT FORM */
+.planner-form {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px; padding: 2rem; margin-bottom: 2rem;
+}
+.planner-form-title { font-family: 'Orbitron', monospace; font-size: 0.78rem; letter-spacing: 0.15em; color: var(--cyan); margin-bottom: 1.5rem; }
+.form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-label { font-size: 0.72rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.06em; }
+.form-select, .form-input, .form-date {
+  padding: 0.7rem 1rem;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; color: #fff; font-family: 'Syne', sans-serif; font-size: 0.9rem;
+  outline: none; transition: border-color 0.2s; appearance: none;
+}
+.form-select:focus, .form-input:focus, .form-date:focus { border-color: rgba(0,240,255,0.5); }
+.form-select option, .form-date { background: #0a0a1a; }
+.form-date::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.5); cursor: pointer; }
+
+.subjects-select { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.subj-toggle { padding: 0.4rem 0.9rem; border-radius: 999px; border: 1px solid var(--border); background: var(--glass); color: var(--muted); font-size: 0.78rem; font-family: 'Syne', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.subj-toggle.on { background: rgba(0,240,255,0.1); border-color: rgba(0,240,255,0.35); color: var(--cyan); }
+
+.generate-btn {
+  width: 100%; margin-top: 1.5rem;
+  padding: 1rem; border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0,240,255,0.12), rgba(0,150,255,0.08));
+  border: 1px solid rgba(0,240,255,0.35); color: var(--cyan);
+  font-family: 'Orbitron', monospace; font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; transition: all 0.3s; letter-spacing: 0.08em;
+}
+.generate-btn:hover:not(:disabled) { background: rgba(0,240,255,0.18); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,240,255,0.12); }
+.generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* PLAN OUTPUT */
+.plan-area { display: none; }
+.plan-area.show { display: block; }
+
+.plan-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.plan-title { font-family: 'Orbitron', monospace; font-size: 1rem; color: #fff; }
+.plan-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.plan-pill { padding: 0.3rem 0.8rem; border-radius: 999px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; border: 1px solid; }
+.pill-cyan { background: rgba(0,240,255,0.08); border-color: rgba(0,240,255,0.25); color: var(--cyan); }
+.pill-orange { background: rgba(255,165,0,0.08); border-color: rgba(255,165,0,0.25); color: #ffa500; }
+.pill-green { background: rgba(0,255,100,0.06); border-color: rgba(0,255,100,0.2); color: #00d96b; }
+
+/* WEEK VIEW */
+.week-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem; overflow-x: auto; }
+.week-tab {
+  padding: 0.45rem 1rem; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--glass);
+  color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.week-tab.active { background: rgba(0,240,255,0.1); border-color: rgba(0,240,255,0.35); color: var(--cyan); }
+
+.days-grid { display: flex; flex-direction: column; gap: 0.75rem; }
+.day-card {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px; overflow: hidden; transition: all 0.2s;
+}
+.day-card:hover { border-color: rgba(255,255,255,0.12); }
+.day-header {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.9rem 1.1rem; cursor: pointer;
+  background: rgba(255,255,255,0.02);
+}
+.day-num { font-family: 'Orbitron', monospace; font-size: 0.75rem; color: var(--cyan); min-width: 48px; }
+.day-title { flex: 1; color: #e2e8f0; font-weight: 600; font-size: 0.88rem; }
+.day-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--muted); }
+.day-check { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.15); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.day-check.done { background: rgba(0,255,100,0.15); border-color: rgba(0,255,100,0.4); color: #00d96b; }
+.day-body { padding: 0 1.1rem 1rem; display: none; }
+.day-body.open { display: block; }
+.session-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.6rem; }
+.session-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.55rem 0.75rem; border-radius: 8px;
+  background: rgba(255,255,255,0.03); font-size: 0.82rem; color: #e2e8f0;
+}
+.session-time { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--cyan); min-width: 60px; }
+.session-icon { font-size: 1rem; }
+
+/* PROGRESS */
+.progress-bar-wrap { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; margin-top: 0.5rem; }
+.progress-bar { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--cyan), #00aaff); transition: width 0.5s ease; }
+.progress-text { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--muted); margin-top: 0.35rem; text-align: right; }
+
+/* LOADING */
+.gen-loading {
+  text-align: center; padding: 3rem 2rem;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px; display: none;
+}
+.gen-loading.show { display: block; }
+.gen-spinner { width: 40px; height: 40px; border: 3px solid rgba(0,240,255,0.15); border-top-color: var(--cyan); border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 1rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.gen-steps-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+.gen-step { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); opacity: 0.4; transition: all 0.4s; }
+.gen-step.on { opacity: 1; color: var(--cyan); }
+
+/* SHARE */
+.share-row { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+.sh-btn { padding: 0.6rem 1.2rem; border-radius: 10px; font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1px solid; }
+.sh-wa { background: rgba(37,211,102,0.1); border-color: rgba(37,211,102,0.3); color: #25d366; }
+.sh-dl { background: rgba(0,240,255,0.08); border-color: rgba(0,240,255,0.3); color: var(--cyan); }
+.sh-btn:hover { transform: translateY(-1px); opacity: 0.85; }
+
+.tip-box { margin-top: 1rem; padding: 1rem 1.25rem; border-radius: 12px; background: rgba(255,165,0,0.06); border: 1px solid rgba(255,165,0,0.18); font-size: 0.85rem; color: #ffa500; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="nebula"></div>
+<div class="grid-overlay"></div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">AAA</a>
+  <div class="nav-links">
+    <a href="resources.html">Resources</a>
+    <a href="ai-tools.html">AI Tools</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="study-guide.html">Study Guide</a>
+    <a href="about.html">About</a>
+  </div>
+  <div id="navAuth"></div>
+</nav>
+
+<div class="back-home-bar">
+  <a href="javascript:history.back()" class="back-btn">← Back</a>
+  <a href="index.html" class="back-btn back-btn-home">🏠 Home</a>
+</div>
+
+
+
+<div class="page-hero" style="padding-bottom:2rem;">
+  <div class="page-hero-icon">📅</div>
+  <div class="page-label">AI STUDY PLANNER</div>
+  <h1 class="page-title">Your Perfect <span class="accent-cyan">Study Plan.</span></h1>
+  <p class="page-sub">Enter your exam date, subjects, and daily hours. AI builds your complete personalised study schedule in seconds.</p>
+</div>
+
+<div class="planner-wrap">
+
+  <!-- Input Form -->
+  <div class="planner-form">
+    <div class="planner-form-title">SET UP YOUR PLAN</div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">BOARD</label>
+        <select class="form-select" id="pBoard">
+          <option>CBSE</option><option>ICSE</option><option>UP Board</option><option>Bihar Board</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">CLASS</label>
+        <select class="form-select" id="pClass">
+          <option>10</option><option>12</option><option>9</option><option>11</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">EXAM DATE</label>
+        <input type="date" class="form-date" id="pExamDate">
+      </div>
+      <div class="form-group">
+        <label class="form-label">DAILY STUDY HOURS</label>
+        <select class="form-select" id="pHours">
+          <option value="2">2 hours/day</option>
+          <option value="3">3 hours/day</option>
+          <option value="4" selected>4 hours/day</option>
+          <option value="5">5 hours/day</option>
+          <option value="6">6 hours/day</option>
+          <option value="8">8 hours/day</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-bottom:0.5rem;">
+      <label class="form-label" style="margin-bottom:0.6rem;">SUBJECTS TO COVER</label>
+      <div class="subjects-select" id="subjSelect">
+        <button class="subj-toggle on" data-s="Physics">⚡ Physics</button>
+        <button class="subj-toggle on" data-s="Chemistry">🧪 Chemistry</button>
+        <button class="subj-toggle on" data-s="Mathematics">📐 Maths</button>
+        <button class="subj-toggle" data-s="Biology">🌿 Biology</button>
+        <button class="subj-toggle" data-s="English">📝 English</button>
+        <button class="subj-toggle" data-s="Social Science">🌍 SST</button>
+        <button class="subj-toggle" data-s="Hindi">🗣️ Hindi</button>
+        <button class="subj-toggle" data-s="Computer Science">💻 CS</button>
+      </div>
+    </div>
+
+    <button class="generate-btn" id="genBtn" onclick="generatePlan()">📅 Generate My Study Plan →</button>
+  </div>
+
+  <!-- Loading -->
+  <div class="gen-loading" id="genLoading">
+    <div class="gen-spinner"></div>
+    <div style="font-family:'Orbitron',monospace;color:var(--cyan);font-size:0.85rem;">BUILDING YOUR PLAN...</div>
+    <div class="gen-steps-list">
+      <div class="gen-step on" id="gs1">📊 Calculating days until exam...</div>
+      <div class="gen-step" id="gs2">📚 Analysing subject weightage...</div>
+      <div class="gen-step" id="gs3">⏰ Scheduling daily sessions...</div>
+      <div class="gen-step" id="gs4">🔄 Adding revision windows...</div>
+      <div class="gen-step" id="gs5">✅ Finalising your plan...</div>
+    </div>
+  </div>
+
+  <!-- Plan Output -->
+  <div class="plan-area" id="planArea">
+    <div class="plan-meta">
+      <div class="plan-title" id="planTitleEl">30-Day Study Plan</div>
+      <div class="plan-pills">
+        <span class="plan-pill pill-cyan" id="pillDays">30 days</span>
+        <span class="plan-pill pill-orange" id="pillHours">4 hrs/day</span>
+        <span class="plan-pill pill-green" id="pillSubjects">3 subjects</span>
+      </div>
+    </div>
+
+    <!-- Overall Progress -->
+    <div style="margin-bottom:1.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--muted);">OVERALL PROGRESS</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--cyan);" id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+    </div>
+
+    <!-- Week Tabs -->
+    <div class="week-tabs" id="weekTabs"></div>
+
+    <!-- Days -->
+    <div class="days-grid" id="daysGrid"></div>
+
+    <!-- Tip -->
+    <div class="tip-box" id="planTip"></div>
+
+    <!-- Share -->
+    <div class="share-row">
+      <button class="sh-btn sh-wa" onclick="sharePlan()">📲 Share on WhatsApp</button>
+      <button class="sh-btn sh-dl" onclick="copyPlan()">📋 Copy Plan</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+(function initStars() {
+  const container = document.getElementById('stars');
+  if (!container) return;
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
+  container.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  function resize() {
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight; stars = [];
+    for (let i = 0; i < 150; i++)
+      stars.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1.2+0.2, o:Math.random()*0.7+0.2, spd:Math.random()*0.003+0.001 });
+  }
+  function draw(t) {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    stars.forEach(s => {
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${s.o*(0.8+0.2*Math.sin(t*s.spd*1000))})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', resize); resize(); requestAnimationFrame(draw);
+})();
+
+// Set default exam date to 30 days from now
+const defDate = new Date(Date.now() + 30*24*60*60*1000);
+document.getElementById('pExamDate').value = defDate.toISOString().split('T')[0];
+
+// Subject toggles
+document.querySelectorAll('.subj-toggle').forEach(btn => {
+  btn.addEventListener('click', () => btn.classList.toggle('on'));
+});
+
+let planData = null;
+let completedDays = new Set(JSON.parse(localStorage.getItem('padhiq_plan_done') || '[]'));
+let currentWeek = 1;
+let totalWeeks = 4;
+
+function getSelectedSubjects() {
+  return [...document.querySelectorAll('.subj-toggle.on')].map(b => b.dataset.s);
+}
+
+async function generatePlan() {
+  const board = document.getElementById('pBoard').value;
+  const cls = document.getElementById('pClass').value;
+  const examDate = document.getElementById('pExamDate').value;
+  const hours = document.getElementById('pHours').value;
+  const subjects = getSelectedSubjects();
+
+  if (!examDate) { alert('Please select your exam date!'); return; }
+  if (subjects.length === 0) { alert('Please select at least one subject!'); return; }
+
+  const daysLeft = Math.ceil((new Date(examDate) - new Date()) / (1000*60*60*24));
+  if (daysLeft <= 0) { alert('Exam date must be in the future!'); return; }
+
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true; btn.textContent = '⏳ Generating...';
+  document.getElementById('genLoading').classList.add('show');
+  document.getElementById('planArea').classList.remove('show');
+
+  const steps = ['gs1','gs2','gs3','gs4','gs5'];
+  let si = 0;
+  const stepTimer = setInterval(() => {
+    if (si > 0) document.getElementById(steps[si-1])?.classList.remove('on');
+    if (si < steps.length) { document.getElementById(steps[si])?.classList.add('on'); si++; }
+  }, 900);
+
+  const planDays = Math.min(daysLeft, 60);
+
+  const prompt = `You are an expert study planner for Indian board exams.
+Create a ${planDays}-day study plan for:
+- Board: ${board}
+- Class: ${cls}
+- Subjects: ${subjects.join(', ')}
+- Daily study time: ${hours} hours
+- Days until exam: ${daysLeft}
+
+Return ONLY a JSON object (no markdown, no backticks):
+{
+  "title": "X-Day Board Exam Study Plan",
+  "tip": "One motivational study tip for this student (2-3 sentences)",
+  "days": [
+    {
+      "day": 1,
+      "focus": "Chapter/Topic name",
+      "subject": "Subject name",
+      "sessions": [
+        {"time": "9:00 AM", "duration": "1.5 hrs", "task": "Specific task description", "icon": "📖"},
+        {"time": "11:00 AM", "duration": "1 hr", "task": "Another task", "icon": "✏️"},
+        {"time": "7:00 PM", "duration": "30 min", "task": "Revision/practice", "icon": "🔄"}
+      ]
+    }
+  ]
+}
+
+Create ${Math.min(planDays, 21)} days. Distribute subjects evenly. Include revision days every 7 days. Last 3 days should be full revision. Use realistic chapter names from NCERT ${cls} syllabus.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await response.json();
+    let text = data.content?.[0]?.text || '{}';
+    text = text.replace(/```json|```/g, '').trim();
+    planData = JSON.parse(text);
+  } catch(err) {
+    planData = generateFallbackPlan(subjects, planDays, hours);
+  }
+
+  clearInterval(stepTimer);
+  document.getElementById('genLoading').classList.remove('show');
+  
+  totalWeeks = Math.ceil(planData.days.length / 7);
+  renderPlan(board, cls, examDate, daysLeft, hours, subjects);
+
+  btn.disabled = false; btn.textContent = '📅 Generate My Study Plan →';
+}
+
+function generateFallbackPlan(subjects, days, hours) {
+  const templates = {
+    Physics: ['Electricity & Magnetism', 'Optics & Light', 'Motion & Laws', 'Work & Energy', 'Waves'],
+    Chemistry: ['Chemical Reactions', 'Acids & Bases', 'Metals & Non-metals', 'Carbon Compounds', 'Periodic Table'],
+    Mathematics: ['Algebra & Equations', 'Trigonometry', 'Coordinate Geometry', 'Statistics', 'Mensuration'],
+    Biology: ['Life Processes', 'Control & Coordination', 'Heredity', 'Ecology', 'Natural Resources'],
+    'Social Science': ['History: Nationalism', 'Geography: Resources', 'Civics: Democracy', 'Economics: Development'],
+    English: ['Reading Comprehension', 'Writing Skills', 'Grammar', 'Literature'],
+  };
+  
+  const planDays = [];
+  const icons = ['📖', '✏️', '🔄', '📝', '🧪', '📐'];
+  for (let d = 1; d <= Math.min(days, 21); d++) {
+    const isRevision = d % 7 === 0;
+    const subjIdx = (d-1) % subjects.length;
+    const subj = subjects[subjIdx];
+    const topics = templates[subj] || ['Core Concepts', 'Practice Problems', 'Previous Year Questions'];
+    const focus = isRevision ? 'Full Revision Day' : topics[(d-1) % topics.length];
+    const h = parseInt(hours);
+    const sessions = isRevision
+      ? subjects.map((s, i) => ({ time: `${8+i*2}:00 AM`, duration: `${Math.floor(h/subjects.length)} hrs`, task: `Quick revision: ${s}`, icon: '🔄' }))
+      : [
+          { time: '9:00 AM', duration: `${Math.ceil(h*0.5)} hrs`, task: `Study: ${focus}`, icon: '📖' },
+          { time: `${9+Math.ceil(h*0.5)}:30 AM`, duration: `${Math.floor(h*0.3)} hr`, task: `Practice problems on ${focus}`, icon: '✏️' },
+          { time: '7:00 PM', duration: '30 min', task: 'Evening quick revision', icon: '🔄' },
+        ];
+    planDays.push({ day: d, focus, subject: isRevision ? 'All Subjects' : subj, sessions });
+  }
+  return {
+    title: `${Math.min(days, 21)}-Day Study Plan`,
+    tip: `You have ${days} days left. Stay consistent — even 4 hours daily adds up to massive progress. Focus on NCERT first, then practice previous year questions for the last week.`,
+    days: planDays
+  };
+}
+
+function renderPlan(board, cls, examDate, daysLeft, hours, subjects) {
+  const days = planData.days;
+  document.getElementById('planTitleEl').textContent = planData.title || `${days.length}-Day Study Plan`;
+  document.getElementById('pillDays').textContent = `${daysLeft} days left`;
+  document.getElementById('pillHours').textContent = `${hours} hrs/day`;
+  document.getElementById('pillSubjects').textContent = `${subjects.length} subjects`;
+  document.getElementById('planTip').innerHTML = `💡 <strong>AI Tip:</strong> ${planData.tip || 'Stay consistent and believe in yourself!'}`;
+
+  // Week tabs
+  const wt = document.getElementById('weekTabs');
+  wt.innerHTML = Array.from({length: totalWeeks}, (_,i) => {
+    const w = i+1;
+    return `<button class="week-tab ${w===1?'active':''}" onclick="switchWeek(${w}, this)">Week ${w}</button>`;
+  }).join('');
+
+  renderWeek(1);
+  updateProgress();
+  document.getElementById('planArea').classList.add('show');
+  document.getElementById('planArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function switchWeek(w, btn) {
+  document.querySelectorAll('.week-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  currentWeek = w;
+  renderWeek(w);
+}
+
+function renderWeek(w) {
+  const days = planData.days;
+  const start = (w-1)*7;
+  const weekDays = days.slice(start, start+7);
+
+  document.getElementById('daysGrid').innerHTML = weekDays.map(d => {
+    const done = completedDays.has(d.day);
+    const date = new Date(Date.now() + (d.day-1)*24*60*60*1000);
+    const dateStr = date.toLocaleDateString('en-IN', { weekday:'short', month:'short', day:'numeric' });
+    return `<div class="day-card" id="daycard-${d.day}">
+      <div class="day-header" onclick="toggleDay(${d.day})">
+        <div class="day-num">DAY ${d.day}</div>
+        <div>
+          <div class="day-title">${d.focus}</div>
+          <div class="day-meta">${d.subject} · ${dateStr}</div>
+        </div>
+        <div class="day-check ${done?'done':''}" onclick="event.stopPropagation();toggleDone(${d.day})" title="Mark as done">
+          ${done?'✓':''}
+        </div>
+      </div>
+      <div class="day-body" id="daybody-${d.day}">
+        <div class="session-list">
+          ${d.sessions.map(s => `
+            <div class="session-item">
+              <span class="session-time">${s.time}</span>
+              <span class="session-icon">${s.icon}</span>
+              <span>${s.task} <span style="color:var(--muted);font-size:0.75rem;">(${s.duration})</span></span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleDay(day) {
+  const body = document.getElementById(`daybody-${day}`);
+  body.classList.toggle('open');
+}
+
+function toggleDone(day) {
+  if (completedDays.has(day)) { completedDays.delete(day); }
+  else { completedDays.add(day); }
+  localStorage.setItem('padhiq_plan_done', JSON.stringify([...completedDays]));
+  renderWeek(currentWeek);
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = planData.days.length;
+  const done = completedDays.size;
+  const pct = Math.round((done/total)*100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = `${pct}% (${done}/${total} days)`;
+}
+
+function sharePlan() {
+  const examDate = document.getElementById('pExamDate').value;
+  const subjs = getSelectedSubjects().join(', ');
+  const text = `📅 I just created my AI Study Plan on padhIQ!\n\n📚 Subjects: ${subjs}\n📆 Exam: ${examDate}\n⏰ Daily: ${document.getElementById('pHours').value} hours\n\nGet your free study plan: ${window.location.href}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+}
+
+function copyPlan() {
+  const lines = planData.days.slice(0,7).map(d => `Day ${d.day}: ${d.subject} — ${d.focus}`).join('\n');
+  navigator.clipboard.writeText(`My padhIQ Study Plan:\n${lines}\n...\nGet yours at ${window.location.href}`).then(() => alert('Plan copied!'));
+}
+
+if (typeof initNavAuth === 'function') initNavAuth();
+</script>
+</body>
+</html>

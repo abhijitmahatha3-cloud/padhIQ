@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Doubt Solver — padhIQ</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+.solver-wrap { max-width: 860px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+.upload-zone {
+  border: 2px dashed rgba(0,240,255,0.3);
+  border-radius: 20px;
+  background: rgba(0,240,255,0.03);
+  padding: 2.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: rgba(0,240,255,0.7);
+  background: rgba(0,240,255,0.07);
+  transform: scale(1.01);
+}
+.upload-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+.upload-title { font-family: 'Orbitron', monospace; font-size: 1.1rem; color: #fff; margin-bottom: 0.4rem; }
+.upload-sub { color: var(--muted); font-size: 0.85rem; }
+.upload-types { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+.type-badge { padding: 0.3rem 0.8rem; border-radius: 999px; background: rgba(0,240,255,0.08); border: 1px solid rgba(0,240,255,0.2); color: var(--cyan); font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; }
+#fileInput { display: none; }
+
+.preview-wrap {
+  display: none;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(0,240,255,0.2);
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+.preview-wrap.show { display: block; }
+.preview-img { width: 100%; max-height: 320px; object-fit: contain; background: #000; display: block; }
+.preview-actions { display: flex; gap: 0.75rem; padding: 0.75rem; background: rgba(0,0,0,0.4); }
+.preview-label { flex: 1; color: var(--muted); font-size: 0.8rem; align-self: center; font-family: 'JetBrains Mono', monospace; }
+.remove-btn { padding: 0.4rem 1rem; border-radius: 8px; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); color: #ff5050; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+.remove-btn:hover { background: rgba(255,80,80,0.2); }
+
+.solve-row { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
+.solve-input {
+  flex: 1; padding: 0.9rem 1.2rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; color: #fff;
+  font-family: 'Syne', sans-serif; font-size: 0.95rem;
+  transition: border-color 0.2s; outline: none;
+}
+.solve-input:focus { border-color: rgba(0,240,255,0.5); }
+.solve-input::placeholder { color: rgba(255,255,255,0.3); }
+.solve-btn {
+  padding: 0.9rem 1.6rem;
+  background: linear-gradient(135deg, rgba(0,240,255,0.15), rgba(0,240,255,0.05));
+  border: 1px solid rgba(0,240,255,0.4);
+  border-radius: 12px; color: var(--cyan);
+  font-family: 'Orbitron', monospace; font-size: 0.85rem;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.solve-btn:hover:not(:disabled) { background: rgba(0,240,255,0.2); transform: translateY(-1px); }
+.solve-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.subject-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.subj-btn {
+  padding: 0.4rem 1rem; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--glass);
+  color: var(--muted); font-family: 'Syne', sans-serif;
+  font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.subj-btn:hover, .subj-btn.active {
+  background: rgba(0,240,255,0.08); border-color: rgba(0,240,255,0.4); color: var(--cyan);
+}
+
+.result-box {
+  display: none; border-radius: 16px; overflow: hidden;
+  border: 1px solid rgba(0,240,255,0.2);
+  background: rgba(0,240,255,0.03);
+}
+.result-box.show { display: block; }
+.result-header {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1rem 1.25rem; background: rgba(0,240,255,0.06);
+  border-bottom: 1px solid rgba(0,240,255,0.15);
+}
+.result-icon { font-size: 1.4rem; }
+.result-title { font-family: 'Orbitron', monospace; font-size: 0.85rem; color: var(--cyan); }
+.result-content { padding: 1.5rem; color: #e2e8f0; line-height: 1.8; font-size: 0.95rem; min-height: 80px; }
+
+.thinking-anim { display: flex; align-items: center; gap: 8px; padding: 0.5rem 0; }
+.dot-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); animation: dotPulse 1.4s ease-in-out infinite; }
+.dot-pulse:nth-child(2) { animation-delay: 0.2s; }
+.dot-pulse:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotPulse { 0%,100%{opacity:0.2;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.2)} }
+.thinking-text { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--muted); }
+
+.steps-list { counter-reset: step; }
+.step-item { display: flex; gap: 1rem; margin-bottom: 1.2rem; }
+.step-num { min-width: 28px; height: 28px; border-radius: 50%; background: rgba(0,240,255,0.15); border: 1px solid rgba(0,240,255,0.3); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--cyan); font-weight: 700; }
+.step-text { flex: 1; padding-top: 4px; }
+
+.ai-bold { color: #fff; font-weight: 600; }
+.ai-bullet { padding: 2px 0 2px 1.2rem; position: relative; }
+.ai-bullet::before { content: '•'; position: absolute; left: 0; color: var(--cyan); font-weight: 700; }
+.code-block { background: rgba(0,240,255,0.06); border: 1px solid rgba(0,240,255,0.15); border-radius: 8px; padding: 0.75rem 1rem; overflow-x: auto; margin: 0.5rem 0; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 1.6; white-space: pre; }
+
+.exam-tip { margin-top: 1.25rem; padding: 0.9rem 1.1rem; border-radius: 10px; background: rgba(255,165,0,0.07); border: 1px solid rgba(255,165,0,0.2); font-size: 0.88rem; color: #ffa500; }
+
+.history-section { margin-top: 2.5rem; }
+.history-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 1rem; }
+.history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; }
+.history-card { padding: 0.9rem; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s; }
+.history-card:hover { border-color: rgba(0,240,255,0.3); background: rgba(0,240,255,0.04); }
+.history-q { font-size: 0.8rem; color: #e2e8f0; line-height: 1.4; }
+.history-meta { font-size: 0.7rem; color: var(--muted); margin-top: 0.4rem; font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="nebula"></div>
+<div class="grid-overlay"></div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">AAA</a>
+  <div class="nav-links">
+    <a href="resources.html">Resources</a>
+    <a href="ai-tools.html">AI Tools</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="study-guide.html">Study Guide</a>
+    <a href="about.html">About</a>
+  </div>
+  <div id="navAuth"></div>
+</nav>
+
+<div class="back-home-bar">
+  <a href="javascript:history.back()" class="back-btn">← Back</a>
+  <a href="index.html" class="back-btn back-btn-home">🏠 Home</a>
+</div>
+
+
+
+<div class="page-hero" style="padding-bottom:2rem;">
+  <div class="page-hero-icon">📸</div>
+  <div class="page-label">AI DOUBT SOLVER</div>
+  <h1 class="page-title">Upload. <span class="accent-cyan">Solve Instantly.</span></h1>
+  <p class="page-sub">Take a photo of any question — math problem, physics diagram, chemistry equation — and get a step-by-step solution in seconds.</p>
+</div>
+
+<div class="solver-wrap">
+
+  <!-- Subject Filter -->
+  <div class="subject-row">
+    <button class="subj-btn active" data-subj="Auto-detect">🔍 Auto Detect</button>
+    <button class="subj-btn" data-subj="Mathematics">📐 Maths</button>
+    <button class="subj-btn" data-subj="Physics">⚡ Physics</button>
+    <button class="subj-btn" data-subj="Chemistry">🧪 Chemistry</button>
+    <button class="subj-btn" data-subj="Biology">🌿 Biology</button>
+    <button class="subj-btn" data-subj="General Science">🔬 Science</button>
+  </div>
+
+  <!-- Upload Zone -->
+  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+    <div class="upload-icon">📷</div>
+    <div class="upload-title">Drop your question photo here</div>
+    <div class="upload-sub">or click to browse from gallery / camera</div>
+    <div class="upload-types">
+      <span class="type-badge">📐 Math Problems</span>
+      <span class="type-badge">⚡ Physics Diagrams</span>
+      <span class="type-badge">🧪 Chemistry Equations</span>
+      <span class="type-badge">🌿 Biology</span>
+      <span class="type-badge">📝 Handwritten</span>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" capture="environment">
+  </div>
+
+  <!-- Image Preview -->
+  <div class="preview-wrap" id="previewWrap">
+    <img id="previewImg" class="preview-img" src="" alt="Question preview">
+    <div class="preview-actions">
+      <span class="preview-label" id="previewLabel">question.jpg</span>
+      <button class="remove-btn" onclick="removeImage()">✕ Remove</button>
+    </div>
+  </div>
+
+  <!-- Text Input Row -->
+  <div class="solve-row">
+    <input type="text" class="solve-input" id="questionText" placeholder="Or type your question here... e.g. Solve: x² + 5x + 6 = 0">
+    <button class="solve-btn" id="solveBtn" onclick="solveQuestion()">⚡ Solve Now</button>
+  </div>
+
+  <!-- Result Box -->
+  <div class="result-box" id="resultBox">
+    <div class="result-header">
+      <span class="result-icon">🧠</span>
+      <span class="result-title">STEP-BY-STEP SOLUTION</span>
+    </div>
+    <div class="result-content" id="resultContent">
+      <div class="thinking-anim">
+        <div class="dot-pulse"></div><div class="dot-pulse"></div><div class="dot-pulse"></div>
+        <span class="thinking-text">Analysing your question...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="history-section" id="historySection" style="display:none;">
+    <div class="history-label">RECENT SOLVES</div>
+    <div class="history-grid" id="historyGrid"></div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+// Stars
+(function initStars() {
+  const container = document.getElementById('stars');
+  if (!container) return;
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
+  container.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  function resize() {
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight; stars = [];
+    for (let i = 0; i < 150; i++)
+      stars.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1.2+0.2, o:Math.random()*0.7+0.2, spd:Math.random()*0.003+0.001 });
+  }
+  function draw(t) {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    stars.forEach(s => {
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${s.o*(0.8+0.2*Math.sin(t*s.spd*1000))})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', resize); resize(); requestAnimationFrame(draw);
+})();
+
+let selectedSubject = 'Auto-detect';
+let uploadedImageBase64 = null;
+let solveHistory = JSON.parse(localStorage.getItem('padhiq_solve_history') || '[]');
+
+// Subject buttons
+document.querySelectorAll('.subj-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.subj-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedSubject = btn.dataset.subj;
+  });
+});
+
+// Drag and drop
+const zone = document.getElementById('uploadZone');
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+zone.addEventListener('drop', e => {
+  e.preventDefault(); zone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) handleImageFile(file);
+});
+
+document.getElementById('fileInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) handleImageFile(file);
+});
+
+function handleImageFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    uploadedImageBase64 = e.target.result.split(',')[1];
+    document.getElementById('previewImg').src = e.target.result;
+    document.getElementById('previewLabel').textContent = file.name;
+    document.getElementById('previewWrap').classList.add('show');
+    document.getElementById('uploadZone').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage() {
+  uploadedImageBase64 = null;
+  document.getElementById('previewWrap').classList.remove('show');
+  document.getElementById('uploadZone').style.display = '';
+  document.getElementById('fileInput').value = '';
+}
+
+function renderMd(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<span class="ai-bold">$1</span>')
+    .replace(/^• (.+)$/gm, '<div class="ai-bullet">$1</div>')
+    .replace(/^\d+\. (.+)$/gm, (m, p1, offset, str) => {
+      const num = m.match(/^(\d+)/)[1];
+      return `<div class="ai-bullet" style="padding-left:2rem"><span style="position:absolute;left:0;color:var(--cyan);font-family:JetBrains Mono,monospace;font-size:.85em;font-weight:700">${num}.</span>${p1}</div>`;
+    })
+    .replace(/💡 Exam Tip[:\s]*(.*)/g, '<div class="exam-tip">💡 <strong>Exam Tip:</strong> $1</div>')
+    .replace(/\n\n/g, '<div class="ai-gap" style="height:.6rem"></div>')
+    .replace(/\n/g, '<br>');
+}
+
+async function solveQuestion() {
+  const questionText = document.getElementById('questionText').value.trim();
+  if (!uploadedImageBase64 && !questionText) {
+    alert('Please upload an image or type a question!');
+    return;
+  }
+
+  const btn = document.getElementById('solveBtn');
+  btn.disabled = true; btn.textContent = '⏳ Solving...';
+
+  const resultBox = document.getElementById('resultBox');
+  const resultContent = document.getElementById('resultContent');
+  resultBox.classList.add('show');
+  resultContent.innerHTML = `<div class="thinking-anim"><div class="dot-pulse"></div><div class="dot-pulse"></div><div class="dot-pulse"></div><span class="thinking-text">Reading your question...</span></div>`;
+
+  try {
+    let content = [];
+    
+    if (uploadedImageBase64) {
+      content.push({
+        type: 'image',
+        source: { type: 'base64', media_type: 'image/jpeg', data: uploadedImageBase64 }
+      });
+      content.push({
+        type: 'text',
+        text: `Subject: ${selectedSubject}\n${questionText ? 'Additional context: ' + questionText + '\n' : ''}Please solve this question step by step. Format your answer with:\n1. What the question is asking\n2. Key concepts/formulas needed\n3. Step-by-step solution\n4. Final answer (highlight it clearly)\n5. 💡 Exam Tip at the end`
+      });
+    } else {
+      content.push({
+        type: 'text',
+        text: `Subject: ${selectedSubject}\nQuestion: ${questionText}\n\nPlease solve this step by step. Format:\n1. What the question asks\n2. Key formulas/concepts\n3. Step-by-step solution\n4. Final answer (bold)\n5. 💡 Exam Tip`
+      });
+    }
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `You are padhIQ — an expert AI tutor for Indian students in Classes 9–12 (CBSE/ICSE). 
+Solve questions step by step. Use Indian context. Be NCERT-aligned. 
+Format responses with **bold** for key terms, numbered steps for solutions, and end with a 💡 Exam Tip.
+Write formulas as plain text: F = ma. Keep answers clear and exam-focused.`,
+        messages: [{ role: 'user', content }]
+      })
+    });
+
+    const data = await response.json();
+    const reply = data.content?.[0]?.text || 'Could not solve. Please try again.';
+    resultContent.innerHTML = renderMd(reply);
+
+    // Save to history
+    const histItem = {
+      question: questionText || '📸 Image question',
+      subject: selectedSubject,
+      time: new Date().toLocaleTimeString()
+    };
+    solveHistory.unshift(histItem);
+    solveHistory = solveHistory.slice(0, 8);
+    localStorage.setItem('padhiq_solve_history', JSON.stringify(solveHistory));
+    renderHistory();
+
+  } catch (err) {
+    // Fallback to proxy
+    try {
+      const msg = uploadedImageBase64
+        ? `[Image uploaded] Subject: ${selectedSubject}. ${questionText || 'Solve the question in the image step by step.'}`
+        : `Subject: ${selectedSubject}. Question: ${questionText}. Solve step by step.`;
+      
+      const res = await fetch(`${window.location.origin}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [
+          { role: 'system', content: 'You are padhIQ AI tutor for Indian Class 9-12 students. Solve step by step.' },
+          { role: 'user', content: msg }
+        ]})
+      });
+      const d = await res.json();
+      resultContent.innerHTML = renderMd(d.text || 'Please try again.');
+    } catch (e2) {
+      resultContent.innerHTML = `<span style="color:#ff5050">⚠️ Could not connect to AI. Please check your connection and try again.</span>`;
+    }
+  }
+
+  btn.disabled = false; btn.textContent = '⚡ Solve Now';
+}
+
+function renderHistory() {
+  if (solveHistory.length === 0) return;
+  document.getElementById('historySection').style.display = 'block';
+  document.getElementById('historyGrid').innerHTML = solveHistory.map(h => `
+    <div class="history-card" onclick="document.getElementById('questionText').value='${h.question.replace(/'/g, "\\'")}';solveQuestion()">
+      <div class="history-q">${h.question}</div>
+      <div class="history-meta">${h.subject} · ${h.time}</div>
+    </div>
+  `).join('');
+}
+
+renderHistory();
+
+if (typeof initNavAuth === 'function') initNavAuth();
+
+// Enter key
+document.getElementById('questionText').addEventListener('keydown', e => {
+  if (e.key === 'Enter') solveQuestion();
+});
+</script>
+</body>
+</html>
