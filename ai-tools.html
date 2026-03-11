@@ -21,10 +21,16 @@
     <a href="ai-tools.html" class="nav-active">AI Tools</a>
     <a href="marketplace.html">Marketplace</a>
     <a href="study-guide.html">Study Guide</a>
+    <a href="about.html">About</a>
   </div>
-  <button class="nav-cta" onclick="window.location='index.html'">← Home</button>
-  <button onclick="logout()" class="logout-btn">Logout</button>
+  <div id="navAuth"></div>
 </nav>
+
+<!-- BACK / HOME BAR -->
+<div class="back-home-bar">
+  <a href="javascript:history.back()" class="back-btn">← Back</a>
+  <a href="index.html" class="back-btn back-btn-home">🏠 Home</a>
+</div>
 
 <div class="page-hero">
   <div class="page-hero-icon">🤖</div>
@@ -93,16 +99,16 @@
   </div>
 
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
 <script src="script.js"></script>
-
 <script>
 function launchTool(prompt) {
   localStorage.setItem('aaa_tool_prompt', prompt);
   window.location.href = 'study-guide.html';
 }
+initNavAuth();
 </script>
 
 </body>
