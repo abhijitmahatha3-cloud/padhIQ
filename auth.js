@@ -3,18 +3,14 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-// ── SIGN UP (creates account but does NOT log in automatically) ──
+// ── SIGN UP ──
 async function signUp() {
   const email    = document.getElementById("email").value;
   const password = document.getElementById("password").value;
-
   const { data, error } = await supabaseClient.auth.signUp({ email, password });
-
-  if (error) {
-    alert(error.message);
-  } else {
+  if (error) { alert(error.message); }
+  else {
     alert("Account created! Check your email to verify, then log in.");
-    // Clear the form so they must type credentials again to log in
     document.getElementById("email").value    = "";
     document.getElementById("password").value = "";
   }
@@ -24,45 +20,38 @@ async function signUp() {
 async function login() {
   const email    = document.getElementById("email").value;
   const password = document.getElementById("password").value;
-
   const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-  if (error) {
-    alert(error.message);
-  } else {
-    window.location.href = "index.html";
-  }
+  if (error) { alert(error.message); }
+  else { window.location.href = "index.html"; }
 }
 
 // ── LOGOUT ──
 async function logout() {
   await supabaseClient.auth.signOut();
-  window.location.href = "index.html"; // go to home (not login) — they can browse as guest
+  window.location.href = "index.html";
 }
 
-// ── CHECK USER (optional — only call on pages that require auth) ──
+// ── CHECK USER (redirect to login if not logged in) ──
 async function checkUser() {
   const { data: { user } } = await supabaseClient.auth.getUser();
-  if (!user) {
-    window.location.href = "login.html";
-  }
+  if (!user) window.location.href = "login.html";
 }
 
-// ── GET USER (returns null if not logged in, no redirect) ──
+// ── GET USER ──
 async function getUser() {
   const { data: { user } } = await supabaseClient.auth.getUser();
   return user;
 }
 
-// ── INIT NAV AUTH (call on every page to update the nav dropdown) ──
+// ── INIT NAV AUTH ──
 async function initNavAuth() {
   const user = await getUser();
   const navAuth = document.getElementById("navAuth");
   if (!navAuth) return;
 
+  // ── Desktop nav ──
   if (user) {
-    // Show avatar/email + logout
-    const email = user.email || "Student";
+    const email   = user.email || "Student";
     const initial = email[0].toUpperCase();
     navAuth.innerHTML = `
       <div class="nav-user-wrap" id="navUserWrap">
@@ -76,24 +65,72 @@ async function initNavAuth() {
           <a href="study-guide.html" class="nud-item">🤖 AI Study Guide</a>
           <a href="resources.html"   class="nud-item">📚 Resources</a>
           <a href="marketplace.html" class="nud-item">🛒 Marketplace</a>
+          <a href="about.html"       class="nud-item">👥 About</a>
           <div class="nud-divider"></div>
           <button class="nud-logout" onclick="logout()">⏻ Sign Out</button>
         </div>
-      </div>
-    `;
-    // Close dropdown on outside click
+      </div>`;
     document.addEventListener('click', (e) => {
       const wrap = document.getElementById('navUserWrap');
-      if (wrap && !wrap.contains(e.target)) {
+      if (wrap && !wrap.contains(e.target))
         document.getElementById('navUserDropdown')?.classList.remove('open');
-      }
     });
   } else {
-    // Show login button
-    navAuth.innerHTML = `
-      <a href="login.html" class="nav-login-btn">⚡ Login / Sign Up</a>
-    `;
+    navAuth.innerHTML = `<a href="login.html" class="nav-login-btn">⚡ Login / Sign Up</a>`;
   }
+
+  // ── Mobile menu ──
+  buildMobileMenu(user);
+}
+
+function buildMobileMenu(user) {
+  // Inject hamburger button into navbar if not present
+  const navbar = document.querySelector('.navbar');
+  if (!navbar || document.getElementById('hamburgerBtn')) return;
+
+  // Hamburger button
+  const ham = document.createElement('button');
+  ham.className = 'hamburger';
+  ham.id = 'hamburgerBtn';
+  ham.setAttribute('aria-label', 'Menu');
+  ham.innerHTML = '<span></span><span></span><span></span>';
+  navbar.appendChild(ham);
+
+  // Mobile menu panel
+  const menu = document.createElement('div');
+  menu.className = 'mobile-menu';
+  menu.id = 'mobileMenu';
+
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+
+  menu.innerHTML = `
+    <a href="index.html"       ${currentPage==='index.html'?'style="color:var(--cyan)"':''}>🏠 Home</a>
+    <a href="resources.html"   ${currentPage==='resources.html'?'style="color:var(--cyan)"':''}>📚 Resources</a>
+    <a href="ai-tools.html"    ${currentPage==='ai-tools.html'?'style="color:var(--cyan)"':''}>🤖 AI Tools</a>
+    <a href="marketplace.html" ${currentPage==='marketplace.html'?'style="color:var(--cyan)"':''}>🛒 Marketplace</a>
+    <a href="study-guide.html" ${currentPage==='study-guide.html'?'style="color:var(--cyan)"':''}>📖 Study Guide</a>
+    <a href="about.html"       ${currentPage==='about.html'?'style="color:var(--cyan)"':''}>👥 About</a>
+    <div class="mob-divider"></div>
+    ${user
+      ? `<button class="mob-logout" onclick="logout()">⏻ Sign Out</button>`
+      : `<a href="login.html" class="mob-login">⚡ Login / Sign Up</a>`
+    }
+  `;
+
+  document.body.appendChild(menu);
+
+  ham.addEventListener('click', () => {
+    ham.classList.toggle('open');
+    menu.classList.toggle('open');
+  });
+
+  // Close on link click
+  menu.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('click', () => {
+      ham.classList.remove('open');
+      menu.classList.remove('open');
+    });
+  });
 }
 
 function toggleUserMenu() {
