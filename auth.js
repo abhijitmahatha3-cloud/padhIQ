@@ -66,6 +66,7 @@ async function initNavAuth() {
           <a href="resources.html"   class="nud-item">📚 Resources</a>
           <a href="marketplace.html" class="nud-item">🛒 Marketplace</a>
           <a href="about.html"       class="nud-item">👥 About</a>
+          <a href="dashboard.html"   class="nud-item">📊 My Dashboard</a>
           <div class="nud-divider"></div>
           <button class="nud-logout" onclick="logout()">⏻ Sign Out</button>
         </div>
@@ -110,6 +111,7 @@ function buildMobileMenu(user) {
     <a href="marketplace.html" ${currentPage==='marketplace.html'?'style="color:var(--cyan)"':''}>🛒 Marketplace</a>
     <a href="study-guide.html" ${currentPage==='study-guide.html'?'style="color:var(--cyan)"':''}>📖 Study Guide</a>
     <a href="about.html"       ${currentPage==='about.html'?'style="color:var(--cyan)"':''}>👥 About</a>
+    <a href="dashboard.html"    ${currentPage==='dashboard.html'?'style="color:var(--cyan)"':''}>📊 Dashboard</a>
     <div class="mob-divider"></div>
     ${user
       ? `<button class="mob-logout" onclick="logout()">⏻ Sign Out</button>`

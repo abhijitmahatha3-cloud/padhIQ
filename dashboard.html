@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dashboard — padhIQ</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+.dash-wrap   { max-width:1000px;margin:0 auto;padding:0 1.5rem 5rem; }
+.dash-section{ padding:2rem 0 0; }
+.dash-section h2{ font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:#fff;margin-bottom:1rem; }
+
+/* ── Stat cards ── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;}
+.stat-card{
+  background:rgba(10,22,40,.7);border:1px solid var(--border);border-radius:18px;
+  padding:1.5rem;backdrop-filter:blur(14px);text-align:center;
+  animation:fadeUp .5s ease both;transition:transform .2s;
+}
+.stat-card:hover{transform:translateY(-4px)}
+.stat-card.c1{border-color:rgba(0,240,255,.3);background:rgba(0,240,255,.04)}
+.stat-card.c2{border-color:rgba(255,107,53,.3);background:rgba(255,107,53,.04);animation-delay:.08s}
+.stat-card.c3{border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.04);animation-delay:.14s}
+.stat-card.c4{border-color:rgba(180,100,255,.3);background:rgba(180,100,255,.04);animation-delay:.2s}
+.stat-icon{font-size:2rem;margin-bottom:.5rem}
+.stat-num{font-family:'Orbitron',monospace;font-size:2.2rem;font-weight:900;color:#fff;line-height:1}
+.stat-num.small{font-size:1rem;padding-top:.4rem}
+.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.4rem}
+
+/* ── Subject bars ── */
+.subject-card{
+  background:rgba(10,22,40,.7);border:1px solid var(--border);border-radius:16px;
+  padding:1.5rem 2rem;backdrop-filter:blur(14px);animation:fadeUp .5s .1s ease both;
+}
+.subj-row{display:flex;align-items:center;gap:1rem;padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.subj-row:last-child{border-bottom:none}
+.subj-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;color:var(--text);width:100px;flex-shrink:0}
+.subj-bar-wrap{flex:1;height:7px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden}
+.subj-bar{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--green));transition:width 1.2s cubic-bezier(.16,1,.3,1);width:0%}
+.subj-count{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);width:50px;text-align:right;flex-shrink:0}
+
+/* ── Streak heatmap ── */
+.heatmap{display:flex;flex-wrap:wrap;gap:4px;}
+.hm-day{width:14px;height:14px;border-radius:3px;background:rgba(255,255,255,.06);}
+.hm-day.active{background:var(--cyan);box-shadow:0 0 6px rgba(0,240,255,.4);}
+.hm-day.today{background:var(--green);box-shadow:0 0 8px rgba(0,255,136,.5);}
+
+/* ── Recent topics ── */
+.topic-list{background:rgba(10,22,40,.7);border:1px solid var(--border);border-radius:16px;overflow:hidden;backdrop-filter:blur(14px);animation:fadeUp .5s .15s ease both}
+.topic-item{display:flex;align-items:center;gap:.75rem;padding:.8rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.04);font-size:.83rem;color:rgba(226,232,240,.7);transition:background .2s}
+.topic-item:last-child{border-bottom:none}
+.topic-item:hover{background:rgba(0,240,255,.04)}
+.topic-dot{width:6px;height:6px;background:var(--cyan);border-radius:50%;flex-shrink:0;box-shadow:0 0 6px var(--cyan)}
+.topic-subj{font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:.15rem .5rem;border-radius:4px;background:rgba(0,240,255,.08);color:var(--cyan);flex-shrink:0}
+
+/* ── Quick actions ── */
+.action-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1rem;}
+.action-card{
+  background:rgba(10,22,40,.6);border:1px solid var(--border);border-radius:14px;
+  padding:1.1rem 1.4rem;display:flex;align-items:center;gap:.75rem;
+  text-decoration:none;color:var(--text);font-family:'Syne',sans-serif;font-weight:600;font-size:.83rem;
+  transition:all .2s;backdrop-filter:blur(10px);animation:fadeUp .5s ease both;
+}
+.action-card:hover{border-color:rgba(0,240,255,.3);background:rgba(0,240,255,.05);color:var(--cyan);transform:translateY(-3px)}
+.action-icon{font-size:1.3rem}
+
+/* ── Empty state ── */
+.empty-state{text-align:center;padding:3rem 1.5rem;color:var(--muted)}
+.empty-state .ei{font-size:2.5rem;margin-bottom:.75rem;opacity:.35}
+
+/* ── Achievement badges ── */
+.badge-grid{display:flex;flex-wrap:wrap;gap:.75rem}
+.badge{
+  display:flex;align-items:center;gap:.6rem;padding:.6rem 1rem;
+  border-radius:10px;border:1px solid var(--border);background:rgba(10,22,40,.6);
+  font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;color:var(--muted);
+  transition:all .2s;
+}
+.badge.earned{border-color:rgba(0,240,255,.3);color:#fff;background:rgba(0,240,255,.06);box-shadow:0 0 12px rgba(0,240,255,.08)}
+.badge.earned .badge-icon{filter:none}
+.badge-icon{font-size:1.2rem;filter:grayscale(1) opacity(.3)}
+
+/* ── Reset ── */
+.reset-btn{background:transparent;border:1px solid rgba(255,100,100,.2);color:rgba(255,100,100,.5);
+  padding:.4rem 1rem;border-radius:999px;font-family:'Syne',sans-serif;font-size:.72rem;cursor:pointer;transition:all .2s}
+.reset-btn:hover{border-color:rgba(255,100,100,.5);color:#ff8080}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="nebula"></div>
+<div class="grid-overlay"></div>
+<div class="meteor-container" id="meteorContainer"></div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">AAA</a>
+  <div class="nav-links">
+    <a href="resources.html">Resources</a>
+    <a href="ai-tools.html">AI Tools</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="study-guide.html">Study Guide</a>
+    <a href="about.html">About</a>
+  </div>
+  <div id="navAuth"></div>
+</nav>
+
+<div class="back-home-bar">
+  <a href="javascript:history.back()" class="back-btn">← Back</a>
+  <a href="index.html" class="back-btn back-btn-home">🏠 Home</a>
+</div>
+
+<!-- HERO -->
+<div class="page-hero" style="padding-bottom:1.5rem">
+  <div class="page-hero-icon">📊</div>
+  <div class="page-label">STUDENT DASHBOARD</div>
+  <h1 class="page-title" id="dashTitle">My <span class="accent-cyan">Progress</span></h1>
+  <p class="page-sub" id="dashSub">Track your streak, subject performance and study history.</p>
+</div>
+
+<div class="dash-wrap">
+
+  <!-- STAT CARDS -->
+  <div class="stat-grid" id="statGrid">
+    <div class="stat-card c1"><div class="stat-icon">🔥</div><div class="stat-num" id="sStreak">0</div><div class="stat-lbl">Day Streak</div></div>
+    <div class="stat-card c2"><div class="stat-icon">🧠</div><div class="stat-num" id="sQuestions">0</div><div class="stat-lbl">Questions Asked</div></div>
+    <div class="stat-card c3"><div class="stat-icon">📅</div><div class="stat-num" id="sSessions">0</div><div class="stat-lbl">Study Sessions</div></div>
+    <div class="stat-card c4"><div class="stat-icon">⭐</div><div class="stat-num small" id="sTopSub">—</div><div class="stat-lbl">Top Subject</div></div>
+  </div>
+
+  <!-- SUBJECT BREAKDOWN -->
+  <div class="dash-section">
+    <h2>📚 Subject Breakdown</h2>
+    <div class="subject-card" id="subjectCard">
+      <div class="empty-state"><div class="ei">📚</div><p>Ask questions in the AI Study Guide — your subject stats will show here.</p></div>
+    </div>
+  </div>
+
+  <!-- ACHIEVEMENTS -->
+  <div class="dash-section">
+    <h2>🏆 Achievements</h2>
+    <div class="badge-grid" id="badgeGrid">
+      <div class="badge" id="b1"><span class="badge-icon">🌱</span> First Question</div>
+      <div class="badge" id="b2"><span class="badge-icon">🔥</span> 3-Day Streak</div>
+      <div class="badge" id="b3"><span class="badge-icon">⚡</span> 10 Questions</div>
+      <div class="badge" id="b4"><span class="badge-icon">🎯</span> 25 Questions</div>
+      <div class="badge" id="b5"><span class="badge-icon">🧪</span> 3 Subjects Explored</div>
+      <div class="badge" id="b6"><span class="badge-icon">🚀</span> 7-Day Streak</div>
+      <div class="badge" id="b7"><span class="badge-icon">💯</span> 50 Questions</div>
+      <div class="badge" id="b8"><span class="badge-icon">🏆</span> 100 Questions</div>
+    </div>
+  </div>
+
+  <!-- RECENT TOPICS -->
+  <div class="dash-section">
+    <h2>🕐 Recent Activity</h2>
+    <div class="topic-list" id="topicList">
+      <div class="empty-state"><div class="ei">🕐</div><p>Your recent questions will appear here.</p></div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="dash-section">
+    <h2>⚡ Keep the Streak Going</h2>
+    <div class="action-grid">
+      <a href="study-guide.html" class="action-card" style="animation-delay:.05s"><span class="action-icon">🤖</span>Ask AI Tutor</a>
+      <a href="ai-tools.html"    class="action-card" style="animation-delay:.1s" ><span class="action-icon">⚡</span>AI Tools</a>
+      <a href="resources.html"   class="action-card" style="animation-delay:.15s"><span class="action-icon">📚</span>Free Resources</a>
+      <a href="marketplace.html" class="action-card" style="animation-delay:.2s" ><span class="action-icon">🛒</span>Marketplace</a>
+    </div>
+  </div>
+
+  <!-- RESET -->
+  <div style="text-align:center;padding:3rem 0 0">
+    <button class="reset-btn" onclick="resetProg()">Reset Progress Data</button>
+  </div>
+
+</div><!-- /dash-wrap -->
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+initNavAuth();
+
+function loadDash() {
+  const d = Progress.load();
+
+  // Stats
+  document.getElementById('sStreak').textContent    = d.streak.count;
+  document.getElementById('sQuestions').textContent = d.questionsAsked;
+  document.getElementById('sSessions').textContent  = Math.max(d.totalSessions, d.questionsAsked > 0 ? 1 : 0);
+  const top = Progress.topSubject(d);
+  document.getElementById('sTopSub').textContent    = top || '—';
+
+  // Hero sub
+  if (d.questionsAsked > 0) {
+    document.getElementById('dashSub').textContent =
+      `🔥 ${d.streak.count}-day streak · 🧠 ${d.questionsAsked} questions asked · Keep it up!`;
+  }
+
+  // Subject bars
+  const subjs = Object.entries(d.subjects).filter(([,v])=>v>0).sort(([,a],[,b])=>b-a);
+  if (subjs.length > 0) {
+    const maxV = subjs[0][1];
+    document.getElementById('subjectCard').innerHTML = subjs.map(([name,count])=>{
+      const pct = Math.round((count/maxV)*100);
+      return `<div class="subj-row">
+        <div class="subj-name">${name}</div>
+        <div class="subj-bar-wrap"><div class="subj-bar" data-pct="${pct}"></div></div>
+        <div class="subj-count">${count}Q</div>
+      </div>`;
+    }).join('');
+    setTimeout(()=>{
+      document.querySelectorAll('.subj-bar').forEach(b=>b.style.width=b.dataset.pct+'%');
+    }, 200);
+  }
+
+  // Achievements
+  const q  = d.questionsAsked;
+  const str= d.streak.count;
+  const subs = Object.values(d.subjects).filter(v=>v>0).length;
+  if(q>=1)   document.getElementById('b1').classList.add('earned');
+  if(str>=3)  document.getElementById('b2').classList.add('earned');
+  if(q>=10)  document.getElementById('b3').classList.add('earned');
+  if(q>=25)  document.getElementById('b4').classList.add('earned');
+  if(subs>=3) document.getElementById('b5').classList.add('earned');
+  if(str>=7)  document.getElementById('b6').classList.add('earned');
+  if(q>=50)  document.getElementById('b7').classList.add('earned');
+  if(q>=100) document.getElementById('b8').classList.add('earned');
+
+  // Recent topics
+  if (d.recentTopics && d.recentTopics.length > 0) {
+    document.getElementById('topicList').innerHTML = d.recentTopics.map(t => {
+      const subj = Progress.detectSubject(t);
+      return `<div class="topic-item">
+        <div class="topic-dot"></div>
+        <span style="flex:1">${t}…</span>
+        <span class="topic-subj">${subj}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+function resetProg() {
+  if(confirm('Reset all progress? This cannot be undone.')) {
+    localStorage.removeItem('padhiq_progress_v2');
+    location.reload();
+  }
+}
+
+loadDash();
+</script>
+</body>
+</html>
