@@ -21,13 +21,10 @@
   <div class="nav-links">
     <a href="resources.html">Resources</a>
     <a href="ai-tools.html">AI Tools</a>
-    <a href="doubt-solver.html">📸 Doubt</a>
-    <a href="exam-predictor.html">🔮 Predictor</a>
-    <a href="gamified.html">🎮 XP</a>
-    <a href="study-planner.html">📅 Planner</a>
+    <a href="marketplace.html">Marketplace</a>
     <a href="about.html">About</a>
   </div>
-  <div id="navAuth"><!-- auth injected by initNavAuth() --></div>
+  <div id="navAuth"></div>
 </nav>
 
 <!-- HERO -->
@@ -36,7 +33,7 @@
   <h1 class="logo">STUD HUB<br><span class="logo-accent">padhIQ</span></h1>
   <p class="tagline">India's Futuristic Learning Platform<br><span class="tagline-sub">Free Resources · AI Study Guide · Local Marketplace</span></p>
   <div class="hero-btns">
-    <button class="btn-primary" onclick="window.location='study-guide.html'">Ask AI Now ✦</button>
+    <button class="btn-primary" onclick="window.location='study-guide.html'">🚀 Ask AI Tutor</button>
     <button class="btn-ghost" onclick="window.location='resources.html'">Explore →</button>
   </div>
   <div class="hero-stats">
@@ -103,43 +100,46 @@
 <!-- AI TOOLS -->
 <section class="tools-section" id="tools">
   <div class="section-label">AI TOOLKIT</div>
-  <h2 class="section-title">7 AI tools.<br>All in one place.</h2>
+  <h2 class="section-title">8 AI tools.<br>All in one place.</h2>
   <div class="tool-grid">
-    <div class="tool t1" onclick="window.location='doubt-solver.html'">
+    <div class="tool t1" onclick="window.location='ai-tools.html'">
+      <div class="tool-icon">🤖</div>
+      <div class="tool-name">Study Guide</div>
+      <div class="tool-desc">Ask any doubt 24/7</div>
+    </div>
+    <div class="tool t2" onclick="window.location='ai-tools.html'">
       <div class="tool-icon">📸</div>
       <div class="tool-name">Doubt Solver</div>
-      <div class="tool-desc">Upload photo → instant solution</div>
+      <div class="tool-desc">Upload photo → solution</div>
     </div>
-    <div class="tool t2" onclick="window.location='exam-predictor.html'">
+    <div class="tool t3" onclick="window.location='ai-tools.html'">
       <div class="tool-icon">🔮</div>
       <div class="tool-name">Exam Predictor</div>
-      <div class="tool-desc">Predict board exam questions</div>
+      <div class="tool-desc">Predict board questions</div>
     </div>
-    <div class="tool t3" onclick="window.location='gamified.html'">
+    <div class="tool t4" onclick="window.location='ai-tools.html'">
       <div class="tool-icon">🎮</div>
       <div class="tool-name">XP & Badges</div>
-      <div class="tool-desc">Gamified learning quizzes</div>
+      <div class="tool-desc">Gamified daily quiz</div>
     </div>
-    <div class="tool t4" onclick="window.location='study-planner.html'">
+    <div class="tool t5" onclick="window.location='ai-tools.html'">
       <div class="tool-icon">📅</div>
       <div class="tool-name">Study Planner</div>
-      <div class="tool-desc">AI-generated 30-day plan</div>
+      <div class="tool-desc">AI 30-day schedule</div>
     </div>
-    <div class="tool t5" onclick="goToTool('Give me 10 important questions for Class 10 Maths Quadratic Equations.')">
-      <div class="tool-icon">📚</div>
-      <div class="tool-name">Question Bank</div>
-      <div class="tool-desc">Predicted exam questions</div>
+    <div class="tool t6" onclick="window.location='ai-tools.html'">
+      <div class="tool-icon">⚡</div>
+      <div class="tool-name">Notes Generator</div>
+      <div class="tool-desc">Chapter notes instantly</div>
     </div>
-    <div class="tool t6" onclick="goToTool('Give me a last-minute revision strategy for Class 12 Physics Board exam.')">
+    <div class="tool t7" onclick="window.location='ai-tools.html'">
       <div class="tool-icon">🎯</div>
-      <div class="tool-name">Exam Prep</div>
-      <div class="tool-desc">Board exam strategies</div>
+      <div class="tool-name">Exam Coach</div>
+      <div class="tool-desc">Score maximising strategy</div>
     </div>
-    <div class="tool t7" onclick="goToTool('Give me 5 practice problems on quadratic equations with solutions.')">
-      <div class="tool-icon">🧩</div>
-      <div class="tool-name">Practice</div>
-      <div class="tool-desc">Solve practice sets</div>
-    </div>
+  </div>
+  <div style="text-align:center;margin-top:2rem">
+    <a href="ai-tools.html" style="display:inline-block;padding:.7rem 2rem;border-radius:999px;border:1px solid rgba(0,240,255,.3);color:var(--cyan);font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;text-decoration:none;transition:all .2s" onmouseover="this.style.background='rgba(0,240,255,.08)'" onmouseout="this.style.background='transparent'">See All AI Tools →</a>
   </div>
 </section>
 
@@ -225,25 +225,25 @@
   <p class="footer-tagline">Free education for every Indian student 🇮🇳</p>
   <div class="footer-links">
     <a href="about.html">About</a>
-    <a href="#">Privacy</a>
+    <a href="about.html">Privacy</a>
     <a href="about.html">Contact</a>
-    <a href="#">Sell on AAA</a>
+    <a href="marketplace.html">Sell on AAA</a>
   </div>
   <p class="footer-copy">© 2025 Project AAA · Built with ❤️ in India</p>
 </footer>
 
 <script src="script.js"></script>
-<script>
-function goToTool(prompt) {
-  localStorage.setItem('aaa_tool_prompt', prompt);
-  window.location.href = 'study-guide.html';
-}
-</script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
 <script>
 initNavAuth();
+</script>
+<script>
+window.addEventListener('scroll',()=>{
+  document.querySelector('.navbar').classList.toggle('scrolled',window.scrollY>20);
+});
 </script>
 </body>
 </html>

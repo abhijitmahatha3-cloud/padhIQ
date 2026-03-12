@@ -130,6 +130,21 @@
 </style>
 </head>
 <body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">AAA</a>
+  <div class="nav-links">
+    <a href="resources.html">Resources</a>
+    <a href="ai-tools.html">AI Tools</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="about.html">About</a>
+  </div>
+  <div id="navAuth"></div>
+</nav>
+<div class="back-home-bar">
+  <a href="javascript:history.back()" class="back-btn">← Back</a>
+  <a href="index.html" class="back-btn back-btn-home">🏠 Home</a>
+</div>
 <div class="stars" id="stars"></div>
 <div class="nebula"></div>
 <div class="grid-overlay"></div>
@@ -138,23 +153,6 @@
 <div class="xp-popup" id="xpPopup">
   <div class="xp-popup-val" id="xpPopupVal">+5 XP</div>
   <div class="xp-popup-label" id="xpPopupLabel">Correct Answer!</div>
-</div>
-
-<nav class="navbar">
-  <a href="index.html" class="nav-logo">AAA</a>
-  <div class="nav-links">
-    <a href="resources.html">Resources</a>
-    <a href="ai-tools.html">AI Tools</a>
-    <a href="marketplace.html">Marketplace</a>
-    <a href="study-guide.html">Study Guide</a>
-    <a href="about.html">About</a>
-  </div>
-  <div id="navAuth"></div>
-</nav>
-
-<div class="back-home-bar">
-  <a href="javascript:history.back()" class="back-btn">← Back</a>
-  <a href="index.html" class="back-btn back-btn-home">🏠 Home</a>
 </div>
 
 
@@ -506,6 +504,11 @@ renderLeaderboard();
 loadQuestion();
 
 if (typeof initNavAuth === 'function') initNavAuth();
+</script>
+<script>
+window.addEventListener('scroll', () => {
+  document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 20);
+});
 </script>
 </body>
 </html>

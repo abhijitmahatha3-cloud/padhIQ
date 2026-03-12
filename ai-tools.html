@@ -3,10 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Tools — Project AAA</title>
+<title>AI Tools — padhIQ</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="pages.css">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+.tools-hub{max-width:1100px;margin:0 auto;padding:0 1.5rem 6rem}
+
+/* PRIMARY TOOL */
+.tool-primary{
+  background:linear-gradient(135deg,rgba(0,240,255,.07),rgba(0,100,255,.04));
+  border:1px solid rgba(0,240,255,.22);
+  border-radius:24px;padding:2.5rem;
+  display:flex;align-items:center;gap:2rem;flex-wrap:wrap;
+  margin-bottom:2.5rem;position:relative;overflow:hidden;
+  animation:fadeUp .5s ease both;
+  transition:box-shadow .3s,transform .3s;cursor:pointer;
+}
+.tool-primary:hover{box-shadow:0 24px 60px rgba(0,240,255,.12);transform:translateY(-3px)}
+.tool-primary::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 70% 50%,rgba(0,240,255,.06),transparent 65%);pointer-events:none}
+.tp-icon{font-size:3.5rem;flex-shrink:0;filter:drop-shadow(0 0 20px rgba(0,240,255,.4))}
+.tp-body{flex:1;min-width:200px}
+.tp-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  font-weight:700;letter-spacing:.15em;padding:.22rem .7rem;border-radius:4px;
+  background:rgba(0,240,255,.1);color:var(--cyan);border:1px solid rgba(0,240,255,.2);margin-bottom:.65rem}
+.tp-title{font-family:'Orbitron',monospace;font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:.45rem}
+.tp-desc{font-size:.88rem;color:rgba(226,232,240,.65);line-height:1.65;max-width:520px}
+.tp-cta{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.1rem;
+  padding:.7rem 1.6rem;border-radius:999px;
+  background:linear-gradient(135deg,var(--cyan),var(--green));
+  color:#020617;font-family:'Syne',sans-serif;font-weight:800;font-size:.85rem;
+  border:none;cursor:pointer;transition:all .2s;text-decoration:none}
+.tp-cta:hover{transform:scale(1.04);box-shadow:0 8px 28px rgba(0,240,255,.35)}
+
+/* DIVIDER */
+.tools-divider{font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  letter-spacing:.18em;color:var(--muted);text-transform:uppercase;
+  display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+.tools-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+/* TOOL CARDS GRID */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.1rem}
+
+.tool-card{
+  background:rgba(10,22,40,.75);border:1px solid var(--border);
+  border-radius:18px;padding:1.6rem;display:flex;flex-direction:column;
+  backdrop-filter:blur(16px);cursor:pointer;text-decoration:none;
+  transition:transform .25s,box-shadow .25s,border-color .25s;
+  animation:fadeUp .5s ease both;position:relative;overflow:hidden;
+}
+.tool-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.tool-card.c-cyan:hover  {border-color:rgba(0,240,255,.3); box-shadow:0 20px 50px rgba(0,240,255,.07)}
+.tool-card.c-orange:hover{border-color:rgba(255,107,53,.3);box-shadow:0 20px 50px rgba(255,107,53,.07)}
+.tool-card.c-green:hover {border-color:rgba(0,255,136,.3); box-shadow:0 20px 50px rgba(0,255,136,.07)}
+.tool-card.c-purple:hover{border-color:rgba(180,100,255,.3);box-shadow:0 20px 50px rgba(180,100,255,.07)}
+.tool-card.c-gold:hover  {border-color:rgba(255,215,0,.3); box-shadow:0 20px 50px rgba(255,215,0,.07)}
+
+.tc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.9rem}
+.tc-icon{font-size:2.1rem}
+.tc-badge{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;
+  letter-spacing:.12em;padding:.2rem .55rem;border-radius:4px;text-transform:uppercase}
+.tc-badge.cyan  {background:rgba(0,240,255,.08); color:var(--cyan);  border:1px solid rgba(0,240,255,.2)}
+.tc-badge.orange{background:rgba(255,107,53,.08);color:var(--orange);border:1px solid rgba(255,107,53,.2)}
+.tc-badge.green {background:rgba(0,255,136,.08); color:var(--green); border:1px solid rgba(0,255,136,.2)}
+.tc-badge.purple{background:rgba(180,100,255,.1);color:#c084fc;      border:1px solid rgba(180,100,255,.2)}
+.tc-badge.gold  {background:rgba(255,215,0,.08); color:#ffd700;      border:1px solid rgba(255,215,0,.2)}
+
+.tc-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:#fff;margin-bottom:.4rem}
+.tc-desc {font-size:.8rem;color:var(--muted);line-height:1.65;flex:1}
+.tc-tags {display:flex;flex-wrap:wrap;gap:.35rem;margin-top:1rem}
+.tc-tag  {font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:.15rem .5rem;
+  border-radius:4px;background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border)}
+.tc-arrow{position:absolute;bottom:1.2rem;right:1.2rem;font-size:1rem;
+  color:rgba(255,255,255,.12);transition:all .2s}
+.tool-card:hover .tc-arrow{color:var(--cyan);transform:translate(2px,-2px)}
+
+@media(max-width:600px){.tools-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 <div class="stars" id="stars"></div>
@@ -20,85 +94,106 @@
     <a href="resources.html">Resources</a>
     <a href="ai-tools.html" class="nav-active">AI Tools</a>
     <a href="marketplace.html">Marketplace</a>
-    <a href="study-guide.html">Study Guide</a>
     <a href="about.html">About</a>
   </div>
   <div id="navAuth"></div>
 </nav>
 
-<!-- BACK / HOME BAR -->
 <div class="back-home-bar">
   <a href="javascript:history.back()" class="back-btn">← Back</a>
   <a href="index.html" class="back-btn back-btn-home">🏠 Home</a>
 </div>
 
-<div class="page-hero">
-  <div class="page-hero-icon">🤖</div>
+<div class="page-hero" style="padding-bottom:2rem">
+  <div class="page-hero-icon">⚡</div>
   <div class="page-label">AI TOOLKIT</div>
-  <h1 class="page-title">7 AI Tools. <span class="accent-cyan">One Click.</span></h1>
-  <p class="page-sub">Click any tool below — it will auto-ask the AI Study Guide for you instantly.</p>
+  <h1 class="page-title">All your AI tools.<br><span class="accent-cyan">One place.</span></h1>
+  <p class="page-sub">8 powerful tools built for Indian students — NCERT-aligned, board-exam focused, completely free.</p>
 </div>
 
-<!-- TOOLS BIG GRID -->
-<div class="tools-big-grid">
+<div class="tools-hub">
 
-  <div class="tool-big t1" onclick="launchTool('Create detailed chapter notes for Class 10 Science — Matter and its Properties.')">
-    <div class="tool-big-icon">⚡</div>
-    <div class="tool-big-name">AI Notes Generator</div>
-    <div class="tool-big-desc">Auto-generate chapter-wise notes for any subject. Save hours of writing.</div>
-    <div class="tool-big-tags"><span class="ttag">Class 9–12</span><span class="ttag">All Subjects</span></div>
-    <button class="tool-launch-btn">Launch Tool →</button>
+  <!-- ── PRIMARY: AI Study Guide ── -->
+  <div class="tool-primary" onclick="window.location='study-guide.html'">
+    <div class="tp-icon">🤖</div>
+    <div class="tp-body">
+      <div class="tp-badge">⭐ MOST USED · ALWAYS FREE</div>
+      <div class="tp-title">AI Study Guide</div>
+      <div class="tp-desc">Your personal tutor available 24/7. Ask any doubt and instantly get a clear explanation, an Indian example, practice questions, and a board exam tip — all in one reply.</div>
+      <a href="study-guide.html" class="tp-cta">🚀 Start Studying Now →</a>
+    </div>
   </div>
 
-  <div class="tool-big t2" onclick="launchTool('I have a doubt — please help me solve it step by step.')">
-    <div class="tool-big-icon">🧠</div>
-    <div class="tool-big-name">Doubt Solver</div>
-    <div class="tool-big-desc">Type any doubt and get a clear, step-by-step explanation instantly.</div>
-    <div class="tool-big-tags"><span class="ttag">Instant</span><span class="ttag">Step-by-step</span></div>
-    <button class="tool-launch-btn">Launch Tool →</button>
-  </div>
+  <!-- ── DEDICATED TOOLS ── -->
+  <div class="tools-divider">Dedicated AI Tools</div>
+  <div class="tools-grid">
 
-  <div class="tool-big t3" onclick="launchTool('Create a 30-day study plan for Class 12 Board exams covering Physics, Chemistry, Maths and Biology.')">
-    <div class="tool-big-icon">📊</div>
-    <div class="tool-big-name">Study Planner</div>
-    <div class="tool-big-desc">Get a personalised daily study schedule for your board exams.</div>
-    <div class="tool-big-tags"><span class="ttag">Personalised</span><span class="ttag">Board Exams</span></div>
-    <button class="tool-launch-btn">Launch Tool →</button>
-  </div>
+    <div class="tool-card c-cyan" onclick="window.location='doubt-solver.html'">
+      <div class="tc-top"><div class="tc-icon">📸</div><div class="tc-badge cyan">PHOTO</div></div>
+      <div class="tc-title">Doubt Solver</div>
+      <div class="tc-desc">Upload a photo of any question — from your textbook, notebook, or test paper — and get an instant step-by-step solution.</div>
+      <div class="tc-tags"><span class="tc-tag">Photo Upload</span><span class="tc-tag">Any Subject</span><span class="tc-tag">Instant</span></div>
+      <div class="tc-arrow">↗</div>
+    </div>
 
-  <div class="tool-big t4" onclick="launchTool('Summarise the chapter on Photosynthesis in 10 clear bullet points for Class 10 Biology.')">
-    <div class="tool-big-icon">📖</div>
-    <div class="tool-big-name">Summary AI</div>
-    <div class="tool-big-desc">Get any chapter summarised in 10 bullet points. Perfect for last-minute revision.</div>
-    <div class="tool-big-tags"><span class="ttag">Quick Revision</span><span class="ttag">All Chapters</span></div>
-    <button class="tool-launch-btn">Launch Tool →</button>
-  </div>
+    <div class="tool-card c-orange" onclick="window.location='exam-predictor.html'">
+      <div class="tc-top"><div class="tc-icon">🔮</div><div class="tc-badge orange">BOARD EXAM</div></div>
+      <div class="tc-title">Exam Predictor</div>
+      <div class="tc-desc">Predicts the most likely questions for your upcoming board exams based on previous year patterns and NCERT chapter weightage.</div>
+      <div class="tc-tags"><span class="tc-tag">CBSE / ICSE</span><span class="tc-tag">Class 10 & 12</span><span class="tc-tag">Predictions</span></div>
+      <div class="tc-arrow">↗</div>
+    </div>
 
-  <div class="tool-big t5" onclick="launchTool('Give me 10 most important and likely questions for Class 10 Maths Board exam — Quadratic Equations chapter.')">
-    <div class="tool-big-icon">📚</div>
-    <div class="tool-big-name">Question Bank</div>
-    <div class="tool-big-desc">Get predicted important questions for any chapter — based on board exam patterns.</div>
-    <div class="tool-big-tags"><span class="ttag">Board Focused</span><span class="ttag">High Weightage</span></div>
-    <button class="tool-launch-btn">Launch Tool →</button>
-  </div>
+    <div class="tool-card c-green" onclick="window.location='gamified.html'">
+      <div class="tc-top"><div class="tc-icon">🎮</div><div class="tc-badge green">XP SYSTEM</div></div>
+      <div class="tc-title">XP & Leaderboard</div>
+      <div class="tc-desc">Earn XP, unlock badges and compete on a real global leaderboard. AI generates fresh quiz questions every single day — never repeats.</div>
+      <div class="tc-tags"><span class="tc-tag">Daily Quiz</span><span class="tc-tag">Badges</span><span class="tc-tag">Global Rank</span></div>
+      <div class="tc-arrow">↗</div>
+    </div>
 
-  <div class="tool-big t6" onclick="launchTool('Give me a complete last-minute exam strategy for Class 12 Physics Board exam. What to focus on in the last 3 days?')">
-    <div class="tool-big-icon">🎯</div>
-    <div class="tool-big-name">Exam Prep Coach</div>
-    <div class="tool-big-desc">Get a smart exam strategy — what to study, what to skip, how to score more.</div>
-    <div class="tool-big-tags"><span class="ttag">Strategy</span><span class="ttag">Last-minute</span></div>
-    <button class="tool-launch-btn">Launch Tool →</button>
-  </div>
+    <div class="tool-card c-purple" onclick="window.location='study-planner.html'">
+      <div class="tc-top"><div class="tc-icon">📅</div><div class="tc-badge purple">PLANNER</div></div>
+      <div class="tc-title">Study Planner</div>
+      <div class="tc-desc">Generate a personalised day-by-day study schedule for your board exams. Set your exam date, subjects, and get a complete 30-day AI plan.</div>
+      <div class="tc-tags"><span class="tc-tag">30-Day Plan</span><span class="tc-tag">Personalised</span><span class="tc-tag">Board Exams</span></div>
+      <div class="tc-arrow">↗</div>
+    </div>
 
-  <div class="tool-big t7" onclick="launchTool('Give me 5 practice problems on Trigonometry for Class 10 with full solutions.')">
-    <div class="tool-big-icon">🧩</div>
-    <div class="tool-big-name">Practice Problems</div>
-    <div class="tool-big-desc">Get practice problems with full solutions for any topic. The more you practice, the better you score.</div>
-    <div class="tool-big-tags"><span class="ttag">With Solutions</span><span class="ttag">All Topics</span></div>
-    <button class="tool-launch-btn">Launch Tool →</button>
-  </div>
+    <div class="tool-card c-gold" onclick="launchTool('Create detailed chapter-wise notes for Class 10 Science — Matter in Our Surroundings. Include key points, definitions, diagrams description, and all important formulas.')">
+      <div class="tc-top"><div class="tc-icon">⚡</div><div class="tc-badge gold">INSTANT</div></div>
+      <div class="tc-title">Notes Generator</div>
+      <div class="tc-desc">Auto-generate chapter-wise notes for any subject and class. Structured, NCERT-aligned, and ready to revise from — in seconds.</div>
+      <div class="tc-tags"><span class="tc-tag">All Subjects</span><span class="tc-tag">Class 9–12</span><span class="tc-tag">NCERT</span></div>
+      <div class="tc-arrow">↗</div>
+    </div>
 
-</div>
+    <div class="tool-card c-cyan" onclick="launchTool('Give me the 10 most important predicted questions for Class 12 Physics Board exam with short answers. Focus on high-weightage chapters from NCERT.')">
+      <div class="tc-top"><div class="tc-icon">📚</div><div class="tc-badge cyan">PREDICTED</div></div>
+      <div class="tc-title">Question Bank</div>
+      <div class="tc-desc">Get predicted high-weightage questions for any chapter — based on board exam patterns, NCERT importance, and previous years.</div>
+      <div class="tc-tags"><span class="tc-tag">Board Focused</span><span class="tc-tag">High Weightage</span><span class="tc-tag">PYQs</span></div>
+      <div class="tc-arrow">↗</div>
+    </div>
+
+    <div class="tool-card c-orange" onclick="launchTool('Give me a complete last-minute exam strategy for Class 12 Physics Board exam. Which chapters are highest weightage? What can I safely skip? Give me a 3-day action plan.')">
+      <div class="tc-top"><div class="tc-icon">🎯</div><div class="tc-badge orange">STRATEGY</div></div>
+      <div class="tc-title">Exam Prep Coach</div>
+      <div class="tc-desc">What to study, what to safely skip, and exactly how to maximise your score in the time you have left. Built for last-minute prep.</div>
+      <div class="tc-tags"><span class="tc-tag">Last-Minute</span><span class="tc-tag">Score More</span><span class="tc-tag">Strategy</span></div>
+      <div class="tc-arrow">↗</div>
+    </div>
+
+    <div class="tool-card c-green" onclick="launchTool('Give me 5 practice problems on Trigonometry for Class 10 with full step-by-step solutions. Vary the difficulty from easy to hard.')">
+      <div class="tc-top"><div class="tc-icon">🧩</div><div class="tc-badge green">PRACTICE</div></div>
+      <div class="tc-title">Practice Problems</div>
+      <div class="tc-desc">Get solved practice problems for any topic, from easy to hard. The more you practice, the more confident you become on exam day.</div>
+      <div class="tc-tags"><span class="tc-tag">With Solutions</span><span class="tc-tag">All Topics</span><span class="tc-tag">Levelled</span></div>
+      <div class="tc-arrow">↗</div>
+    </div>
+
+  </div><!-- /tools-grid -->
+</div><!-- /tools-hub -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
@@ -109,7 +204,9 @@ function launchTool(prompt) {
   window.location.href = 'study-guide.html';
 }
 initNavAuth();
+window.addEventListener('scroll', () => {
+  document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 20);
+});
 </script>
-
 </body>
 </html>
