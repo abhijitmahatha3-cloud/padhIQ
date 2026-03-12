@@ -3,259 +3,388 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Dashboard — padhIQ</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="pages.css">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<title>Mission Control — Dashboard · padhIQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Syne:wght@400;600;700&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-.dash-wrap   { max-width:1000px;margin:0 auto;padding:0 1.5rem 5rem; }
-.dash-section{ padding:2rem 0 0; }
-.dash-section h2{ font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:#fff;margin-bottom:1rem; }
-
-/* ── Stat cards ── */
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;}
-.stat-card{
-  background:rgba(10,22,40,.7);border:1px solid var(--border);border-radius:18px;
-  padding:1.5rem;backdrop-filter:blur(14px);text-align:center;
-  animation:fadeUp .5s ease both;transition:transform .2s;
+/* ══ MISSION CONTROL THEME ═══════════════════════════
+   Concept: NASA ops room. Military green on near-black.
+   Palette: #020a04 bg · #00ff66 green · #00cc44 mid
+            #004422 card · phosphor green monitors
+   Fonts: Orbitron mono + JetBrains Mono everywhere
+   ═══════════════════════════════════════════════════ */
+:root{
+  --bg:#020a04; --bg2:#041008; --bg3:#06180a;
+  --g1:#00ff66; --g2:#00cc44; --g3:#008830;
+  --text:#c8ffd4; --muted:#3a7a4a; --dim:#1a3a22;
+  --border:rgba(0,255,102,.08); --card:rgba(4,16,8,.85);
+  --warn:#ffcc00; --crit:#ff4444;
 }
-.stat-card:hover{transform:translateY(-4px)}
-.stat-card.c1{border-color:rgba(0,240,255,.3);background:rgba(0,240,255,.04)}
-.stat-card.c2{border-color:rgba(255,107,53,.3);background:rgba(255,107,53,.04);animation-delay:.08s}
-.stat-card.c3{border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.04);animation-delay:.14s}
-.stat-card.c4{border-color:rgba(180,100,255,.3);background:rgba(180,100,255,.04);animation-delay:.2s}
-.stat-icon{font-size:2rem;margin-bottom:.5rem}
-.stat-num{font-family:'Orbitron',monospace;font-size:2.2rem;font-weight:900;color:#fff;line-height:1}
-.stat-num.small{font-size:1rem;padding-top:.4rem}
-.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.4rem}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh;overflow-x:hidden;}
 
-/* ── Subject bars ── */
-.subject-card{
-  background:rgba(10,22,40,.7);border:1px solid var(--border);border-radius:16px;
-  padding:1.5rem 2rem;backdrop-filter:blur(14px);animation:fadeUp .5s .1s ease both;
+/* Scanline effect */
+body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(0,0,0,.08) 3px,rgba(0,0,0,.08) 4px);
+  animation:scanlines 8s linear infinite;}
+@keyframes scanlines{from{background-position:0 0}to{background-position:0 100px}}
+
+/* Corner decorations */
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 0%,rgba(0,255,102,.04) 0%,transparent 60%);}
+
+/* NAV — terminal style */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:50px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;
+  background:rgba(2,10,4,.95);border-bottom:1px solid rgba(0,255,102,.12);}
+.nav-brand{font-family:'Orbitron',monospace;font-weight:700;font-size:.85rem;
+  color:var(--g1);text-shadow:0 0 12px rgba(0,255,102,.5);text-decoration:none;letter-spacing:3px;}
+.nav-breadcrumb{font-size:.62rem;color:var(--muted);letter-spacing:.1em;}
+.nav-breadcrumb span{color:var(--g2);}
+.nav-time{font-size:.65rem;color:var(--muted);}
+#navAuth{font-size:.7rem;}
+
+/* MAIN LAYOUT */
+.mc-layout{position:relative;z-index:2;display:grid;grid-template-columns:220px 1fr;min-height:100vh;padding-top:50px;}
+
+/* SIDEBAR */
+.mc-sidebar{background:rgba(2,10,4,.9);border-right:1px solid rgba(0,255,102,.08);
+  padding:1.5rem 0;display:flex;flex-direction:column;gap:0;}
+.sb-section{padding:.5rem 1.2rem;margin-bottom:.25rem;}
+.sb-section-label{font-size:.52rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;
+  padding:.5rem .5rem .3rem;border-bottom:1px solid var(--border);margin-bottom:.4rem;}
+.sb-item{display:flex;align-items:center;gap:.65rem;padding:.55rem .5rem;border-radius:6px;
+  color:rgba(200,255,212,.45);font-size:.72rem;cursor:pointer;transition:all .2s;text-decoration:none;}
+.sb-item:hover{background:rgba(0,255,102,.06);color:var(--text);}
+.sb-item.active{background:rgba(0,255,102,.1);color:var(--g1);border-left:2px solid var(--g1);}
+.sb-dot{width:5px;height:5px;border-radius:50%;background:var(--g3);}
+.sb-item.active .sb-dot{background:var(--g1);box-shadow:0 0 6px var(--g1);}
+.sb-footer{margin-top:auto;padding:1rem 1.2rem;border-top:1px solid var(--border);}
+.sb-status{font-size:.6rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;}
+.status-ok{width:5px;height:5px;border-radius:50%;background:var(--g1);box-shadow:0 0 6px var(--g1);animation:pulse 2s infinite;}
+
+/* MAIN PANEL */
+.mc-main{padding:1.5rem;overflow-y:auto;}
+
+/* Terminal header */
+.term-header{display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);}
+.th-left{}
+.th-prompt{font-size:.58rem;color:var(--muted);margin-bottom:.3rem;letter-spacing:.08em;}
+.th-title{font-family:'Orbitron',monospace;font-size:1.3rem;font-weight:700;color:var(--g1);
+  text-shadow:0 0 20px rgba(0,255,102,.3);}
+.th-sub{font-size:.65rem;color:var(--muted);margin-top:.2rem;}
+.th-right{display:flex;gap:.5rem;align-items:center;}
+.indicator{display:flex;align-items:center;gap:.35rem;padding:.3rem .7rem;border-radius:4px;
+  background:rgba(0,255,102,.06);border:1px solid rgba(0,255,102,.12);font-size:.6rem;}
+.ind-dot{width:5px;height:5px;border-radius:50%;background:var(--g1);
+  box-shadow:0 0 6px var(--g1);animation:pulse 2s infinite;}
+
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem;}
+.stat-tile{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;
+  position:relative;overflow:hidden;transition:all .2s;}
+.stat-tile:hover{border-color:rgba(0,255,102,.2);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.stat-tile::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;
+  background:radial-gradient(circle at top right,rgba(0,255,102,.08),transparent 70%);
+  border-radius:0 12px 0 0;}
+.st-label{font-size:.58rem;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:.6rem;}
+.st-val{font-family:'Orbitron',monospace;font-size:1.8rem;font-weight:700;color:var(--g1);
+  text-shadow:0 0 16px rgba(0,255,102,.4);line-height:1;margin-bottom:.3rem;}
+.st-val.warn{color:var(--warn);text-shadow:0 0 16px rgba(255,204,0,.4);}
+.st-sub{font-size:.6rem;color:var(--muted);}
+.st-delta{font-size:.6rem;color:var(--g2);display:flex;align-items:center;gap:.2rem;}
+.st-delta.up::before{content:'▲ ';}
+.st-delta.down{color:var(--crit);}
+.st-delta.down::before{content:'▼ ';}
+
+/* CHARTS SECTION */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.5rem;}
+.chart-tile{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem;}
+.ct-title{font-size:.62rem;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:1rem;}
+
+/* Subject bars */
+.subj-bar{display:flex;align-items:center;gap:.7rem;margin-bottom:.65rem;}
+.sb-name{width:80px;font-size:.66rem;color:rgba(200,255,212,.6);flex-shrink:0;}
+.sb-track{flex:1;height:6px;background:rgba(0,255,102,.08);border-radius:999px;overflow:hidden;}
+.sb-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--g2),var(--g1));
+  box-shadow:0 0 6px rgba(0,255,102,.4);transition:width 1s ease;}
+.sb-pct{font-size:.62rem;color:var(--g2);width:30px;text-align:right;flex-shrink:0;}
+
+/* Activity log */
+.activity-tile{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem;margin-bottom:1.5rem;}
+.act-item{display:flex;align-items:flex-start;gap:.75rem;padding:.55rem 0;border-bottom:1px solid rgba(0,255,102,.04);}
+.act-item:last-child{border-bottom:none;}
+.act-time{font-size:.58rem;color:var(--muted);white-space:nowrap;margin-top:.1rem;min-width:40px;}
+.act-dot{width:6px;height:6px;border-radius:50%;margin-top:.3rem;flex-shrink:0;}
+.act-msg{font-size:.72rem;color:rgba(200,255,212,.7);line-height:1.5;}
+.act-tag{display:inline-block;font-size:.55rem;font-weight:700;padding:.08rem .4rem;
+  border-radius:3px;margin-left:.35rem;}
+.tag-ai{background:rgba(0,255,102,.1);color:var(--g1);border:1px solid rgba(0,255,102,.2);}
+.tag-quiz{background:rgba(255,204,0,.1);color:var(--warn);border:1px solid rgba(255,204,0,.2);}
+.tag-mkt{background:rgba(212,136,26,.1);color:#d4881a;border:1px solid rgba(212,136,26,.2);}
+
+/* BADGES */
+.badges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.65rem;}
+.badge-item{background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:.9rem .8rem;text-align:center;transition:all .2s;}
+.badge-item.earned{border-color:rgba(0,255,102,.2);}
+.badge-item.earned:hover{box-shadow:0 0 20px rgba(0,255,102,.08);}
+.badge-item.locked{opacity:.4;}
+.bi-icon{font-size:2rem;margin-bottom:.4rem;display:block;}
+.bi-name{font-size:.65rem;color:var(--text);font-weight:600;}
+.bi-sub{font-size:.58rem;color:var(--muted);margin-top:.15rem;}
+
+/* Quick actions */
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;margin-bottom:1.5rem;}
+.qa-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:.85rem;display:flex;flex-direction:column;align-items:center;gap:.45rem;
+  cursor:pointer;transition:all .2s;text-decoration:none;}
+.qa-btn:hover{border-color:rgba(0,255,102,.25);background:rgba(0,255,102,.04);transform:translateY(-2px);}
+.qa-icon{font-size:1.5rem;}
+.qa-label{font-size:.63rem;color:rgba(200,255,212,.6);text-align:center;line-height:1.3;}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Responsive */
+@media(max-width:900px){
+  .mc-layout{grid-template-columns:1fr;}
+  .mc-sidebar{display:none;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .charts-row{grid-template-columns:1fr;}
+  .quick-actions{grid-template-columns:repeat(2,1fr);}
 }
-.subj-row{display:flex;align-items:center;gap:1rem;padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
-.subj-row:last-child{border-bottom:none}
-.subj-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;color:var(--text);width:100px;flex-shrink:0}
-.subj-bar-wrap{flex:1;height:7px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden}
-.subj-bar{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--green));transition:width 1.2s cubic-bezier(.16,1,.3,1);width:0%}
-.subj-count{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);width:50px;text-align:right;flex-shrink:0}
-
-/* ── Streak heatmap ── */
-.heatmap{display:flex;flex-wrap:wrap;gap:4px;}
-.hm-day{width:14px;height:14px;border-radius:3px;background:rgba(255,255,255,.06);}
-.hm-day.active{background:var(--cyan);box-shadow:0 0 6px rgba(0,240,255,.4);}
-.hm-day.today{background:var(--green);box-shadow:0 0 8px rgba(0,255,136,.5);}
-
-/* ── Recent topics ── */
-.topic-list{background:rgba(10,22,40,.7);border:1px solid var(--border);border-radius:16px;overflow:hidden;backdrop-filter:blur(14px);animation:fadeUp .5s .15s ease both}
-.topic-item{display:flex;align-items:center;gap:.75rem;padding:.8rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.04);font-size:.83rem;color:rgba(226,232,240,.7);transition:background .2s}
-.topic-item:last-child{border-bottom:none}
-.topic-item:hover{background:rgba(0,240,255,.04)}
-.topic-dot{width:6px;height:6px;background:var(--cyan);border-radius:50%;flex-shrink:0;box-shadow:0 0 6px var(--cyan)}
-.topic-subj{font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:.15rem .5rem;border-radius:4px;background:rgba(0,240,255,.08);color:var(--cyan);flex-shrink:0}
-
-/* ── Quick actions ── */
-.action-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1rem;}
-.action-card{
-  background:rgba(10,22,40,.6);border:1px solid var(--border);border-radius:14px;
-  padding:1.1rem 1.4rem;display:flex;align-items:center;gap:.75rem;
-  text-decoration:none;color:var(--text);font-family:'Syne',sans-serif;font-weight:600;font-size:.83rem;
-  transition:all .2s;backdrop-filter:blur(10px);animation:fadeUp .5s ease both;
-}
-.action-card:hover{border-color:rgba(0,240,255,.3);background:rgba(0,240,255,.05);color:var(--cyan);transform:translateY(-3px)}
-.action-icon{font-size:1.3rem}
-
-/* ── Empty state ── */
-.empty-state{text-align:center;padding:3rem 1.5rem;color:var(--muted)}
-.empty-state .ei{font-size:2.5rem;margin-bottom:.75rem;opacity:.35}
-
-/* ── Achievement badges ── */
-.badge-grid{display:flex;flex-wrap:wrap;gap:.75rem}
-.badge{
-  display:flex;align-items:center;gap:.6rem;padding:.6rem 1rem;
-  border-radius:10px;border:1px solid var(--border);background:rgba(10,22,40,.6);
-  font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;color:var(--muted);
-  transition:all .2s;
-}
-.badge.earned{border-color:rgba(0,240,255,.3);color:#fff;background:rgba(0,240,255,.06);box-shadow:0 0 12px rgba(0,240,255,.08)}
-.badge.earned .badge-icon{filter:none}
-.badge-icon{font-size:1.2rem;filter:grayscale(1) opacity(.3)}
-
-/* ── Reset ── */
-.reset-btn{background:transparent;border:1px solid rgba(255,100,100,.2);color:rgba(255,100,100,.5);
-  padding:.4rem 1rem;border-radius:999px;font-family:'Syne',sans-serif;font-size:.72rem;cursor:pointer;transition:all .2s}
-.reset-btn:hover{border-color:rgba(255,100,100,.5);color:#ff8080}
+@media(max-width:480px){.stat-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
 
-<nav class="navbar">
-  <a href="index.html" class="nav-logo">AAA</a>
-  <div class="nav-links">
-    <a href="resources.html">Resources</a>
-    <a href="ai-tools.html">AI Tools</a>
-    <a href="marketplace.html">Marketplace</a>
-    <a href="about.html">About</a>
-  </div>
+<nav>
+  <a href="index.html" class="nav-brand">padhIQ</a>
+  <div class="nav-breadcrumb">MISSION_CONTROL / <span>STUDENT_DASHBOARD</span></div>
+  <div class="nav-time" id="navTime"></div>
   <div id="navAuth"></div>
 </nav>
-<div class="back-home-bar">
-  <a href="javascript:history.back()" class="back-btn">← Back</a>
-  <a href="index.html" class="back-btn back-btn-home">🏠 Home</a>
+
+<div class="mc-layout">
+  <!-- SIDEBAR -->
+  <div class="mc-sidebar">
+    <div class="sb-section">
+      <div class="sb-section-label">Navigation</div>
+      <a href="index.html" class="sb-item"><span class="sb-dot"></span>Home Base</a>
+      <a href="dashboard.html" class="sb-item active"><span class="sb-dot"></span>Dashboard</a>
+      <a href="study-guide.html" class="sb-item"><span class="sb-dot"></span>VidyaBot</a>
+      <a href="gamified.html" class="sb-item"><span class="sb-dot"></span>XP Arena</a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-label">Tools</div>
+      <a href="doubt-solver.html" class="sb-item"><span class="sb-dot"></span>SnapSolve</a>
+      <a href="exam-predictor.html" class="sb-item"><span class="sb-dot"></span>BhavisyaAI</a>
+      <a href="study-planner.html" class="sb-item"><span class="sb-dot"></span>CalendarAI</a>
+      <a href="resources.html" class="sb-item"><span class="sb-dot"></span>Resources</a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-label">Community</div>
+      <a href="marketplace.html" class="sb-item"><span class="sb-dot"></span>Bazaar</a>
+      <a href="about.html" class="sb-item"><span class="sb-dot"></span>Project AAA</a>
+    </div>
+    <div class="sb-footer">
+      <div class="sb-status"><span class="status-ok"></span>All systems operational</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="mc-main">
+    <!-- Header -->
+    <div class="term-header">
+      <div class="th-left">
+        <div class="th-prompt">> STUDENT_PROFILE / MISSION_STATUS</div>
+        <div class="th-title">Mission Control</div>
+        <div class="th-sub" id="dashSubtitle">Loading student data...</div>
+      </div>
+      <div class="th-right">
+        <div class="indicator"><span class="ind-dot"></span>LIVE</div>
+        <div class="indicator" style="border-color:rgba(255,204,0,.15);color:var(--warn)">⚠ BOARDS APPROACHING</div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <a href="study-guide.html" class="qa-btn"><span class="qa-icon">🤖</span><span class="qa-label">Ask VidyaBot</span></a>
+      <a href="gamified.html" class="qa-btn"><span class="qa-icon">🎮</span><span class="qa-label">Daily Quiz</span></a>
+      <a href="study-planner.html" class="qa-btn"><span class="qa-icon">📅</span><span class="qa-label">Study Plan</span></a>
+      <a href="resources.html" class="qa-btn"><span class="qa-icon">📚</span><span class="qa-label">Resources</span></a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-grid">
+      <div class="stat-tile">
+        <div class="st-label">🔥 Day Streak</div>
+        <div class="st-val" id="streakVal">0</div>
+        <div class="st-sub">days consecutive</div>
+        <div class="st-delta up" id="streakDelta">Active today</div>
+      </div>
+      <div class="stat-tile">
+        <div class="st-label">🧠 Questions Asked</div>
+        <div class="st-val" id="qaskedVal">0</div>
+        <div class="st-sub">total interactions</div>
+        <div class="st-delta up" id="qaskedDelta">Keep going</div>
+      </div>
+      <div class="stat-tile">
+        <div class="st-label">📅 Study Sessions</div>
+        <div class="st-val" id="sessVal">0</div>
+        <div class="st-sub">sessions logged</div>
+        <div class="st-delta up">This week</div>
+      </div>
+      <div class="stat-tile">
+        <div class="st-label">⭐ Top Subject</div>
+        <div class="st-val" id="topSubVal" style="font-size:1rem;padding-top:.4rem;">—</div>
+        <div class="st-sub">most studied</div>
+        <div class="st-delta" id="topSubDelta">Based on activity</div>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="charts-row">
+      <div class="chart-tile">
+        <div class="ct-title">> SUBJECT_BREAKDOWN / ACTIVITY_MAP</div>
+        <div id="subjBars"></div>
+      </div>
+      <div class="chart-tile">
+        <div class="ct-title">> PERFORMANCE_INDEX / WEEK</div>
+        <canvas id="perfChart" height="140"></canvas>
+      </div>
+    </div>
+
+    <!-- Activity log -->
+    <div class="activity-tile">
+      <div class="ct-title">> SYSTEM_LOG / RECENT_ACTIVITY</div>
+      <div id="activityLog"></div>
+    </div>
+
+    <!-- Badges -->
+    <div class="chart-tile" style="margin-bottom:1.5rem;">
+      <div class="ct-title">> ACHIEVEMENT_REGISTRY / BADGES</div>
+      <div class="badges-grid" style="margin-top:1rem;" id="badgesGrid"></div>
+    </div>
+  </div>
 </div>
-<div class="stars" id="stars"></div>
-<div class="nebula"></div>
-<div class="grid-overlay"></div>
-<div class="meteor-container" id="meteorContainer"></div>
 
-
-
-<!-- HERO -->
-<div class="page-hero" style="padding-bottom:1.5rem">
-  <div class="page-hero-icon">📊</div>
-  <div class="page-label">STUDENT DASHBOARD</div>
-  <h1 class="page-title" id="dashTitle">My <span class="accent-cyan">Progress</span></h1>
-  <p class="page-sub" id="dashSub">Track your streak, subject performance and study history.</p>
-</div>
-
-<div class="dash-wrap">
-
-  <!-- STAT CARDS -->
-  <div class="stat-grid" id="statGrid">
-    <div class="stat-card c1"><div class="stat-icon">🔥</div><div class="stat-num" id="sStreak">0</div><div class="stat-lbl">Day Streak</div></div>
-    <div class="stat-card c2"><div class="stat-icon">🧠</div><div class="stat-num" id="sQuestions">0</div><div class="stat-lbl">Questions Asked</div></div>
-    <div class="stat-card c3"><div class="stat-icon">📅</div><div class="stat-num" id="sSessions">0</div><div class="stat-lbl">Study Sessions</div></div>
-    <div class="stat-card c4"><div class="stat-icon">⭐</div><div class="stat-num small" id="sTopSub">—</div><div class="stat-lbl">Top Subject</div></div>
-  </div>
-
-  <!-- SUBJECT BREAKDOWN -->
-  <div class="dash-section">
-    <h2>📚 Subject Breakdown</h2>
-    <div class="subject-card" id="subjectCard">
-      <div class="empty-state"><div class="ei">📚</div><p>Ask questions in the AI Study Guide — your subject stats will show here.</p></div>
-    </div>
-  </div>
-
-  <!-- ACHIEVEMENTS -->
-  <div class="dash-section">
-    <h2>🏆 Achievements</h2>
-    <div class="badge-grid" id="badgeGrid">
-      <div class="badge" id="b1"><span class="badge-icon">🌱</span> First Question</div>
-      <div class="badge" id="b2"><span class="badge-icon">🔥</span> 3-Day Streak</div>
-      <div class="badge" id="b3"><span class="badge-icon">⚡</span> 10 Questions</div>
-      <div class="badge" id="b4"><span class="badge-icon">🎯</span> 25 Questions</div>
-      <div class="badge" id="b5"><span class="badge-icon">🧪</span> 3 Subjects Explored</div>
-      <div class="badge" id="b6"><span class="badge-icon">🚀</span> 7-Day Streak</div>
-      <div class="badge" id="b7"><span class="badge-icon">💯</span> 50 Questions</div>
-      <div class="badge" id="b8"><span class="badge-icon">🏆</span> 100 Questions</div>
-    </div>
-  </div>
-
-  <!-- RECENT TOPICS -->
-  <div class="dash-section">
-    <h2>🕐 Recent Activity</h2>
-    <div class="topic-list" id="topicList">
-      <div class="empty-state"><div class="ei">🕐</div><p>Your recent questions will appear here.</p></div>
-    </div>
-  </div>
-
-  <!-- QUICK ACTIONS -->
-  <div class="dash-section">
-    <h2>⚡ Keep the Streak Going</h2>
-    <div class="action-grid">
-      <a href="study-guide.html" class="action-card" style="animation-delay:.05s"><span class="action-icon">🤖</span>Ask AI Tutor</a>
-      <a href="ai-tools.html"    class="action-card" style="animation-delay:.1s" ><span class="action-icon">⚡</span>AI Tools</a>
-      <a href="resources.html"   class="action-card" style="animation-delay:.15s"><span class="action-icon">📚</span>Free Resources</a>
-      <a href="marketplace.html" class="action-card" style="animation-delay:.2s" ><span class="action-icon">🛒</span>Marketplace</a>
-    </div>
-  </div>
-
-  <!-- RESET -->
-  <div style="text-align:center;padding:3rem 0 0">
-    <button class="reset-btn" onclick="resetProg()">Reset Progress Data</button>
-  </div>
-
-</div><!-- /dash-wrap -->
-
-<script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
 <script>
-initNavAuth();
+if(typeof initNavAuth==='function') initNavAuth();
 
-function loadDash() {
-  const d = Progress.load();
+// Live clock
+(function tick(){
+  const el=document.getElementById('navTime');
+  if(el){const n=new Date();el.textContent=n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+  setTimeout(tick,1000);
+})();
 
-  // Stats
-  document.getElementById('sStreak').textContent    = d.streak.count;
-  document.getElementById('sQuestions').textContent = d.questionsAsked;
-  document.getElementById('sSessions').textContent  = Math.max(d.totalSessions, d.questionsAsked > 0 ? 1 : 0);
-  const top = Progress.getTopSubject(d);
-  document.getElementById('sTopSub').textContent    = top || '—';
+// Load progress
+const Progress={
+  load(){try{return JSON.parse(localStorage.getItem('padhiq_progress')||'null');}catch(e){return null;}},
+  getTopSubject(d){if(!d||!d.subjects)return'—';const s=d.subjects;return Object.keys(s).sort((a,b)=>s[b]-s[a])[0]||'—';}
+};
+const data=Progress.load();
+const streak=data?.streak||0, questions=data?.totalQuestions||0, sessions=data?.sessions||0;
+const topSub=Progress.getTopSubject(data);
 
-  // Hero sub
-  if (d.questionsAsked > 0) {
-    document.getElementById('dashSub').textContent =
-      `🔥 ${d.streak.count}-day streak · 🧠 ${d.questionsAsked} questions asked · Keep it up!`;
-  }
+document.getElementById('streakVal').textContent=streak;
+document.getElementById('qaskedVal').textContent=questions;
+document.getElementById('sessVal').textContent=sessions;
+document.getElementById('topSubVal').textContent=topSub;
+document.getElementById('dashSubtitle').textContent=`Student · ${questions} questions asked · Last active: ${data?.lastDate||'Never'}`;
+document.getElementById('streakDelta').textContent=streak>0?`${streak} day${streak>1?'s':''} strong`:'Start today!';
 
-  // Subject bars
-  const subjs = Object.entries(d.subjects).filter(([,v])=>v>0).sort(([,a],[,b])=>b-a);
-  if (subjs.length > 0) {
-    const maxV = subjs[0][1];
-    document.getElementById('subjectCard').innerHTML = subjs.map(([name,count])=>{
-      const pct = Math.round((count/maxV)*100);
-      return `<div class="subj-row">
-        <div class="subj-name">${name}</div>
-        <div class="subj-bar-wrap"><div class="subj-bar" data-pct="${pct}"></div></div>
-        <div class="subj-count">${count}Q</div>
-      </div>`;
-    }).join('');
-    setTimeout(()=>{
-      document.querySelectorAll('.subj-bar').forEach(b=>b.style.width=b.dataset.pct+'%');
-    }, 200);
-  }
-
-  // Achievements
-  const q  = d.questionsAsked;
-  const str= d.streak.count;
-  const subs = Object.values(d.subjects).filter(v=>v>0).length;
-  if(q>=1)   document.getElementById('b1').classList.add('earned');
-  if(str>=3)  document.getElementById('b2').classList.add('earned');
-  if(q>=10)  document.getElementById('b3').classList.add('earned');
-  if(q>=25)  document.getElementById('b4').classList.add('earned');
-  if(subs>=3) document.getElementById('b5').classList.add('earned');
-  if(str>=7)  document.getElementById('b6').classList.add('earned');
-  if(q>=50)  document.getElementById('b7').classList.add('earned');
-  if(q>=100) document.getElementById('b8').classList.add('earned');
-
-  // Recent topics
-  if (d.recentTopics && d.recentTopics.length > 0) {
-    document.getElementById('topicList').innerHTML = d.recentTopics.map(t => {
-      const subj = Progress.detectSubject(t);
-      return `<div class="topic-item">
-        <div class="topic-dot"></div>
-        <span style="flex:1">${t}…</span>
-        <span class="topic-subj">${subj}</span>
-      </div>`;
-    }).join('');
-  }
+// Subject bars
+const subjects=['Physics','Chemistry','Biology','Maths','History','Geography','English'];
+const subjectData=data?.subjects||{};
+const bars=document.getElementById('subjBars');
+if(bars){
+  const max=Math.max(...subjects.map(s=>subjectData[s]||0),1);
+  bars.innerHTML=subjects.map(s=>{
+    const val=subjectData[s]||0;
+    const pct=Math.round((val/max)*100);
+    return `<div class="subj-bar">
+      <div class="sb-name">${s}</div>
+      <div class="sb-track"><div class="sb-fill" style="width:${pct}%"></div></div>
+      <div class="sb-pct">${val}</div>
+    </div>`;
+  }).join('');
 }
 
-function resetProg() {
-  if(confirm('Reset all progress? This cannot be undone.')) {
-    localStorage.removeItem('padhiq_progress');
-    location.reload();
+// Performance chart (simple canvas)
+(function(){
+  const c=document.getElementById('perfChart');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  c.width=c.parentElement.clientWidth-40;
+  const pts=Array.from({length:7},()=>Math.random()*80+10);
+  const max=Math.max(...pts);
+  const w=c.width,h=c.height,pad=10;
+  ctx.clearRect(0,0,w,h);
+  // Grid lines
+  for(let i=0;i<=4;i++){
+    const y=pad+(h-2*pad)*(i/4);
+    ctx.strokeStyle='rgba(0,255,102,.06)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(w-pad,y); ctx.stroke();
   }
-}
+  // Line
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  ctx.beginPath();
+  pts.forEach((p,i)=>{
+    const x=pad+(w-2*pad)*(i/(pts.length-1));
+    const y=h-pad-(h-2*pad)*(p/max);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    // dot
+    ctx.save();
+    ctx.fillStyle='rgba(0,255,102,.8)'; ctx.shadowColor='#00ff66'; ctx.shadowBlur=8;
+    ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+    // label
+    ctx.fillStyle='rgba(0,200,80,.4)'; ctx.font='9px JetBrains Mono'; ctx.textAlign='center';
+    ctx.fillText(days[i],x,h-1);
+  });
+  ctx.strokeStyle='#00cc44'; ctx.lineWidth=1.5;
+  ctx.shadowColor='#00ff66'; ctx.shadowBlur=6; ctx.stroke();
+})();
 
-loadDash();
-</script>
-<script>
-window.addEventListener('scroll', () => {
-  document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 20);
-});
+// Activity log
+const activities=[
+  {time:'2h',color:'var(--g1)',msg:'Asked VidyaBot about Newton's 3rd Law',tag:'AI',tagCls:'tag-ai'},
+  {time:'5h',color:'var(--warn)',msg:'Completed daily quiz — scored 4/5',tag:'QUIZ',tagCls:'tag-quiz'},
+  {time:'1d',color:'var(--g2)',msg:'Opened study session: Physics Chapter 3',tag:'AI',tagCls:'tag-ai'},
+  {time:'1d',color:'#d4881a',msg:'Viewed listing on Bazaar marketplace',tag:'MKT',tagCls:'tag-mkt'},
+  {time:'2d',color:'var(--g1)',msg:'Asked VidyaBot about Photosynthesis process',tag:'AI',tagCls:'tag-ai'},
+];
+const log=document.getElementById('activityLog');
+if(log) log.innerHTML=activities.map(a=>`
+<div class="act-item">
+  <div class="act-time">${a.time} ago</div>
+  <div class="act-dot" style="background:${a.color};box-shadow:0 0 5px ${a.color}"></div>
+  <div class="act-msg">${a.msg}<span class="act-tag ${a.tagCls}">${a.tag}</span></div>
+</div>`).join('');
+
+// Badges
+const badges=[
+  {icon:'🔥',name:'Streak Master',sub:'7 day streak',earned:streak>=7},
+  {icon:'🧠',name:'Curious Mind',sub:'10 questions',earned:questions>=10},
+  {icon:'📚',name:'Book Worm',sub:'25 questions',earned:questions>=25},
+  {icon:'⚡',name:'Speed Learner',sub:'50 questions',earned:questions>=50},
+  {icon:'🎮',name:'Quiz Ace',sub:'Win a quiz',earned:false},
+  {icon:'🌟',name:'All-Rounder',sub:'5 subjects',earned:Object.keys(data?.subjects||{}).length>=5},
+  {icon:'🏆',name:'Top Student',sub:'Leaderboard',earned:false},
+  {icon:'💯',name:'Perfect Round',sub:'5/5 quiz',earned:false},
+];
+const bg=document.getElementById('badgesGrid');
+if(bg) bg.innerHTML=badges.map(b=>`
+<div class="badge-item ${b.earned?'earned':'locked'}">
+  <span class="bi-icon">${b.icon}</span>
+  <div class="bi-name">${b.name}</div>
+  <div class="bi-sub">${b.sub}</div>
+</div>`).join('');
 </script>
 </body>
 </html>

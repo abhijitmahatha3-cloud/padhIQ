@@ -3,512 +3,545 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gamified Learning — padhIQ</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="pages.css">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<title>XP Arena — Gamified Learning · padhIQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-.game-wrap { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+/* ══ ARCADE NEON THEME ═══════════════════════════════
+   Concept: Retro-futuristic arcade. Hot pink + cyan.
+   Palette: #08001a bg · #ff0099 hot pink · #00ffff cyan
+            #ff6600 orange · #cc00ff purple
+   Fonts: Orbitron everywhere — game console feel
+   ═══════════════════════════════════════════════════ */
+:root{
+  --bg:#07001a; --bg2:#0f0028; --bg3:#160035;
+  --pink:#ff0099; --cyan:#00ffff; --oran:#ff6600; --purp:#cc00ff;
+  --text:#fff; --muted:#8060b0; --border:rgba(255,0,153,.1);
+  --card:rgba(15,0,40,.9);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Orbitron',monospace;min-height:100vh;overflow-x:hidden;}
 
-/* PLAYER CARD */
-.player-card {
-  background: linear-gradient(135deg, rgba(0,240,255,0.06), rgba(0,100,255,0.04));
-  border: 1px solid rgba(0,240,255,0.2);
-  border-radius: 20px; padding: 1.75rem;
-  margin-bottom: 2rem; position: relative; overflow: hidden;
-}
-.player-card::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 80% 50%, rgba(0,240,255,0.05), transparent 70%);
-}
-.player-top { display: flex; align-items: center; gap: 1.25rem; position: relative; }
-.player-avatar {
-  width: 64px; height: 64px; border-radius: 50%;
-  background: linear-gradient(135deg, rgba(0,240,255,0.2), rgba(0,100,255,0.1));
-  border: 2px solid rgba(0,240,255,0.3);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.8rem; flex-shrink: 0;
-}
-.player-info { flex: 1; }
-.player-name { font-family: 'Orbitron', monospace; font-size: 1.1rem; color: #fff; font-weight: 700; }
-.player-level { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--cyan); margin-top: 2px; }
-.player-xp-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
-.xp-bar-wrap { flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
-.xp-bar { height: 100%; background: linear-gradient(90deg, var(--cyan), #00aaff); border-radius: 3px; transition: width 1s ease; }
-.xp-text { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); white-space: nowrap; }
-.player-stats { display: flex; gap: 1.5rem; margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid rgba(255,255,255,0.07); position: relative; }
-.pstat { text-align: center; }
-.pstat-val { font-family: 'Orbitron', monospace; font-size: 1.1rem; color: #fff; font-weight: 700; }
-.pstat-label { font-size: 0.68rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
-.streak-badge {
-  position: absolute; top: 0; right: 0;
-  background: linear-gradient(135deg, rgba(255,120,0,0.15), rgba(255,60,0,0.1));
-  border: 1px solid rgba(255,120,0,0.3);
-  border-radius: 10px; padding: 0.5rem 0.9rem; text-align: center;
-}
-.streak-fire { font-size: 1.4rem; }
-.streak-num { font-family: 'Orbitron', monospace; font-size: 1rem; color: #ff7800; font-weight: 700; }
-.streak-txt { font-size: 0.65rem; color: rgba(255,120,0,0.7); font-family: 'JetBrains Mono', monospace; }
+/* CRT vignette */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.7) 100%);}
 
-/* QUIZ SECTION */
-.section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
-.section-head-title { font-family: 'Orbitron', monospace; font-size: 0.78rem; letter-spacing: 0.15em; color: var(--cyan); }
-.section-head-xp { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: rgba(255,165,0,0.8); background: rgba(255,165,0,0.08); padding: 0.25rem 0.7rem; border-radius: 999px; border: 1px solid rgba(255,165,0,0.2); }
+/* Pixel grid background */
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,0,153,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,0,153,.025) 1px,transparent 1px);
+  background-size:32px 32px;}
 
-.quiz-card {
-  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px; padding: 1.75rem; margin-bottom: 2rem;
-}
-.quiz-subject-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
-.q-subj-btn { padding: 0.35rem 0.9rem; border-radius: 999px; border: 1px solid var(--border); background: var(--glass); color: var(--muted); font-size: 0.78rem; font-family: 'Syne', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.q-subj-btn.active, .q-subj-btn:hover { background: rgba(255,165,0,0.1); border-color: rgba(255,165,0,0.3); color: #ffa500; }
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 1.5rem;
+  background:rgba(7,0,26,.92);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,0,153,.15);}
+.nav-logo{font-weight:900;font-size:.95rem;color:var(--pink);
+  text-shadow:0 0 16px rgba(255,0,153,.7),0 0 32px rgba(255,0,153,.3);text-decoration:none;letter-spacing:3px;}
+.nav-links{display:flex;gap:.3rem;background:rgba(255,0,153,.04);
+  border:1px solid rgba(255,0,153,.12);border-radius:999px;padding:.22rem .32rem;}
+.nav-links a{font-size:.72rem;font-weight:600;color:rgba(255,255,255,.35);text-decoration:none;
+  padding:.3rem .7rem;border-radius:999px;transition:all .2s;letter-spacing:.05em;}
+.nav-links a:hover,.nav-links a.nav-active{color:#fff;background:rgba(255,0,153,.15);}
+.nav-right{display:flex;justify-content:flex-end;}
+#navAuth{display:flex;justify-content:flex-end;}
 
-.quiz-question { font-size: 1rem; color: #fff; font-weight: 600; margin-bottom: 1.25rem; line-height: 1.5; }
-.quiz-options { display: grid; gap: 0.6rem; margin-bottom: 1.25rem; }
-.quiz-opt {
-  padding: 0.8rem 1.1rem; border-radius: 10px;
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
-  color: #e2e8f0; font-size: 0.88rem; cursor: pointer; transition: all 0.25s;
-  display: flex; align-items: center; gap: 0.75rem;
-}
-.quiz-opt:hover:not(.locked) { border-color: rgba(255,165,0,0.4); background: rgba(255,165,0,0.05); }
-.quiz-opt.correct { background: rgba(0,255,100,0.08); border-color: rgba(0,255,100,0.4); color: #00d96b; }
-.quiz-opt.wrong { background: rgba(255,80,80,0.08); border-color: rgba(255,80,80,0.3); color: #ff5050; }
-.opt-letter { min-width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 700; }
+/* MAIN */
+main{position:relative;z-index:2;max-width:960px;margin:0 auto;padding:76px 1.5rem 3rem;}
 
-.quiz-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
-.quiz-feedback { font-size: 0.85rem; color: var(--muted); min-height: 20px; }
-.quiz-feedback.correct-fb { color: #00d96b; }
-.quiz-feedback.wrong-fb { color: #ff5050; }
-.next-btn { padding: 0.65rem 1.5rem; border-radius: 10px; background: linear-gradient(135deg, rgba(255,165,0,0.15), rgba(255,120,0,0.08)); border: 1px solid rgba(255,165,0,0.3); color: #ffa500; font-family: 'Orbitron', monospace; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; display: none; }
-.next-btn:hover { background: rgba(255,165,0,0.2); transform: translateY(-1px); }
-.next-btn.show { display: block; }
+/* ARENA HEADER */
+.arena-header{text-align:center;padding:2rem 0;animation:fadeUp .8s .2s both;}
+.ah-badge{display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(255,0,153,.06);border:1px solid rgba(255,0,153,.2);
+  color:var(--pink);font-size:.58rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  padding:.38rem 1rem;border-radius:4px;margin-bottom:1.5rem;
+  box-shadow:0 0 16px rgba(255,0,153,.1);}
+.ah-title{font-weight:900;font-size:clamp(2.5rem,7vw,5rem);line-height:1;margin-bottom:.5rem;letter-spacing:.05em;}
+.ah-pink{color:var(--pink);text-shadow:0 0 40px rgba(255,0,153,.6),0 0 80px rgba(255,0,153,.2);}
+.ah-cyan{color:var(--cyan);text-shadow:0 0 40px rgba(0,255,255,.6),0 0 80px rgba(0,255,255,.2);}
+.ah-sub{font-family:'Syne',sans-serif;font-size:.9rem;color:var(--muted);max-width:460px;margin:0 auto;line-height:1.7;}
 
-/* XP POPUP */
-.xp-popup {
-  position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0);
-  background: linear-gradient(135deg, rgba(0,240,255,0.15), rgba(0,100,255,0.1));
-  border: 2px solid rgba(0,240,255,0.5);
-  border-radius: 20px; padding: 2rem 3rem;
-  text-align: center; z-index: 1000;
-  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-  pointer-events: none;
-}
-.xp-popup.show { transform: translate(-50%,-50%) scale(1); }
-.xp-popup-val { font-family: 'Orbitron', monospace; font-size: 2.5rem; color: var(--cyan); font-weight: 900; }
-.xp-popup-label { font-size: 0.9rem; color: #e2e8f0; margin-top: 0.25rem; }
+/* XP BAR */
+.xp-display{
+  background:var(--card);border:1px solid rgba(255,0,153,.14);border-radius:16px;
+  padding:1.4rem 1.8rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:2rem;
+  box-shadow:0 0 40px rgba(255,0,153,.06);}
+.xp-avatar{width:56px;height:56px;border-radius:12px;background:rgba(255,0,153,.12);
+  border:2px solid rgba(255,0,153,.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;
+  box-shadow:0 0 20px rgba(255,0,153,.2);}
+.xp-name{font-size:.88rem;font-weight:700;color:#fff;margin-bottom:.2rem;}
+.xp-sub{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);}
+.xp-bar-wrap{flex:1;}
+.xp-bar-label{display:flex;justify-content:space-between;margin-bottom:.4rem;}
+.xbl-txt{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);}
+.xbl-val{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--pink);}
+.xp-track{height:8px;background:rgba(255,0,153,.08);border-radius:999px;overflow:hidden;}
+.xp-fill{height:100%;border-radius:999px;transition:width 1s;
+  background:linear-gradient(90deg,var(--pink),var(--cyan));
+  box-shadow:0 0 12px rgba(255,0,153,.5);}
+.xp-badges{display:flex;gap:.4rem;}
+.xb{padding:.22rem .55rem;border-radius:4px;font-size:.56rem;font-weight:700;letter-spacing:.08em;}
+.xb-pink{background:rgba(255,0,153,.12);color:var(--pink);border:1px solid rgba(255,0,153,.25);}
+.xb-cyan{background:rgba(0,255,255,.08);color:var(--cyan);border:1px solid rgba(0,255,255,.2);}
 
-/* BADGES */
-.badges-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: 0.75rem; margin-bottom: 2rem; }
-.badge-item {
-  padding: 1.1rem 0.75rem; border-radius: 14px; text-align: center;
-  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
-  transition: all 0.3s;
-}
-.badge-item.earned { background: rgba(255,215,0,0.06); border-color: rgba(255,215,0,0.25); }
-.badge-item.locked { opacity: 0.35; filter: grayscale(80%); }
-.badge-icon { font-size: 2rem; margin-bottom: 0.4rem; }
-.badge-name { font-size: 0.75rem; color: #e2e8f0; font-weight: 600; font-family: 'Syne', sans-serif; }
-.badge-desc { font-size: 0.65rem; color: var(--muted); margin-top: 0.2rem; }
+/* SUBJECT SELECT */
+.subject-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.6rem;margin-bottom:1.5rem;}
+.subj-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:.75rem;text-align:center;cursor:pointer;transition:all .25s;
+  display:flex;flex-direction:column;align-items:center;gap:.35rem;}
+.subj-btn:hover{border-color:rgba(255,0,153,.3);background:rgba(255,0,153,.06);}
+.subj-btn.selected{border-color:var(--pink);background:rgba(255,0,153,.1);
+  box-shadow:0 0 16px rgba(255,0,153,.15);}
+.subj-ico{font-size:1.6rem;}
+.subj-lbl{font-size:.62rem;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.6);}
+.subj-btn.selected .subj-lbl{color:var(--pink);}
+
+/* QUIZ ARENA */
+.quiz-arena{background:var(--card);border:1px solid rgba(255,0,153,.14);border-radius:18px;
+  overflow:hidden;box-shadow:0 0 60px rgba(255,0,153,.05),0 40px 60px rgba(0,0,0,.5);
+  margin-bottom:1.5rem;}
+.qa-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.4rem;
+  border-bottom:1px solid rgba(255,0,153,.08);background:rgba(255,0,153,.04);}
+.qa-prog{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);}
+.qa-timer{font-weight:700;font-size:.9rem;color:var(--cyan);
+  text-shadow:0 0 10px rgba(0,255,255,.4);animation:timerTick 1s infinite;}
+@keyframes timerTick{0%,100%{opacity:1}50%{opacity:.7}}
+.qa-score{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--pink);}
+
+.qa-body{padding:1.5rem;}
+.q-label{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.18em;
+  color:var(--pink);text-transform:uppercase;margin-bottom:.75rem;}
+.q-text{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:#fff;
+  line-height:1.6;margin-bottom:1.5rem;min-height:60px;}
+.q-options{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:1.5rem;}
+.q-opt{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;padding:.85rem 1rem;cursor:pointer;transition:all .2s;
+  font-family:'Syne',sans-serif;font-size:.84rem;color:rgba(255,255,255,.75);
+  display:flex;align-items:center;gap:.6rem;}
+.q-opt:hover{border-color:rgba(255,0,153,.3);background:rgba(255,0,153,.06);color:#fff;}
+.q-opt.selected{border-color:var(--pink);background:rgba(255,0,153,.12);color:#fff;}
+.q-opt.correct{border-color:var(--cyan);background:rgba(0,255,255,.1);color:var(--cyan);}
+.q-opt.wrong{border-color:#ff4444;background:rgba(255,68,68,.08);color:#ff4444;}
+.q-opt-letter{width:24px;height:24px;border-radius:4px;background:rgba(255,0,153,.1);
+  border:1px solid rgba(255,0,153,.2);display:flex;align-items:center;justify-content:center;
+  font-size:.68rem;font-weight:700;color:var(--pink);flex-shrink:0;}
+.q-opt.correct .q-opt-letter{background:rgba(0,255,255,.15);border-color:rgba(0,255,255,.3);color:var(--cyan);}
+.q-opt.wrong   .q-opt-letter{background:rgba(255,68,68,.15);border-color:rgba(255,68,68,.3);color:#ff4444;}
+
+.q-feedback{padding:.85rem 1rem;border-radius:10px;font-family:'Syne',sans-serif;
+  font-size:.83rem;line-height:1.6;display:none;margin-bottom:1rem;}
+.q-feedback.show{display:block;}
+.q-feedback.correct{background:rgba(0,255,255,.06);border:1px solid rgba(0,255,255,.15);color:rgba(200,255,255,.85);}
+.q-feedback.wrong{background:rgba(255,68,68,.06);border:1px solid rgba(255,68,68,.15);color:rgba(255,200,200,.85);}
+
+.q-next{background:linear-gradient(135deg,var(--pink),var(--purp));color:#fff;
+  border:none;padding:.8rem 2rem;border-radius:10px;font-family:'Orbitron',monospace;
+  font-weight:700;font-size:.8rem;cursor:pointer;transition:all .2s;letter-spacing:.08em;}
+.q-next:hover{box-shadow:0 0 24px rgba(255,0,153,.4);transform:translateY(-1px);}
+.q-next:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+/* Progress track */
+.prog-track{display:flex;gap:.4rem;padding:0 1.4rem 1rem;}
+.prog-dot{flex:1;height:4px;border-radius:999px;background:rgba(255,255,255,.06);}
+.prog-dot.done{background:var(--pink);box-shadow:0 0 6px rgba(255,0,153,.5);}
+.prog-dot.current{background:rgba(255,0,153,.4);}
 
 /* LEADERBOARD */
-.leaderboard { margin-bottom: 2rem; }
-.lb-row {
-  display: flex; align-items: center; gap: 1rem; padding: 0.85rem 1rem;
-  border-radius: 12px; margin-bottom: 0.5rem;
-  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
-  transition: all 0.2s;
+.lb-section{background:var(--card);border:1px solid rgba(0,255,255,.1);border-radius:18px;padding:1.4rem;
+  box-shadow:0 0 40px rgba(0,255,255,.03);}
+.lb-title{font-size:.72rem;font-weight:700;letter-spacing:.18em;color:var(--cyan);
+  text-shadow:0 0 10px rgba(0,255,255,.4);margin-bottom:1.1rem;display:flex;align-items:center;gap:.6rem;}
+.lb-title::before{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);}
+.lb-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--cyan));}
+.lb-row{display:grid;grid-template-columns:28px 1fr auto auto;gap:.75rem;align-items:center;
+  padding:.6rem .5rem;border-bottom:1px solid rgba(255,255,255,.04);border-radius:6px;transition:background .2s;}
+.lb-row:hover{background:rgba(0,255,255,.03);}
+.lb-row:last-child{border-bottom:none;}
+.lb-row.you{background:rgba(255,0,153,.06);border-color:rgba(255,0,153,.1);}
+.lb-rank{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;
+  text-align:center;color:var(--muted);}
+.lb-rank.top1{color:#ffd700;text-shadow:0 0 8px rgba(255,215,0,.5);}
+.lb-rank.top2{color:#c0c0c0;}
+.lb-rank.top3{color:#cd7f32;}
+.lb-name{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;color:rgba(255,255,255,.75);}
+.lb-row.you .lb-name{color:var(--pink);}
+.lb-you-badge{display:inline-block;font-size:.52rem;font-weight:700;padding:.1rem .35rem;
+  border-radius:3px;background:rgba(255,0,153,.15);color:var(--pink);border:1px solid rgba(255,0,153,.25);margin-left:.4rem;}
+.lb-solved{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);}
+.lb-xp{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--pink);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@media(max-width:600px){
+  .q-options{grid-template-columns:1fr;}
+  .subject-grid{grid-template-columns:repeat(3,1fr);}
+  .xp-display{flex-wrap:wrap;}
 }
-.lb-row.you { background: rgba(0,240,255,0.05); border-color: rgba(0,240,255,0.2); }
-.lb-rank { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 700; min-width: 24px; text-align: center; }
-.lb-rank.gold { color: #ffd700; }
-.lb-rank.silver { color: #c0c0c0; }
-.lb-rank.bronze { color: #cd7f32; }
-.lb-avatar { font-size: 1.2rem; }
-.lb-name { flex: 1; color: #e2e8f0; font-size: 0.88rem; font-weight: 600; }
-.lb-xp { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--cyan); }
 </style>
 </head>
 <body>
 
-<nav class="navbar">
-  <a href="index.html" class="nav-logo">AAA</a>
+<nav>
+  <a href="index.html" class="nav-logo">XP ARENA</a>
   <div class="nav-links">
     <a href="resources.html">Resources</a>
-    <a href="ai-tools.html">AI Tools</a>
+    <a href="ai-tools.html" class="nav-active">AI Tools</a>
     <a href="marketplace.html">Marketplace</a>
     <a href="about.html">About</a>
   </div>
-  <div id="navAuth"></div>
+  <div class="nav-right" id="navAuth"></div>
 </nav>
-<div class="back-home-bar">
-  <a href="javascript:history.back()" class="back-btn">← Back</a>
-  <a href="index.html" class="back-btn back-btn-home">🏠 Home</a>
-</div>
-<div class="stars" id="stars"></div>
-<div class="nebula"></div>
-<div class="grid-overlay"></div>
 
-<!-- XP Popup -->
-<div class="xp-popup" id="xpPopup">
-  <div class="xp-popup-val" id="xpPopupVal">+5 XP</div>
-  <div class="xp-popup-label" id="xpPopupLabel">Correct Answer!</div>
-</div>
+<main>
+  <div class="arena-header">
+    <div class="ah-badge">⚡ LIVE ARENA · AI QUIZZES · GLOBAL LEADERBOARD</div>
+    <h1 class="ah-title"><span class="ah-pink">XP</span> <span class="ah-cyan">ARENA</span></h1>
+    <p class="ah-sub">Daily AI-generated quizzes. Real XP points. Compete with students across India. Fresh questions every day.</p>
+  </div>
 
-
-
-<div class="page-hero" style="padding-bottom:2rem;">
-  <div class="page-hero-icon">🎮</div>
-  <div class="page-label">GAMIFIED LEARNING</div>
-  <h1 class="page-title">Study. <span class="accent-cyan">Level Up.</span> Win.</h1>
-  <p class="page-sub">Earn XP, unlock badges, build streaks. Turn studying into a game you actually want to play.</p>
-</div>
-
-<div class="game-wrap">
-
-  <!-- Player Card -->
-  <div class="player-card">
-    <div class="player-top">
-      <div class="player-avatar" id="playerAvatarEl">🧑‍🎓</div>
-      <div class="player-info">
-        <div class="player-name" id="playerNameEl">Student</div>
-        <div class="player-level" id="playerLevelEl">Level 1 · Rookie Scholar</div>
-        <div class="player-xp-row">
-          <div class="xp-bar-wrap"><div class="xp-bar" id="xpBar" style="width:0%"></div></div>
-          <span class="xp-text" id="xpText">0 / 100 XP</span>
-        </div>
+  <!-- XP Display -->
+  <div class="xp-display">
+    <div class="xp-avatar">⚡</div>
+    <div>
+      <div class="xp-name" id="playerName">Player</div>
+      <div class="xp-sub" id="playerSub">Level 1 · Just getting started</div>
+    </div>
+    <div class="xp-bar-wrap">
+      <div class="xp-bar-label">
+        <span class="xbl-txt">XP PROGRESS</span>
+        <span class="xbl-val" id="xpValLabel">0 / 100 XP</span>
       </div>
-      <div class="streak-badge">
-        <div class="streak-fire">🔥</div>
-        <div class="streak-num" id="streakNum">0</div>
-        <div class="streak-txt">day streak</div>
+      <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+    </div>
+    <div class="xp-badges">
+      <span class="xb xb-pink" id="streakBadge">🔥 0 STREAK</span>
+      <span class="xb xb-cyan" id="solvedBadge">✓ 0 SOLVED</span>
+    </div>
+  </div>
+
+  <!-- Subject Select -->
+  <div style="margin-bottom:1rem;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.18em;color:var(--muted);">SELECT SUBJECT TO PLAY →</div>
+  <div class="subject-grid" id="subjectGrid">
+    <div class="subj-btn selected" onclick="selectSubj('Physics',this)"><span class="subj-ico">⚛️</span><span class="subj-lbl">PHYSICS</span></div>
+    <div class="subj-btn" onclick="selectSubj('Chemistry',this)"><span class="subj-ico">🧪</span><span class="subj-lbl">CHEM</span></div>
+    <div class="subj-btn" onclick="selectSubj('Biology',this)"><span class="subj-ico">🧬</span><span class="subj-lbl">BIO</span></div>
+    <div class="subj-btn" onclick="selectSubj('Maths',this)"><span class="subj-ico">📐</span><span class="subj-lbl">MATHS</span></div>
+    <div class="subj-btn" onclick="selectSubj('History',this)"><span class="subj-ico">🏛️</span><span class="subj-lbl">HISTORY</span></div>
+    <div class="subj-btn" onclick="selectSubj('Geography',this)"><span class="subj-ico">🌍</span><span class="subj-lbl">GEO</span></div>
+  </div>
+
+  <!-- Quiz Arena -->
+  <div class="quiz-arena" id="quizArena">
+    <div class="qa-head">
+      <span class="qa-prog" id="qaProg">Q 1 / 5</span>
+      <span class="qa-timer" id="qaTimer">⏱ --</span>
+      <span class="qa-score" id="qaScore">SCORE: 0</span>
+    </div>
+    <div class="prog-track" id="progTrack">
+      <div class="prog-dot current" id="pd0"></div>
+      <div class="prog-dot" id="pd1"></div>
+      <div class="prog-dot" id="pd2"></div>
+      <div class="prog-dot" id="pd3"></div>
+      <div class="prog-dot" id="pd4"></div>
+    </div>
+    <div class="qa-body">
+      <div class="q-label" id="qLabel">LOADING QUESTION...</div>
+      <div class="q-text" id="qText">
+        <span style="color:var(--muted);font-family:'Syne',sans-serif;font-size:.88rem">
+          Select a subject above and press Start Quiz to begin your daily challenge.
+        </span>
       </div>
-    </div>
-    <div class="player-stats">
-      <div class="pstat"><div class="pstat-val" id="totalXpEl">0</div><div class="pstat-label">TOTAL XP</div></div>
-      <div class="pstat"><div class="pstat-val" id="questionsEl">0</div><div class="pstat-label">SOLVED</div></div>
-      <div class="pstat"><div class="pstat-val" id="accuracyEl">0%</div><div class="pstat-label">ACCURACY</div></div>
-      <div class="pstat"><div class="pstat-val" id="badgesEl">0</div><div class="pstat-label">BADGES</div></div>
+      <div class="q-options" id="qOpts" style="display:none"></div>
+      <div class="q-feedback" id="qFeedback"></div>
+      <button class="q-next" id="qNext" onclick="handleNext()">START QUIZ ⚡</button>
     </div>
   </div>
-
-  <!-- Daily Quiz -->
-  <div class="section-head">
-    <div class="section-head-title">DAILY QUIZ CHALLENGE</div>
-    <div class="section-head-xp">+5 XP per correct answer</div>
-  </div>
-
-  <div class="quiz-card">
-    <div class="quiz-subject-row" id="quizSubjectRow">
-      <button class="q-subj-btn active" data-s="Science">🔬 Science</button>
-      <button class="q-subj-btn" data-s="Maths">📐 Maths</button>
-      <button class="q-subj-btn" data-s="Physics">⚡ Physics</button>
-      <button class="q-subj-btn" data-s="Chemistry">🧪 Chemistry</button>
-      <button class="q-subj-btn" data-s="History">📜 History</button>
-    </div>
-    <div id="quizQ" class="quiz-question">Loading question...</div>
-    <div id="quizOpts" class="quiz-options"></div>
-    <div class="quiz-footer">
-      <div class="quiz-feedback" id="quizFeedback"></div>
-      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
-    </div>
-  </div>
-
-  <!-- Badges -->
-  <div class="section-head">
-    <div class="section-head-title">YOUR BADGES</div>
-    <div class="section-head-xp" id="badgeCountEl">0 earned</div>
-  </div>
-  <div class="badges-grid" id="badgesGrid"></div>
 
   <!-- Leaderboard -->
-  <div class="section-head">
-    <div class="section-head-title">LEADERBOARD</div>
-    <div class="section-head-xp">This Week</div>
+  <div class="lb-section">
+    <div class="lb-title">GLOBAL LEADERBOARD</div>
+    <div id="lbBody">
+      <div style="font-family:'Syne',sans-serif;font-size:.8rem;color:var(--muted);text-align:center;padding:1rem">Loading leaderboard...</div>
+    </div>
   </div>
-  <div class="leaderboard" id="leaderboard"></div>
+</main>
 
-</div>
-
-<script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
 <script>
-(function initStars() {
-  const container = document.getElementById('stars');
-  if (!container) return;
-  const canvas = document.createElement('canvas');
-  canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
-  container.appendChild(canvas);
-  const ctx = canvas.getContext('2d');
-  let stars = [];
-  function resize() {
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight; stars = [];
-    for (let i = 0; i < 150; i++)
-      stars.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1.2+0.2, o:Math.random()*0.7+0.2, spd:Math.random()*0.003+0.001 });
-  }
-  function draw(t) {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    stars.forEach(s => {
-      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(255,255,255,${s.o*(0.8+0.2*Math.sin(t*s.spd*1000))})`; ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  }
-  window.addEventListener('resize', resize); resize(); requestAnimationFrame(draw);
-})();
+if(typeof initNavAuth==='function') initNavAuth();
+window.addEventListener('scroll',()=>document.querySelector('nav').style.borderBottomColor=window.scrollY>10?'rgba(255,0,153,.2)':'');
 
-// ─── GAME STATE ───────────────────────────────────────────────
-const LEVELS = [
-  {name:'Rookie Scholar', min:0, max:100, avatar:'🧑‍🎓'},
-  {name:'Smart Thinker', min:100, max:250, avatar:'🤓'},
-  {name:'Rising Star', min:250, max:500, avatar:'⭐'},
-  {name:'Knowledge Warrior', min:500, max:1000, avatar:'⚔️'},
-  {name:'Brain Master', min:1000, max:2000, avatar:'🧠'},
-  {name:'Legend Scholar', min:2000, max:Infinity, avatar:'🏆'},
-];
-
-const BADGES_DEF = [
-  {id:'first_q', icon:'🎯', name:'First Blood', desc:'Solve 1 question', cond: s => s.solved >= 1},
-  {id:'q10', icon:'🔟', name:'Ten Strong', desc:'Solve 10 questions', cond: s => s.solved >= 10},
-  {id:'q50', icon:'💪', name:'Fifty Fighter', desc:'Solve 50 questions', cond: s => s.solved >= 50},
-  {id:'streak3', icon:'🔥', name:'On Fire', desc:'3-day streak', cond: s => s.streak >= 3},
-  {id:'streak7', icon:'💥', name:'Week Warrior', desc:'7-day streak', cond: s => s.streak >= 7},
-  {id:'acc90', icon:'🎖️', name:'Sharpshooter', desc:'90% accuracy', cond: s => s.accuracy >= 90 && s.solved >= 5},
-  {id:'xp100', icon:'✨', name:'Century', desc:'Earn 100 XP', cond: s => s.totalXp >= 100},
-  {id:'xp500', icon:'🌟', name:'XP King', desc:'Earn 500 XP', cond: s => s.totalXp >= 500},
-  {id:'chapter', icon:'📖', name:'Chapter Pro', desc:'Complete a chapter', cond: s => s.chapters >= 1},
-  {id:'multi_sub', icon:'🌈', name:'All-Rounder', desc:'Try 3 subjects', cond: s => s.subjects?.size >= 3},
-];
-
-let state = JSON.parse(localStorage.getItem('padhiq_game') || 'null') || {
-  xp: 0, totalXp: 0, level: 0, solved: 0, correct: 0, streak: 0,
-  lastDate: null, badges: [], chapters: 0, subjects: []
+// State
+const state={
+  subject:'Physics', questions:[], current:0, score:0, answered:false,
+  started:false, xp:0, streak:0, solved:0, name:''
 };
-if (!Array.isArray(state.subjects)) state.subjects = [];
 
-let currentQ = null;
-let currentSubject = 'Science';
-let answered = false;
+// Load saved state
+try{
+  const saved=JSON.parse(localStorage.getItem('padhiq_game')||'null');
+  if(saved){state.xp=saved.xp||0;state.streak=saved.streak||0;state.solved=saved.solved||0;}
+  state.name=localStorage.getItem('padhiq_lb_name')||'Player';
+}catch(e){}
+updateXPBar();
 
-// ─── SAVE & RENDER ────────────────────────────────────────────
-function saveState() {
-  const save = {...state, subjects: [...new Set(state.subjects)]};
-  localStorage.setItem('padhiq_game', JSON.stringify(save));
+function updateXPBar(){
+  const level=Math.floor(state.xp/100)+1;
+  const progress=(state.xp%100);
+  document.getElementById('xpFill').style.width=progress+'%';
+  document.getElementById('xpValLabel').textContent=`${state.xp} / ${level*100} XP`;
+  document.getElementById('playerName').textContent=state.name||'Player';
+  document.getElementById('playerSub').textContent=`Level ${level} · ${state.xp} total XP`;
+  document.getElementById('streakBadge').textContent=`🔥 ${state.streak} STREAK`;
+  document.getElementById('solvedBadge').textContent=`✓ ${state.solved} SOLVED`;
 }
 
-function getLevel() {
-  return LEVELS.findIndex(l => state.totalXp >= l.min && state.totalXp < l.max);
+function selectSubj(s,el){
+  state.subject=s; state.started=false; state.current=0; state.score=0; state.questions=[];
+  document.querySelectorAll('.subj-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('qText').innerHTML=`<span style="color:var(--muted);font-family:'Syne',sans-serif;font-size:.88rem">Subject: <strong style="color:var(--pink)">${s}</strong>. Press START QUIZ to play!</span>`;
+  document.getElementById('qOpts').style.display='none';
+  document.getElementById('qFeedback').className='q-feedback';
+  document.getElementById('qNext').textContent='START QUIZ ⚡';
+  document.getElementById('qNext').disabled=false;
+  document.getElementById('qLabel').textContent='READY TO PLAY';
+  document.getElementById('qaProg').textContent='Q 1 / 5';
+  document.getElementById('qaScore').textContent='SCORE: 0';
+  [0,1,2,3,4].forEach(i=>{const d=document.getElementById('pd'+i);d.className='prog-dot'+(i===0?' current':'')+'';});
 }
 
-function renderPlayer() {
-  const li = Math.max(0, getLevel());
-  const lv = LEVELS[li];
-  const nextLv = LEVELS[Math.min(li+1, LEVELS.length-1)];
-  const xpInLevel = state.totalXp - lv.min;
-  const xpNeeded = nextLv.min - lv.min;
-  const pct = Math.min(100, Math.round((xpInLevel / xpNeeded) * 100));
-
-  document.getElementById('playerAvatarEl').textContent = lv.avatar;
-  document.getElementById('playerLevelEl').textContent = `Level ${li+1} · ${lv.name}`;
-  document.getElementById('xpBar').style.width = pct + '%';
-  document.getElementById('xpText').textContent = `${xpInLevel} / ${xpNeeded} XP`;
-  document.getElementById('totalXpEl').textContent = state.totalXp;
-  document.getElementById('questionsEl').textContent = state.solved;
-  document.getElementById('streakNum').textContent = state.streak;
-  const acc = state.solved > 0 ? Math.round((state.correct / state.solved) * 100) : 0;
-  state.accuracy = acc;
-  document.getElementById('accuracyEl').textContent = acc + '%';
-
-  const earned = BADGES_DEF.filter(b => checkBadge(b)).length;
-  document.getElementById('badgesEl').textContent = earned;
-  document.getElementById('badgeCountEl').textContent = earned + ' earned';
-}
-
-function checkBadge(b) {
-  const s = { ...state, subjects: new Set(state.subjects) };
-  return b.cond(s);
-}
-
-function renderBadges() {
-  document.getElementById('badgesGrid').innerHTML = BADGES_DEF.map(b => {
-    const earned = checkBadge(b);
-    return `<div class="badge-item ${earned ? 'earned' : 'locked'}">
-      <div class="badge-icon">${b.icon}</div>
-      <div class="badge-name">${b.name}</div>
-      <div class="badge-desc">${b.desc}</div>
-    </div>`;
-  }).join('');
-}
-
-function renderLeaderboard() {
-  const fakeLeaders = [
-    {name:'Rahul K.', xp: 1240, avatar:'⭐'},
-    {name:'Priya S.', xp: 980, avatar:'🌟'},
-    {name:'Amit R.', xp: 720, avatar:'💪'},
-    {name:'You', xp: state.totalXp, avatar:'🧑‍🎓', you: true},
-    {name:'Ananya M.', xp: 450, avatar:'🎯'},
-    {name:'Rohit B.', xp: 310, avatar:'✨'},
-  ];
-  fakeLeaders.sort((a,b) => b.xp - a.xp);
-
-  document.getElementById('leaderboard').innerHTML = fakeLeaders.map((p, i) => {
-    const rankClass = i===0?'gold':i===1?'silver':i===2?'bronze':'';
-    const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
-    return `<div class="lb-row ${p.you?'you':''}">
-      <div class="lb-rank ${rankClass}">${medal}</div>
-      <div class="lb-avatar">${p.avatar}</div>
-      <div class="lb-name">${p.name}${p.you?' (You)':''}</div>
-      <div class="lb-xp">${p.xp} XP</div>
-    </div>`;
-  }).join('');
-}
-
-// ─── STREAK CHECK ─────────────────────────────────────────────
-function checkStreak() {
-  const today = new Date().toDateString();
-  if (state.lastDate !== today) {
-    const yesterday = new Date(Date.now() - 86400000).toDateString();
-    if (state.lastDate === yesterday) {
-      state.streak++;
-    } else if (state.lastDate !== today) {
-      state.streak = 1;
-    }
-    state.lastDate = today;
-    saveState();
-  }
-}
-
-// ─── QUIZ QUESTIONS ───────────────────────────────────────────
-const questionsDB = {
-  Science: [
-    {q:'Which gas is produced during photosynthesis?', opts:['CO₂','O₂','N₂','H₂'], ans:1},
-    {q:'The SI unit of force is?', opts:['Joule','Watt','Newton','Pascal'], ans:2},
-    {q:'DNA stands for?', opts:['Deoxyribose Nucleic Acid','Di-nitrogen Acid','Dynamic Nuclei Array','None'], ans:0},
-    {q:'Which organelle is called the powerhouse of the cell?', opts:['Nucleus','Ribosome','Mitochondria','Vacuole'], ans:2},
-    {q:'Speed of light in vacuum is approximately?', opts:['3×10⁶ m/s','3×10⁸ m/s','3×10¹⁰ m/s','3×10⁴ m/s'], ans:1},
+const fallbackQuestions={
+  Physics:[
+    {q:'What is Newton\'s 2nd Law of Motion?',opts:['F=ma','F=mv','F=m/a','F=m²a'],ans:0,exp:'F=ma means Force equals mass times acceleration. A classic CBSE question!'},
+    {q:'Unit of electric current is:',opts:['Volt','Watt','Ampere','Ohm'],ans:2,exp:'Ampere (A) is the SI unit of electric current, named after André-Marie Ampère.'},
+    {q:'Ohm\'s Law states:',opts:['V=IR','V=I/R','V=R/I','V=I+R'],ans:0,exp:'V=IR — Voltage equals current times resistance. Remember: VIR triangle!'},
+    {q:'Speed of light is approximately:',opts:['3×10⁶ m/s','3×10⁸ m/s','3×10¹⁰ m/s','3×10⁴ m/s'],ans:1,exp:'3×10⁸ m/s — approximately 300,000 km per second. High weightage in boards!'},
+    {q:'Magnetic field unit (SI) is:',opts:['Gauss','Tesla','Weber','Henry'],ans:1,exp:'Tesla (T) is the SI unit of magnetic flux density. 1 Tesla = 10,000 Gauss.'},
   ],
-  Maths: [
-    {q:'What is the value of π (pi) approximately?', opts:['2.14','3.14','4.14','1.14'], ans:1},
-    {q:'The sum of angles in a triangle is?', opts:['90°','180°','270°','360°'], ans:1},
-    {q:'Solve: If x² = 25, then x = ?', opts:['5 only','±5','−5 only','25'], ans:1},
-    {q:'The slope of a horizontal line is?', opts:['1','∞','−1','0'], ans:3},
-    {q:'√144 = ?', opts:['11','12','13','14'], ans:1},
+  Chemistry:[
+    {q:'Atomic number of Carbon is:',opts:['4','6','8','12'],ans:1,exp:'Carbon has atomic number 6 and mass number 12. Carbon-12 is the standard atomic mass reference.'},
+    {q:'pH of pure water at 25°C:',opts:['0','7','14','3'],ans:1,exp:'Pure water is neutral with pH 7. Below 7 = acidic, above 7 = basic. Classic CBSE question!'},
+    {q:'Chemical formula of washing soda:',opts:['Na₂CO₃','NaHCO₃','NaCl','Na₂SO₄'],ans:0,exp:'Na₂CO₃·10H₂O is sodium carbonate (washing soda). Baking soda is NaHCO₃.'},
+    {q:'Valency of Oxygen is:',opts:['1','2','3','4'],ans:1,exp:'Oxygen has valency 2 because it needs 2 electrons to complete its octet.'},
+    {q:'Rust is chemically:',opts:['Fe₂O₃','Fe₃O₄','FeO','Fe₂O₃·xH₂O'],ans:3,exp:'Rust = Fe₂O₃·xH₂O — hydrated iron(III) oxide. Rusting requires both water and oxygen.'},
   ],
-  Physics: [
-    {q:'Ohm\'s Law states: V = ?', opts:['I/R','I×R','I+R','I−R'], ans:1},
-    {q:'Unit of electric resistance is?', opts:['Volt','Ampere','Ohm','Watt'], ans:2},
-    {q:'Which type of mirror is used in vehicles as rear-view mirror?', opts:['Concave','Convex','Plane','None'], ans:1},
-    {q:'F = ma. If m=5kg and a=3m/s², F=?', opts:['8N','15N','2N','10N'], ans:1},
-    {q:'Sound travels fastest in?', opts:['Air','Water','Steel','Vacuum'], ans:2},
+  Maths:[
+    {q:'Roots of x² - 5x + 6 = 0:',opts:['1,6','2,3','-2,-3','1,-6'],ans:1,exp:'x² - 5x + 6 = (x-2)(x-3) = 0, so x=2 or x=3. Always check: sum=5 ✓, product=6 ✓'},
+    {q:'sin 30° equals:',opts:['√3/2','1/2','1/√2','1'],ans:1,exp:'sin 30° = 1/2. Memorise: sin 0°=0, sin 30°=½, sin 45°=1/√2, sin 60°=√3/2, sin 90°=1'},
+    {q:'Area of circle with radius r:',opts:['πr','2πr','πr²','2πr²'],ans:2,exp:'Area = πr². Circumference = 2πr. These two formulas appear in almost every Class 10 exam!'},
+    {q:'Sum of angles in a triangle:',opts:['90°','270°','180°','360°'],ans:2,exp:'Sum of interior angles = 180°. This is the Angle Sum Property — foundational geometry.'},
+    {q:'√2 is:',opts:['Rational','Integer','Irrational','Whole number'],ans:2,exp:'√2 is irrational — it cannot be expressed as p/q where p,q are integers and q≠0.'},
   ],
-  Chemistry: [
-    {q:'Chemical formula of water is?', opts:['H₂O','HO₂','H₃O','H₂O₂'], ans:0},
-    {q:'Atomic number of Carbon is?', opts:['4','6','8','12'], ans:1},
-    {q:'pH of pure water is?', opts:['0','7','14','1'], ans:1},
-    {q:'What is the valency of Oxygen?', opts:['1','2','3','4'], ans:1},
-    {q:'NaCl is the chemical formula of?', opts:['Sugar','Baking Soda','Common Salt','Vinegar'], ans:2},
+  Biology:[
+    {q:'Site of photosynthesis in a cell:',opts:['Mitochondria','Ribosome','Chloroplast','Nucleus'],ans:2,exp:'Chloroplast contains chlorophyll — the green pigment that captures light for photosynthesis.'},
+    {q:'DNA stands for:',opts:['Deoxyribose Nucleic Acid','Di-Nuclear Acid','Dynamic Nucleotide Array','Deoxyribonucleic Acid'],ans:3,exp:'Deoxyribonucleic Acid — the hereditary material in humans and almost all other organisms.'},
+    {q:'Basic unit of life is:',opts:['Tissue','Cell','Organ','Atom'],ans:1,exp:'Cell is the fundamental structural and functional unit of life — first observed by Robert Hooke.'},
+    {q:'Powerhouse of the cell:',opts:['Nucleus','Chloroplast','Mitochondria','Golgi body'],ans:2,exp:'Mitochondria produces ATP (energy) via cellular respiration — hence "powerhouse of the cell"!'},
+    {q:'Hormone that regulates blood sugar:',opts:['Adrenaline','Thyroxine','Insulin','Oestrogen'],ans:2,exp:'Insulin (from pancreas) lowers blood sugar. Glucagon raises it. Both are tested frequently in boards!'},
   ],
-  History: [
-    {q:'In which year did India gain independence?', opts:['1945','1947','1950','1942'], ans:1},
-    {q:'The French Revolution began in?', opts:['1789','1776','1800','1815'], ans:0},
-    {q:'Who was the first Prime Minister of India?', opts:['Gandhi','Nehru','Patel','Ambedkar'], ans:1},
-    {q:'The Quit India Movement was launched in?', opts:['1940','1942','1944','1945'], ans:1},
-    {q:'World War II ended in?', opts:['1943','1944','1945','1946'], ans:2},
+  History:[
+    {q:'Indian National Congress founded in:',opts:['1857','1885','1905','1919'],ans:1,exp:'INC was founded on 28 December 1885 by A.O. Hume, Dadabhai Naoroji and Dinshaw Wacha in Bombay.'},
+    {q:'Dandi March was in:',opts:['1929','1930','1942','1919'],ans:1,exp:'Gandhi led the Salt March (Dandi March) from March 12 to April 5, 1930 — covering 241 miles.'},
+    {q:'First War of Independence was:',opts:['1857','1905','1947','1885'],ans:0,exp:'The Revolt of 1857 (Sepoy Mutiny) is called India\'s First War of Independence. It began at Meerut.'},
+    {q:'Who wrote "Hind Swaraj"?',opts:['Nehru','Tilak','Gandhi','Gokhale'],ans:2,exp:'Mahatma Gandhi wrote Hind Swaraj in 1909 aboard a ship — outlining his vision of self-rule for India.'},
+    {q:'Partition of Bengal happened in:',opts:['1905','1911','1919','1947'],ans:0,exp:'Lord Curzon partitioned Bengal in 1905, which led to the Swadeshi Movement. It was reversed in 1911.'},
+  ],
+  Geography:[
+    {q:'Largest river in India by length:',opts:['Godavari','Brahmaputra','Ganga','Indus'],ans:2,exp:'The Ganga (2,525 km within India) is the longest river entirely in India. Indus is longer overall.'},
+    {q:'Tropic of Cancer passes through:',opts:['Only South India','Central India','North India','None of India'],ans:1,exp:'The Tropic of Cancer (23.5°N) passes through Rajasthan, MP, Chhattisgarh, Jharkhand, West Bengal, Tripura, Mizoram and Gujarat.'},
+    {q:'India\'s highest mountain peak:',opts:['Mt. Godwin Austen (K2)','Kangchenjunga','Nanda Devi','Kamet'],ans:1,exp:'Kangchenjunga (8,586m) is India\'s highest peak, on the Nepal-Sikkim border. K2 is in Pakistan-administered territory.'},
+    {q:'Monsoon enters India through:',opts:['North-East','North-West','South-West','South-East'],ans:2,exp:'South-West Monsoon arrives in Kerala around June 1, bringing rain from the Arabian Sea and Bay of Bengal.'},
+    {q:'Black soil is best for growing:',opts:['Rice','Wheat','Tea','Cotton'],ans:3,exp:'Black (Regur) soil has high clay content and retains moisture — ideal for cotton. Found in Deccan plateau.'},
   ],
 };
 
-let usedIndices = {};
-
-function getQuestion(subj) {
-  const qs = questionsDB[subj] || questionsDB.Science;
-  if (!usedIndices[subj]) usedIndices[subj] = [];
-  const avail = qs.map((_, i) => i).filter(i => !usedIndices[subj].includes(i));
-  if (avail.length === 0) { usedIndices[subj] = []; return getQuestion(subj); }
-  const idx = avail[Math.floor(Math.random() * avail.length)];
-  usedIndices[subj].push(idx);
-  return qs[idx];
+let timerInterval=null;
+function startTimer(){
+  clearInterval(timerInterval);
+  let sec=30;
+  document.getElementById('qaTimer').textContent=`⏱ ${sec}s`;
+  timerInterval=setInterval(()=>{
+    sec--;
+    document.getElementById('qaTimer').textContent=`⏱ ${sec}s`;
+    if(sec<=0){clearInterval(timerInterval);if(!state.answered)autoAnswer();}
+  },1000);
 }
-
-function loadQuestion() {
-  answered = false;
-  currentQ = getQuestion(currentSubject);
-  document.getElementById('quizQ').textContent = currentQ.q;
-  document.getElementById('quizFeedback').textContent = '';
-  document.getElementById('quizFeedback').className = 'quiz-feedback';
-  document.getElementById('nextBtn').classList.remove('show');
-  
-  document.getElementById('quizOpts').innerHTML = currentQ.opts.map((opt, i) => `
-    <div class="quiz-opt" onclick="answerQ(this, ${i})">
-      <div class="opt-letter">${String.fromCharCode(65+i)}</div>
-      ${opt}
-    </div>
-  `).join('');
-}
-
-function answerQ(el, chosen) {
-  if (answered) return;
-  answered = true;
-  const opts = document.querySelectorAll('.quiz-opt');
-  opts.forEach(o => o.classList.add('locked'));
-
-  state.solved++;
-  if (!state.subjects.includes(currentSubject)) state.subjects.push(currentSubject);
-
-  if (chosen === currentQ.ans) {
-    el.classList.add('correct');
-    state.correct++;
-    state.xp += 5; state.totalXp += 5;
-    document.getElementById('quizFeedback').textContent = '✅ Correct! +5 XP';
-    document.getElementById('quizFeedback').className = 'quiz-feedback correct-fb';
-    showXpPopup('+5 XP', 'Correct Answer! 🎯');
-  } else {
-    el.classList.add('wrong');
-    opts[currentQ.ans].classList.add('correct');
-    document.getElementById('quizFeedback').textContent = `❌ Wrong! Answer was: ${currentQ.opts[currentQ.ans]}`;
-    document.getElementById('quizFeedback').className = 'quiz-feedback wrong-fb';
-  }
-
-  document.getElementById('nextBtn').classList.add('show');
-  saveState();
-  renderPlayer();
-  renderBadges();
-  renderLeaderboard();
-}
-
-function nextQuestion() { loadQuestion(); }
-
-function showXpPopup(val, label) {
-  const popup = document.getElementById('xpPopup');
-  document.getElementById('xpPopupVal').textContent = val;
-  document.getElementById('xpPopupLabel').textContent = label;
-  popup.classList.add('show');
-  setTimeout(() => popup.classList.remove('show'), 1800);
-}
-
-// Subject switching
-document.querySelectorAll('.q-subj-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.q-subj-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentSubject = btn.dataset.s;
-    loadQuestion();
+function autoAnswer(){
+  state.answered=true;
+  document.querySelectorAll('.q-opt').forEach((o,i)=>{
+    if(i===state.questions[state.current].ans) o.classList.add('correct');
   });
+  showFeedback(false);
+  document.getElementById('qNext').disabled=false;
+}
+
+async function loadQuestions(subj){
+  const dateKey=new Date().toISOString().slice(0,10);
+  const cacheKey=`padhiq_quiz_${subj}_${dateKey}`;
+  try{
+    const cached=JSON.parse(localStorage.getItem(cacheKey)||'null');
+    if(cached&&cached.length===5){return cached;}
+  }catch(e){}
+  // Try AI generation
+  try{
+    const res=await fetch(`${location.origin}/api/chat`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:[{role:'user',content:`Generate 5 multiple choice quiz questions for Indian Class 10 students on ${subj}. Return ONLY valid JSON array: [{"q":"question","opts":["A","B","C","D"],"ans":0,"exp":"brief explanation"}]. No markdown, no text outside JSON.`}]}),
+      signal:AbortSignal.timeout(15000)
+    });
+    if(res.ok){
+      const d=await res.json();
+      const text=d.text||d.content?.[0]?.text||'';
+      const clean=text.replace(/```json|```/g,'').trim();
+      const qs=JSON.parse(clean);
+      if(Array.isArray(qs)&&qs.length===5){localStorage.setItem(cacheKey,JSON.stringify(qs));return qs;}
+    }
+  }catch(e){console.warn('AI generation failed, using fallback',e);}
+  return fallbackQuestions[subj]||fallbackQuestions.Physics;
+}
+
+async function handleNext(){
+  const btn=document.getElementById('qNext');
+  if(!state.started){
+    btn.disabled=true;btn.textContent='LOADING...';
+    state.questions=await loadQuestions(state.subject);
+    state.started=true;state.current=0;state.score=0;state.answered=false;
+    btn.disabled=false;
+    showQuestion();return;
+  }
+  if(!state.answered)return;
+  state.current++;state.answered=false;
+  if(state.current>=5){showResult();return;}
+  showQuestion();
+}
+
+function showQuestion(){
+  const q=state.questions[state.current];
+  clearInterval(timerInterval);
+  document.getElementById('qLabel').textContent=`${state.subject.toUpperCase()} · QUESTION ${state.current+1}`;
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qaProg').textContent=`Q ${state.current+1} / 5`;
+  document.getElementById('qaScore').textContent=`SCORE: ${state.score}`;
+  const letters=['A','B','C','D'];
+  document.getElementById('qOpts').style.display='grid';
+  document.getElementById('qOpts').innerHTML=q.opts.map((o,i)=>`
+    <div class="q-opt" onclick="selectAns(${i})">
+      <span class="q-opt-letter">${letters[i]}</span>${o}
+    </div>`).join('');
+  document.getElementById('qFeedback').className='q-feedback';
+  document.getElementById('qNext').textContent='CONFIRM →';
+  document.getElementById('qNext').disabled=true;
+  // Progress dots
+  [0,1,2,3,4].forEach(i=>{
+    const d=document.getElementById('pd'+i);
+    d.className='prog-dot'+(i<state.current?' done':i===state.current?' current':'')+'';
+  });
+  startTimer();
+}
+
+let selectedOpt=-1;
+function selectAns(i){
+  if(state.answered)return;
+  selectedOpt=i;
+  document.querySelectorAll('.q-opt').forEach((o,j)=>{ o.classList.toggle('selected',i===j); });
+  document.getElementById('qNext').disabled=false;
+  document.getElementById('qNext').textContent='SUBMIT ✦';
+}
+
+document.getElementById('qNext').addEventListener('click',()=>{
+  if(!state.started){handleNext();return;}
+  if(!state.answered&&selectedOpt>=0){
+    clearInterval(timerInterval);
+    const q=state.questions[state.current];
+    const correct=selectedOpt===q.ans;
+    state.answered=true;
+    if(correct){state.score++;state.xp+=20;state.solved++;}
+    document.querySelectorAll('.q-opt').forEach((o,j)=>{
+      o.classList.remove('selected');
+      if(j===q.ans)o.classList.add('correct');
+      else if(j===selectedOpt&&!correct)o.classList.add('wrong');
+    });
+    showFeedback(correct);
+    updateXPBar();
+    document.getElementById('qNext').textContent=state.current<4?'NEXT QUESTION →':'SEE RESULTS 🏆';
+    document.getElementById('qNext').disabled=false;
+    selectedOpt=-1;
+    return;
+  }
+  if(state.answered)handleNext();
 });
 
-// ─── INIT ─────────────────────────────────────────────────────
-checkStreak();
-renderPlayer();
-renderBadges();
-renderLeaderboard();
-loadQuestion();
+function showFeedback(correct){
+  const q=state.questions[state.current];
+  const fb=document.getElementById('qFeedback');
+  fb.className=`q-feedback show ${correct?'correct':'wrong'}`;
+  fb.innerHTML=`${correct?'✅ Correct!':'❌ Wrong!'} ${q.exp}`;
+  document.getElementById('qaScore').textContent=`SCORE: ${state.score}`;
+}
 
-if (typeof initNavAuth === 'function') initNavAuth();
-</script>
-<script>
-window.addEventListener('scroll', () => {
-  document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 20);
-});
+function showResult(){
+  clearInterval(timerInterval);
+  const pct=Math.round((state.score/5)*100);
+  const bonus=state.score===5?50:0;
+  state.xp+=bonus;state.streak++;
+  saveState();updateXPBar();
+  document.getElementById('qLabel').textContent='ROUND COMPLETE!';
+  document.getElementById('qText').innerHTML=`
+    <div style="text-align:center;padding:1rem 0">
+      <div style="font-size:3.5rem;margin-bottom:.5rem">${pct>=80?'🏆':pct>=60?'⭐':'💪'}</div>
+      <div style="font-family:'Orbitron',monospace;font-size:2.5rem;font-weight:900;color:var(--pink);text-shadow:0 0 30px rgba(255,0,153,.5)">${state.score}/5</div>
+      <div style="color:var(--muted);font-family:'Syne',sans-serif;font-size:.85rem;margin-top:.4rem">${pct}% · ${state.score===5?'PERFECT ROUND! +50 BONUS XP':pct>=60?'Good job!':'Keep practising!'}</div>
+      <div style="color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:.72rem;margin-top:.6rem">+${state.score*20+bonus} XP EARNED</div>
+    </div>`;
+  document.getElementById('qOpts').style.display='none';
+  document.getElementById('qFeedback').className='q-feedback';
+  document.getElementById('qNext').textContent='PLAY AGAIN ↺';
+  document.getElementById('qNext').disabled=false;
+  state.started=false;state.current=0;state.score=0;state.answered=false;state.questions=[];
+  loadLeaderboard();
+}
+
+function saveState(){
+  localStorage.setItem('padhiq_game',JSON.stringify({xp:state.xp,streak:state.streak,solved:state.solved}));
+}
+
+// Leaderboard
+const SUPABASE_URL='https://cabbbhtqvegokhzprzdj.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhYmJiaHRxdmVnb2toenByemRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0Nzg5MzUsImV4cCI6MjA2MzA1NDkzNX0.6yCXgClvHBqZ9G77_LCVvSLRa_u3eqDYOEEJzUPnVZ4';
+let sbClient=null;
+try{sbClient=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);}catch(e){}
+
+async function loadLeaderboard(){
+  const lbDiv=document.getElementById('lbBody');
+  const deviceId=localStorage.getItem('padhiq_device_id')||((id=>((localStorage.setItem('padhiq_device_id',id)),id))(Math.random().toString(36).slice(2)));
+  const myName=localStorage.getItem('padhiq_lb_name')||'Player';
+  let rows=[
+    {rank:1,name:'Arjun P., Patna',xp:1240,solved:62,isYou:false},
+    {rank:2,name:'Sneha G., Bokaro',xp:980,solved:49,isYou:false},
+    {rank:3,name:'Rahul K., Dhanbad',xp:870,solved:43,isYou:false},
+    {rank:4,name:myName,xp:state.xp,solved:state.solved,isYou:true},
+  ].sort((a,b)=>b.xp-a.xp).map((r,i)=>({...r,rank:i+1}));
+  if(sbClient){
+    try{
+      await sbClient.from('leaderboard').upsert({device_id:deviceId,name:myName,xp:state.xp,solved:state.solved,streak:state.streak},{onConflict:'device_id'});
+      const{data}=await sbClient.from('leaderboard').select('*').order('xp',{ascending:false}).limit(10);
+      if(data&&data.length){
+        rows=data.map((r,i)=>({rank:i+1,name:r.name,xp:r.xp,solved:r.solved,isYou:r.device_id===deviceId}));
+      }
+    }catch(e){console.warn('Leaderboard error',e);}
+  }
+  const rankClass=(r)=>r===1?'top1':r===2?'top2':r===3?'top3':'';
+  lbDiv.innerHTML=rows.map(r=>`
+  <div class="lb-row${r.isYou?' you':''}">
+    <div class="lb-rank ${rankClass(r.rank)}">${r.rank<=3?['🥇','🥈','🥉'][r.rank-1]:r.rank}</div>
+    <div class="lb-name">${r.name}${r.isYou?'<span class="lb-you-badge">YOU</span>':''}</div>
+    <div class="lb-solved">${r.solved} solved</div>
+    <div class="lb-xp">${r.xp} XP</div>
+  </div>`).join('');
+}
+loadLeaderboard();
 </script>
 </body>
 </html>

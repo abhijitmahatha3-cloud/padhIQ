@@ -3,108 +3,280 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Study Guide — Project AAA</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="pages.css">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<title>VidyaBot — AI Study Guide · padhIQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* ══ NEURAL AMBER THEME ══════════════════════════════
+   Concept: Living brain circuit. Warm amber synapses.
+   Palette: #0d0800 bg · #ff9500 amber · #ffcc44 gold
+            #ff6b00 deep orange · #1a0f00 card bg
+   ═══════════════════════════════════════════════════ */
+:root {
+  --bg:    #080500;
+  --bg2:   #120c00;
+  --bg3:   #1a1100;
+  --amber: #ff9500;
+  --gold:  #ffcc44;
+  --deep:  #ff6b00;
+  --text:  #fef3e2;
+  --muted: #8a6a3a;
+  --border: rgba(255,149,0,.1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* Animated neural background */
+.neural-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.neural-bg canvas{position:absolute;inset:0;width:100%;height:100%;}
+
+/* Grain overlay */
+body::after{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:.5;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 2rem;
+  background:rgba(8,5,0,.85);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,149,0,.08);}
+.nav-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:1.1rem;
+  color:var(--amber);text-shadow:0 0 20px rgba(255,149,0,.5);text-decoration:none;letter-spacing:3px;}
+.nav-links{display:flex;gap:.3rem;background:rgba(255,149,0,.04);
+  border:1px solid rgba(255,149,0,.1);border-radius:999px;padding:.25rem .35rem;}
+.nav-links a{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;
+  color:rgba(254,243,226,.5);text-decoration:none;padding:.35rem .8rem;
+  border-radius:999px;transition:all .2s;}
+.nav-links a:hover,.nav-links a.nav-active{color:var(--text);background:rgba(255,149,0,.15);}
+.nav-right{display:flex;justify-content:flex-end;}
+.nav-back{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);
+  text-decoration:none;border:1px solid rgba(255,149,0,.15);padding:.3rem .75rem;
+  border-radius:999px;transition:all .2s;}
+.nav-back:hover{color:var(--amber);border-color:rgba(255,149,0,.35);}
+#navAuth{display:flex;justify-content:flex-end;}
+
+/* MAIN LAYOUT */
+main{position:relative;z-index:2;min-height:100vh;padding:80px 1.5rem 2rem;
+  display:flex;flex-direction:column;max-width:900px;margin:0 auto;}
+
+/* HEADER */
+.page-header{text-align:center;padding:2rem 0 2.5rem;animation:fadeUp .8s .2s both;}
+.header-badge{display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(255,149,0,.06);border:1px solid rgba(255,149,0,.18);
+  color:var(--amber);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  padding:.35rem 1rem;border-radius:999px;margin-bottom:1.5rem;}
+.hb-dot{width:5px;height:5px;border-radius:50%;background:var(--amber);
+  box-shadow:0 0 8px var(--amber);animation:pulse 2s infinite;}
+.page-title{font-family:'Orbitron',monospace;font-weight:900;
+  font-size:clamp(2rem,5vw,3.5rem);line-height:1.1;margin-bottom:.75rem;}
+.pt-white{color:#fff;}
+.pt-amber{
+  background:linear-gradient(120deg,var(--amber),var(--gold),var(--amber));
+  background-size:200% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;animation:gradShift 3s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 20px rgba(255,149,0,.5));}
+@keyframes gradShift{from{background-position:0%}to{background-position:100%}}
+.page-sub{font-size:.95rem;color:var(--muted);line-height:1.7;max-width:500px;margin:0 auto;}
+
+/* CHAT CONTAINER */
+.chat-shell{
+  background:linear-gradient(145deg,rgba(26,17,0,.95),rgba(18,12,0,.98));
+  border:1px solid rgba(255,149,0,.12);border-radius:24px;overflow:hidden;
+  box-shadow:0 0 80px rgba(255,149,0,.06),0 40px 80px rgba(0,0,0,.6);
+  animation:fadeUp .8s .4s both;flex:1;display:flex;flex-direction:column;}
+
+/* Chat header */
+.chat-head{
+  display:flex;align-items:center;gap:.75rem;padding:1.1rem 1.5rem;
+  border-bottom:1px solid rgba(255,149,0,.08);
+  background:linear-gradient(90deg,rgba(255,149,0,.06),rgba(255,204,68,.03),transparent);}
+.chat-av{width:42px;height:42px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,149,0,.25),rgba(255,107,0,.1));
+  border:1px solid rgba(255,149,0,.3);
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.chat-nm{font-family:'Orbitron',monospace;font-weight:700;font-size:.88rem;color:#fff;}
+.chat-st{font-size:.67rem;color:var(--muted);display:flex;align-items:center;gap:.35rem;margin-top:.08rem;}
+.st-dot{width:6px;height:6px;border-radius:50%;background:#44ff88;box-shadow:0 0 6px #44ff88;animation:pulse 2s infinite;}
+.clear-btn{margin-left:auto;background:none;border:1px solid rgba(255,149,0,.1);color:var(--muted);
+  padding:.28rem .72rem;border-radius:6px;font-size:.68rem;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s;}
+.clear-btn:hover{border-color:rgba(255,80,80,.35);color:#ff8080;}
+
+/* Progress bar */
+.progress-bar-wrap{padding:.5rem 1.5rem;border-bottom:1px solid rgba(255,149,0,.06);
+  display:none;background:rgba(255,149,0,.02);}
+.progress-bar-inner{height:3px;background:rgba(255,149,0,.1);border-radius:999px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--gold));
+  border-radius:999px;transition:width .5s;box-shadow:0 0 8px var(--amber);}
+.progress-info{display:flex;justify-content:space-between;align-items:center;margin-top:.4rem;}
+.pi-stat{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);}
+.pi-link{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--amber);text-decoration:none;}
+.pi-link:hover{text-shadow:0 0 8px var(--amber);}
+
+/* Messages */
+.chat-msgs{flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:.9rem;min-height:320px;max-height:50vh;
+  scrollbar-width:thin;scrollbar-color:rgba(255,149,0,.15) transparent;}
+.chat-msgs::-webkit-scrollbar{width:3px;}
+.chat-msgs::-webkit-scrollbar-thumb{background:rgba(255,149,0,.15);border-radius:999px;}
+
+.ai-msg,.user-msg{display:flex;gap:.6rem;max-width:90%;animation:msgIn .3s ease both;}
+.user-msg{flex-direction:row-reverse;margin-left:auto;}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.m-ico{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;margin-top:2px;}
+.ai-msg .m-ico{background:rgba(255,149,0,.1);border:1px solid rgba(255,149,0,.2);}
+.user-msg .m-ico{background:rgba(255,204,68,.08);border:1px solid rgba(255,204,68,.18);}
+.m-bub{background:rgba(255,149,0,.04);border:1px solid rgba(255,149,0,.1);
+  border-radius:12px 12px 12px 3px;padding:.8rem 1rem;font-size:.84rem;line-height:1.7;color:var(--text);}
+.user-msg .m-bub{background:rgba(255,204,68,.05);border-color:rgba(255,204,68,.12);border-radius:12px 12px 3px 12px;}
+.tdot{display:inline-block;width:5px;height:5px;background:var(--amber);border-radius:50%;animation:tb 1s infinite;margin:0 2px;}
+.tdot:nth-child(2){animation-delay:.15s}.tdot:nth-child(3){animation-delay:.3s}
+@keyframes tb{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+
+/* Suggestions */
+.suggestions{display:flex;gap:.4rem;padding:0 1.5rem .65rem;flex-wrap:wrap;}
+.sugg{background:rgba(255,149,0,.04);border:1px solid rgba(255,149,0,.12);
+  color:rgba(254,243,226,.55);padding:.28rem .8rem;border-radius:999px;
+  font-family:'Syne',sans-serif;font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.sugg:hover{border-color:rgba(255,149,0,.35);color:var(--amber);background:rgba(255,149,0,.08);}
+
+/* Input row */
+.chat-foot{display:flex;gap:.6rem;padding:.9rem 1.5rem 1.1rem;border-top:1px solid rgba(255,149,0,.07);}
+.chat-foot input{flex:1;background:rgba(255,149,0,.04);border:1px solid rgba(255,149,0,.12);
+  border-radius:10px;padding:.7rem 1rem;color:var(--text);font-family:'Syne',sans-serif;font-size:.84rem;outline:none;transition:all .2s;}
+.chat-foot input:focus{border-color:rgba(255,149,0,.4);box-shadow:0 0 0 2px rgba(255,149,0,.08);}
+.chat-foot input::placeholder{color:var(--muted);}
+.send-btn{background:linear-gradient(135deg,var(--amber),var(--gold));color:#080500;
+  border:none;padding:.7rem 1.4rem;border-radius:10px;font-family:'Syne',sans-serif;
+  font-weight:800;font-size:.84rem;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.send-btn:hover{box-shadow:0 0 24px rgba(255,149,0,.4);transform:translateY(-1px);}
+.send-btn:disabled{opacity:.5;transform:none;}
+
+/* Utility */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
 </head>
 <body>
+<div class="neural-bg"><canvas id="neuralCanvas"></canvas></div>
 
-<nav class="navbar">
+<nav>
   <a href="index.html" class="nav-logo">AAA</a>
   <div class="nav-links">
     <a href="resources.html">Resources</a>
-    <a href="ai-tools.html">AI Tools</a>
+    <a href="ai-tools.html" class="nav-active">AI Tools</a>
     <a href="marketplace.html">Marketplace</a>
     <a href="about.html">About</a>
   </div>
-  <div id="navAuth"></div>
+  <div class="nav-right"><a href="ai-tools.html" class="nav-back">← AI Tools</a></div>
 </nav>
-<div class="back-home-bar">
-  <a href="javascript:history.back()" class="back-btn">← Back</a>
-  <a href="index.html" class="back-btn back-btn-home">🏠 Home</a>
-</div>
-<div class="stars" id="stars"></div>
-<div class="nebula"></div>
-<div class="grid-overlay"></div>
-<div class="meteor-container" id="meteorContainer"></div>
 
+<main>
+  <div class="page-header">
+    <div class="header-badge"><span class="hb-dot"></span>VidyaBot · Neural Amber · Free</div>
+    <h1 class="page-title">
+      <span class="pt-white">Your AI </span><span class="pt-amber">Study Guide</span>
+    </h1>
+    <p class="page-sub">Ask any doubt. Get step-by-step answers with Indian examples, practice questions and board exam tips — all in one reply.</p>
+  </div>
 
-
-<div class="page-hero" style="margin-bottom:0; padding-bottom:1.5rem;">
-  <div class="page-hero-icon">🤖</div>
-  <div class="page-label">AI STUDY GUIDE</div>
-  <h1 class="page-title">Your AI Tutor. <span class="accent-cyan">Ask Anything.</span></h1>
-  <p class="page-sub">Available 24/7. Classes 9–12. Physics, Chemistry, Biology, Maths and more.</p>
-</div>
-
-<!-- FULL CHAT -->
-<div class="chat-full-container">
-  <div class="chat-container glass">
-    <div class="chat-header">
-      <div class="chat-avatar">🤖</div>
+  <div class="chat-shell">
+    <div class="chat-head">
+      <div class="chat-av">🤖</div>
       <div>
-        <div class="chat-name">AAA Study Guide</div>
-        <div class="chat-status"><span class="status-dot"></span> Online · Offline AI · No internet needed</div>
+        <div class="chat-nm">VidyaBot — AI Study Guide</div>
+        <div class="chat-st"><span class="st-dot"></span>Online · Powered by Groq AI</div>
       </div>
       <button class="clear-btn" onclick="clearChat()">Clear Chat</button>
     </div>
 
-    <div class="chat-box" id="chatBox">
-      <div class="ai-message">
-        <div class="msg-icon">🤖</div>
-        <div class="msg-content">
-          Namaste! 👋 I'm your AAA Study Guide for Classes 9–12.<br><br>
-          I can help with <strong>Physics, Chemistry, Biology, Maths, History, Geography, Economics</strong> and more!<br><br>
-          What would you like to study today?
-        </div>
+    <div class="progress-bar-wrap" id="progressWrap">
+      <div class="progress-bar-inner"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-info">
+        <span class="pi-stat" id="progressStat">🔥 0 day streak · 0 questions</span>
+        <a href="dashboard.html" class="pi-link">View Dashboard →</a>
       </div>
     </div>
 
-    <div class="chat-suggestions">
-      <button class="suggestion" onclick="setInput('Explain Newton\'s first law')">Newton's Laws</button>
-      <button class="suggestion" onclick="setInput('How does photosynthesis work?')">Photosynthesis</button>
-      <button class="suggestion" onclick="setInput('Solve x² + 5x + 6 = 0')">Quadratic</button>
-      <button class="suggestion" onclick="setInput('What is Ohm\'s law?')">Ohm's Law</button>
-      <button class="suggestion" onclick="setInput('Explain the French Revolution')">French Revolution</button>
-      <button class="suggestion" onclick="setInput('Give me board exam tips')">Exam Tips</button>
+    <div class="chat-msgs" id="chatBox">
+      <div class="ai-msg">
+        <div class="m-ico">🤖</div>
+        <div class="m-bub">Namaste! 👋 I'm <strong>VidyaBot</strong>, your AI Study Guide for Classes 9–12.<br><br>
+        Ask me anything — Physics, Chemistry, Biology, Maths, History, Geography, Economics and more!</div>
+      </div>
     </div>
 
-    <div class="chat-input-row">
-      <input type="text" id="userInput" placeholder="Ask any study question... e.g. Explain photosynthesis" onkeydown="if(event.key==='Enter') sendMessage()">
-      <button class="send-btn" onclick="sendMessage()" id="sendBtn">
-        <span id="sendBtnText">Send ✦</span>
-      </button>
+    <div class="suggestions">
+      <button class="sugg" onclick="setInput('Explain Newton\'s laws with Indian examples')">Newton's Laws</button>
+      <button class="sugg" onclick="setInput('How does photosynthesis work?')">Photosynthesis</button>
+      <button class="sugg" onclick="setInput('Solve: x² + 5x + 6 = 0')">Quadratic</button>
+      <button class="sugg" onclick="setInput('Explain the French Revolution')">French Revolution</button>
+      <button class="sugg" onclick="setInput('What is Ohm\'s law?')">Ohm's Law</button>
+      <button class="sugg" onclick="setInput('Board exam tips for Class 10')">Board Tips</button>
+    </div>
+
+    <div class="chat-foot">
+      <input type="text" id="userInput" placeholder="Ask VidyaBot anything... e.g. Explain photosynthesis" onkeydown="if(event.key==='Enter')sendMessage()">
+      <button class="send-btn" onclick="sendMessage()" id="sendBtn"><span id="sendBtnText">Send ✦</span></button>
     </div>
   </div>
-</div>
+</main>
 
 <script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
 <script>
-// Auto-fire tool prompt from AI Tools page
-window.addEventListener('load', () => {
-  const prompt = localStorage.getItem('aaa_tool_prompt');
-  if (prompt) {
-    localStorage.removeItem('aaa_tool_prompt');
-    document.getElementById('userInput').value = prompt;
-    setTimeout(sendMessage, 800);
+// Neural network canvas animation
+(function(){
+  const canvas = document.getElementById('neuralCanvas');
+  const ctx = canvas.getContext('2d');
+  let nodes = [], connections = [];
+  function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; init(); }
+  function init(){
+    nodes = [];
+    const count = Math.floor((canvas.width * canvas.height) / 18000);
+    for(let i=0;i<count;i++) nodes.push({
+      x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+      vx:(Math.random()-.5)*.2, vy:(Math.random()-.5)*.2,
+      r:Math.random()*2.5+.5, pulse:Math.random()*Math.PI*2
+    });
   }
+  function draw(t){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // Draw connections
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){
+          const alpha=(1-dist/120)*.12;
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x,nodes[i].y);
+          ctx.lineTo(nodes[j].x,nodes[j].y);
+          ctx.strokeStyle=`rgba(255,149,0,${alpha})`;
+          ctx.lineWidth=.5; ctx.stroke();
+        }
+      }
+      // Move
+      nodes[i].x+=nodes[i].vx; nodes[i].y+=nodes[i].vy;
+      if(nodes[i].x<0||nodes[i].x>canvas.width) nodes[i].vx*=-1;
+      if(nodes[i].y<0||nodes[i].y>canvas.height) nodes[i].vy*=-1;
+      nodes[i].pulse+=.02;
+      // Draw node
+      const glow=.3+.2*Math.sin(nodes[i].pulse);
+      ctx.beginPath(); ctx.arc(nodes[i].x,nodes[i].y,nodes[i].r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,149,0,${glow})`; ctx.fill();
+      ctx.beginPath(); ctx.arc(nodes[i].x,nodes[i].y,nodes[i].r*2.5,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,149,0,${glow*.15})`; ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);
+  resize(); requestAnimationFrame(draw);
+})();
 
-  checkUser();
-});
-</script>
-<script>
-window.addEventListener('scroll', () => {
-  document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 20);
-});
-</script>
-<script>if(typeof initNavAuth==="function")initNavAuth();</script>
-<script>
-window.addEventListener('scroll',()=>{
-  document.querySelector('.navbar').classList.toggle('scrolled',window.scrollY>20);
-});
+// Auth & nav scroll
+document.addEventListener('DOMContentLoaded',()=>{ if(typeof initNavAuth==='function') initNavAuth(); });
+window.addEventListener('scroll',()=>{ document.querySelector('nav').style.borderBottomColor=window.scrollY>10?'rgba(255,149,0,.15)':''; });
 </script>
 </body>
 </html>
