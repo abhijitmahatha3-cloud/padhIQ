@@ -3,13 +3,544 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Project StudentHub — StudentHub AI</title>
+<title>padhIQ — India's AI Study Platform</title>
 <link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   PADHIQ — HOMEPAGE REDESIGN
+   Aesthetic: Cosmic Indian Futurism
+   ═══════════════════════════════════════════════ */
+
+/* ── HERO ─────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 2rem 80px;
+  position: relative; overflow: hidden;
+}
+
+/* Animated scan line */
+.hero::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  animation: scanDown 6s linear infinite;
+  opacity: 0.4;
+  pointer-events: none;
+}
+@keyframes scanDown {
+  0%   { top: 10%; opacity: 0; }
+  10%  { opacity: 0.4; }
+  90%  { opacity: 0.4; }
+  100% { top: 90%; opacity: 0; }
+}
+
+/* Radial glow behind headline */
+.hero-glow {
+  position: absolute;
+  width: 700px; height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,240,255,0.07) 0%, rgba(0,100,200,0.04) 40%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -55%);
+  pointer-events: none;
+  animation: glowPulse 4s ease-in-out infinite alternate;
+}
+@keyframes glowPulse {
+  from { opacity: 0.6; transform: translate(-50%,-55%) scale(1); }
+  to   { opacity: 1;   transform: translate(-50%,-55%) scale(1.1); }
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(0,240,255,0.06);
+  border: 1px solid rgba(0,240,255,0.18);
+  color: var(--cyan);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 0.45rem 1.1rem; border-radius: 999px;
+  margin-bottom: 2.5rem;
+  animation: fadeUp 0.8s 0.2s both;
+}
+.eyebrow-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  animation: pulse 2s infinite;
+}
+
+/* BIG LOGO */
+.hero-wordmark {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: clamp(4rem, 14vw, 9.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: #fff;
+  animation: logoReveal 1.2s 0.3s both;
+  position: relative;
+}
+.hero-wordmark .w-padh { color: #fff; }
+.hero-wordmark .w-iq {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--cyan);
+  text-shadow: none;
+  position: relative;
+}
+.hero-wordmark .w-iq::after {
+  content: 'IQ';
+  position: absolute; left: 0; top: 0;
+  color: var(--cyan);
+  filter: blur(18px);
+  opacity: 0.5;
+  -webkit-text-stroke: 0;
+}
+
+.hero-sub {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: rgba(148,163,184,0.8);
+  margin-top: 1.5rem; line-height: 1.7;
+  max-width: 520px;
+  animation: fadeUp 0.8s 0.7s both;
+}
+.hero-sub strong { color: #e2e8f0; font-weight: 700; }
+
+/* Hero CTA row */
+.hero-cta-row {
+  display: flex; gap: 0.9rem; flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 2.5rem;
+  animation: fadeUp 0.8s 0.9s both;
+}
+.cta-primary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.9rem 2rem; border-radius: 999px;
+  background: linear-gradient(135deg, var(--cyan), var(--green));
+  color: #020617; font-family: 'Syne', sans-serif;
+  font-weight: 800; font-size: 0.95rem;
+  border: none; cursor: pointer;
+  box-shadow: 0 0 32px rgba(0,240,255,0.35), 0 4px 24px rgba(0,0,0,0.3);
+  transition: all 0.25s; text-decoration: none;
+  position: relative; overflow: hidden;
+}
+.cta-primary::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0; transition: opacity 0.2s;
+}
+.cta-primary:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 0 48px rgba(0,240,255,0.5), 0 8px 32px rgba(0,0,0,0.3); }
+.cta-primary:hover::before { opacity: 1; }
+
+.cta-ghost {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.9rem 1.8rem; border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(226,232,240,0.8); font-family: 'Syne', sans-serif;
+  font-weight: 700; font-size: 0.95rem;
+  cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.cta-ghost:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.07); color: #fff; }
+
+/* Stats strip */
+.hero-stats-strip {
+  display: flex; align-items: center; gap: 0;
+  margin-top: 4rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px; overflow: hidden;
+  animation: fadeUp 0.8s 1.1s both;
+}
+.hstat {
+  padding: 1rem 2.2rem; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.07);
+}
+.hstat:last-child { border-right: none; }
+.hstat-num {
+  display: block;
+  font-family: 'Orbitron', monospace;
+  font-size: 1.5rem; font-weight: 700; color: var(--cyan);
+}
+.hstat-label {
+  display: block; font-size: 0.65rem;
+  color: var(--muted); letter-spacing: 0.12em;
+  text-transform: uppercase; margin-top: 0.2rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── SECTION COMMON ──────────────────────────── */
+.s-wrap {
+  max-width: 1140px; margin: 0 auto;
+  padding: 7rem 2rem;
+}
+.s-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem; letter-spacing: 0.22em;
+  color: var(--cyan); text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.s-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 700; line-height: 1.15; color: #fff;
+  margin-bottom: 0.75rem;
+}
+.s-sub {
+  font-size: 0.95rem; color: var(--muted); line-height: 1.7;
+  max-width: 480px;
+}
+
+/* ── FEATURES — ASYMMETRIC BENTO ─────────────── */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 1.1rem;
+  margin-top: 3.5rem;
+}
+
+.bento {
+  background: rgba(10,22,40,0.6);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px; padding: 2rem;
+  position: relative; overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  backdrop-filter: blur(16px);
+}
+.bento:hover { transform: translateY(-5px); }
+
+/* Shimmer top edge on hover */
+.bento::before {
+  content: '';
+  position: absolute; top: 0; left: -100%; right: -100%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left 0.6s;
+}
+.bento:hover::before { left: 0; right: 0; }
+
+.bento-xl { grid-column: span 2; }
+.bento-tall { grid-row: span 2; }
+
+.bento.accent-cyan  { border-color: rgba(0,240,255,0.15); }
+.bento.accent-orange{ border-color: rgba(255,107,53,0.15); }
+.bento.accent-green { border-color: rgba(0,255,136,0.15); }
+
+.bento.accent-cyan:hover  { border-color: rgba(0,240,255,0.35); box-shadow: 0 20px 60px rgba(0,240,255,0.08); }
+.bento.accent-orange:hover{ border-color: rgba(255,107,53,0.35); box-shadow: 0 20px 60px rgba(255,107,53,0.08); }
+.bento.accent-green:hover { border-color: rgba(0,255,136,0.35); box-shadow: 0 20px 60px rgba(0,255,136,0.08); }
+
+.bento-glow {
+  position: absolute; width: 200px; height: 200px; border-radius: 50%;
+  pointer-events: none; top: -60px; right: -60px; opacity: 0.12;
+}
+.accent-cyan  .bento-glow { background: radial-gradient(circle, var(--cyan), transparent 70%); }
+.accent-orange .bento-glow { background: radial-gradient(circle, var(--orange), transparent 70%); }
+.accent-green .bento-glow { background: radial-gradient(circle, var(--green), transparent 70%); }
+
+.bento-tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.14em;
+  padding: 0.2rem 0.6rem; border-radius: 4px;
+  margin-bottom: 1rem; text-transform: uppercase;
+}
+.accent-cyan   .bento-tag { background: rgba(0,240,255,0.1);  color: var(--cyan);   border: 1px solid rgba(0,240,255,0.2); }
+.accent-orange .bento-tag { background: rgba(255,107,53,0.1); color: var(--orange); border: 1px solid rgba(255,107,53,0.2); }
+.accent-green  .bento-tag { background: rgba(0,255,136,0.1);  color: var(--green);  border: 1px solid rgba(0,255,136,0.2); }
+
+.bento-icon { font-size: 2.8rem; margin-bottom: 0.75rem; display: block; }
+.bento h3 {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.15rem; font-weight: 700; color: #fff;
+  margin-bottom: 0.6rem;
+}
+.bento p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+.bento-link {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  margin-top: 1.5rem; font-size: 0.82rem; font-weight: 700;
+  text-decoration: none; transition: gap 0.2s;
+}
+.accent-cyan   .bento-link { color: var(--cyan); }
+.accent-orange .bento-link { color: var(--orange); }
+.accent-green  .bento-link { color: var(--green); }
+.bento-link:hover { gap: 0.7rem; }
+
+/* Feature list in bento */
+.bento-list { list-style: none; margin-top: 1rem; }
+.bento-list li {
+  font-size: 0.8rem; color: rgba(226,232,240,0.75);
+  padding: 0.3rem 0;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.bento-list li::before {
+  content: ''; width: 4px; height: 4px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.accent-cyan   .bento-list li::before { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+.accent-orange .bento-list li::before { background: var(--orange); box-shadow: 0 0 6px var(--orange); }
+.accent-green  .bento-list li::before { background: var(--green); box-shadow: 0 0 6px var(--green); }
+
+/* ── AI TOOLS — NAMED TOOLS ──────────────────── */
+.tools-section-wrap {
+  max-width: 1140px; margin: 0 auto; padding: 0 2rem 7rem;
+}
+.tools-header-row {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem;
+}
+.tools-see-all {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  color: var(--muted); text-decoration: none; letter-spacing: 0.08em;
+  border: 1px solid rgba(255,255,255,0.1); padding: 0.4rem 1rem;
+  border-radius: 999px; transition: all 0.2s;
+}
+.tools-see-all:hover { color: var(--cyan); border-color: rgba(0,240,255,0.3); }
+
+/* Named tool cards — horizontal scroll on mobile */
+.named-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.ntool {
+  background: rgba(10,22,40,0.65);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px; padding: 1.6rem 1.4rem;
+  cursor: pointer; text-decoration: none;
+  transition: all 0.3s;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+  animation: fadeUp 0.5s ease both;
+}
+.ntool::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--tool-color, var(--cyan)), transparent);
+  transform: scaleX(0); transition: transform 0.3s;
+}
+.ntool:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.14); }
+.ntool:hover::after { transform: scaleX(1); }
+
+.ntool-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem; font-weight: 600; letter-spacing: 0.1em;
+  color: var(--muted); margin-bottom: 1rem;
+}
+.ntool-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.ntool-name {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem; font-weight: 700; color: #fff;
+  margin-bottom: 0.35rem; line-height: 1.3;
+}
+.ntool-tagline {
+  font-size: 0.75rem; color: var(--muted); line-height: 1.5; flex: 1;
+}
+.ntool-badge {
+  display: inline-block; margin-top: 1rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.58rem;
+  font-weight: 700; letter-spacing: 0.1em;
+  padding: 0.18rem 0.55rem; border-radius: 4px;
+  text-transform: uppercase; width: fit-content;
+}
+
+/* Tool color themes */
+.nt-cyan   { --tool-color: #00f0ff; }
+.nt-cyan   .ntool-num, .nt-cyan .ntool-badge { color: #00f0ff; }
+.nt-cyan   .ntool-badge { background: rgba(0,240,255,.1); border: 1px solid rgba(0,240,255,.25); }
+.nt-cyan:hover { box-shadow: 0 16px 40px rgba(0,240,255,0.08); }
+
+.nt-orange { --tool-color: #ff6b35; }
+.nt-orange .ntool-num, .nt-orange .ntool-badge { color: #ff6b35; }
+.nt-orange .ntool-badge { background: rgba(255,107,53,.1); border: 1px solid rgba(255,107,53,.25); }
+.nt-orange:hover { box-shadow: 0 16px 40px rgba(255,107,53,0.08); }
+
+.nt-green  { --tool-color: #00ff88; }
+.nt-green  .ntool-num, .nt-green .ntool-badge { color: #00ff88; }
+.nt-green  .ntool-badge { background: rgba(0,255,136,.1); border: 1px solid rgba(0,255,136,.25); }
+.nt-green:hover { box-shadow: 0 16px 40px rgba(0,255,136,0.08); }
+
+.nt-purple { --tool-color: #c084fc; }
+.nt-purple .ntool-num, .nt-purple .ntool-badge { color: #c084fc; }
+.nt-purple .ntool-badge { background: rgba(192,132,252,.1); border: 1px solid rgba(192,132,252,.25); }
+.nt-purple:hover { box-shadow: 0 16px 40px rgba(192,132,252,0.08); }
+
+.nt-gold   { --tool-color: #ffd700; }
+.nt-gold   .ntool-num, .nt-gold .ntool-badge { color: #ffd700; }
+.nt-gold   .ntool-badge { background: rgba(255,215,0,.1); border: 1px solid rgba(255,215,0,.25); }
+.nt-gold:hover { box-shadow: 0 16px 40px rgba(255,215,0,0.08); }
+
+/* ── MARKET PREVIEW ──────────────────────────── */
+.market-preview-wrap {
+  max-width: 1140px; margin: 0 auto; padding: 0 2rem 7rem;
+}
+.market-cards-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+  gap: 1.25rem; margin-top: 3rem;
+}
+.mkt-card {
+  background: rgba(10,22,40,0.65); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px; padding: 1.5rem;
+  transition: all 0.3s; position: relative; overflow: hidden;
+}
+.mkt-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,0.3); }
+.mkt-badge {
+  display: inline-block; font-family: 'JetBrains Mono',monospace;
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.12em;
+  padding: 0.2rem 0.6rem; border-radius: 4px; margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+.mb-orange { background: rgba(255,107,53,.12); color: var(--orange); border: 1px solid rgba(255,107,53,.2); }
+.mb-cyan   { background: rgba(0,240,255,.1);   color: var(--cyan);   border: 1px solid rgba(0,240,255,.2); }
+.mb-green  { background: rgba(0,255,136,.1);   color: var(--green);  border: 1px solid rgba(0,255,136,.2); }
+.mkt-title { font-weight: 700; font-size: 0.92rem; color: #fff; margin-bottom: 0.35rem; line-height: 1.4; }
+.mkt-seller { font-size: 0.72rem; color: var(--muted); margin-bottom: 1rem; }
+.mkt-price {
+  font-family: 'Orbitron', monospace; font-size: 1.3rem;
+  font-weight: 700; color: var(--cyan); margin-bottom: 1rem;
+}
+.mkt-price .original { font-size: 0.78rem; color: var(--muted); text-decoration: line-through; margin-left: 0.4rem; }
+.mkt-btn {
+  width: 100%; padding: 0.6rem; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04);
+  color: var(--text); font-family: 'Syne',sans-serif; font-weight: 700;
+  font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+}
+.mkt-btn:hover { background: rgba(255,255,255,0.09); }
+.mkt-btn.btn-cyan { background: rgba(0,240,255,.08); border-color: rgba(0,240,255,.25); color: var(--cyan); }
+.mkt-btn.btn-cyan:hover { background: rgba(0,240,255,.16); }
+.mkt-sell-card {
+  border: 1px dashed rgba(255,255,255,0.12); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center; gap: 0.75rem; min-height: 200px;
+}
+.mkt-sell-icon { font-size: 2.5rem; opacity: 0.35; }
+.mkt-sell-title { font-weight: 700; font-size: 0.9rem; color: rgba(255,255,255,0.6); }
+.mkt-sell-sub { font-size: 0.75rem; color: var(--muted); }
+.mkt-btn.btn-dashed { border: 1px dashed rgba(255,255,255,0.2); color: var(--muted); }
+.mkt-btn.btn-dashed:hover { border-color: var(--cyan); color: var(--cyan); }
+
+/* ── CHAT EMBED ───────────────────────────────── */
+.chat-embed-wrap {
+  max-width: 1140px; margin: 0 auto; padding: 0 2rem 7rem;
+}
+.chat-embed-grid {
+  display: grid; grid-template-columns: 1fr 1.6fr; gap: 2.5rem;
+  align-items: start; margin-top: 3rem;
+}
+.chat-side-info { padding-top: 1rem; }
+.chat-reason {
+  display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-start;
+}
+.cr-icon {
+  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+  background: rgba(0,240,255,0.08); border: 1px solid rgba(0,240,255,0.15);
+}
+.cr-text .cr-title { font-weight: 700; font-size: 0.88rem; color: #fff; margin-bottom: 0.2rem; }
+.cr-text .cr-desc  { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+.chat-container {
+  background: rgba(8,16,32,0.8); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px; overflow: hidden; backdrop-filter: blur(20px);
+  box-shadow: 0 0 60px rgba(0,240,255,0.04);
+}
+.chat-header {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1.1rem 1.4rem; border-bottom: 1px solid rgba(255,255,255,0.07);
+  background: rgba(0,240,255,0.03);
+}
+.chat-avatar {
+  font-size: 1.3rem; width: 38px; height: 38px;
+  background: rgba(0,240,255,0.1); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(0,240,255,0.2); flex-shrink: 0;
+}
+.chat-name { font-weight: 700; font-size: 0.88rem; color: #fff; }
+.chat-status {
+  font-size: 0.68rem; color: var(--muted);
+  display: flex; align-items: center; gap: 0.35rem; margin-top: 0.1rem;
+}
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+.clear-btn { margin-left: auto; background: none; border: 1px solid rgba(255,255,255,0.08); color: var(--muted); padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.72rem; cursor: pointer; transition: all 0.2s; font-family: 'Syne',sans-serif; }
+.clear-btn:hover { border-color: rgba(255,80,80,.4); color: #ff6464; }
+
+.chat-box { height: 300px; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.9rem; scrollbar-width: thin; scrollbar-color: rgba(0,240,255,.2) transparent; }
+.chat-box::-webkit-scrollbar { width: 3px; }
+.chat-box::-webkit-scrollbar-thumb { background: rgba(0,240,255,.2); border-radius: 999px; }
+
+.ai-message { display: flex; align-items: flex-start; gap: 0.6rem; max-width: 88%; animation: msgIn .3s ease both; }
+.user-message { display: flex; flex-direction: row-reverse; align-items: flex-start; gap: 0.6rem; max-width: 88%; margin-left: auto; animation: msgIn .3s ease both; }
+@keyframes msgIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.msg-icon { font-size: 1rem; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,240,255,.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.user-message .msg-icon { background: rgba(255,107,53,.12); }
+.msg-content { background: rgba(0,240,255,.05); border: 1px solid rgba(0,240,255,.1); border-radius: 10px 10px 10px 3px; padding: 0.75rem 0.9rem; font-size: 0.83rem; line-height: 1.65; color: var(--text); }
+.user-message .msg-content { background: rgba(255,107,53,.07); border-color: rgba(255,107,53,.12); border-radius: 10px 10px 3px 10px; }
+.typing-dot { display: inline-block; width: 5px; height: 5px; background: var(--cyan); border-radius: 50%; animation: typingBounce 1s infinite; margin: 0 2px; }
+.typing-dot:nth-child(2) { animation-delay: .15s; }
+.typing-dot:nth-child(3) { animation-delay: .3s; }
+@keyframes typingBounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-5px)} }
+
+.chat-suggestions { display: flex; gap: .4rem; padding: 0 1.25rem .6rem; flex-wrap: wrap; }
+.suggestion { background: rgba(255,255,255,.03); border: 1px solid var(--border); color: var(--muted); padding: .3rem .8rem; border-radius: 999px; font-family: 'Syne',sans-serif; font-size: .72rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+.suggestion:hover { border-color: rgba(0,240,255,.3); color: var(--cyan); background: rgba(0,240,255,.04); }
+
+.chat-input-row { display: flex; gap: .6rem; padding: .9rem 1.25rem 1.1rem; border-top: 1px solid rgba(255,255,255,.07); }
+.chat-input-row input { flex: 1; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 8px; padding: .65rem .9rem; color: #fff; font-family: 'Syne',sans-serif; font-size: .84rem; outline: none; transition: border-color .2s; }
+.chat-input-row input:focus { border-color: rgba(0,240,255,.4); }
+.chat-input-row input::placeholder { color: var(--muted); }
+.send-btn { background: var(--cyan); color: var(--navy); border: none; padding: .65rem 1.25rem; border-radius: 8px; font-family: 'Syne',sans-serif; font-weight: 800; font-size: .84rem; cursor: pointer; transition: all .2s; white-space: nowrap; }
+.send-btn:hover { box-shadow: 0 0 20px rgba(0,240,255,.4); transform: translateY(-1px); }
+.send-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+/* ── FOOTER ───────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 3rem 2rem 2.5rem;
+  max-width: 1140px; margin: 0 auto;
+}
+.footer-row {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem;
+}
+.footer-logo {
+  font-family: 'Orbitron', monospace; font-size: 1.3rem; font-weight: 900;
+  color: var(--cyan); text-shadow: 0 0 20px var(--cyan); letter-spacing: 4px;
+}
+.footer-links { display: flex; gap: 1.8rem; flex-wrap: wrap; }
+.footer-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+.footer-links a:hover { color: var(--cyan); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); }
+.footer-copy { font-size: 0.72rem; color: rgba(100,116,139,0.5); font-family: 'JetBrains Mono', monospace; }
+.footer-bharat { font-size: 0.72rem; color: var(--muted); }
+
+/* ── RESPONSIVE ───────────────────────────────── */
+@media (max-width: 900px) {
+  .bento-grid { grid-template-columns: 1fr 1fr; }
+  .bento-xl { grid-column: span 2; }
+  .named-tools-grid { grid-template-columns: repeat(2,1fr); }
+  .chat-embed-grid { grid-template-columns: 1fr; }
+  .chat-side-info { display: none; }
+}
+@media (max-width: 600px) {
+  .bento-grid { grid-template-columns: 1fr; }
+  .bento-xl, .bento-tall { grid-column: span 1; grid-row: span 1; }
+  .named-tools-grid { grid-template-columns: 1fr 1fr; }
+  .hero-stats-strip { flex-wrap: wrap; }
+  .hstat { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); width: 50%; }
+  .market-cards-row { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
 
-<!-- BACKGROUND LAYERS -->
+<!-- BACKGROUND -->
 <div class="stars" id="stars"></div>
 <div class="nebula"></div>
 <div class="grid-overlay"></div>
@@ -27,222 +558,311 @@
   <div id="navAuth"></div>
 </nav>
 
-<!-- HERO -->
+<!-- ════════════════════════════════════════
+     HERO
+     ════════════════════════════════════════ -->
 <header class="hero" id="home">
-  <div class="hero-badge">🇮🇳 Built for Bharat · Free for Students</div>
-  <h1 class="logo">STUD HUB<br><span class="logo-accent">padhIQ</span></h1>
-  <p class="tagline">India's Futuristic Learning Platform<br><span class="tagline-sub">Free Resources · AI Study Guide · Local Marketplace</span></p>
-  <div class="hero-btns">
-    <button class="btn-primary" onclick="window.location='study-guide.html'">🚀 Ask AI Tutor</button>
-    <button class="btn-ghost" onclick="window.location='resources.html'">Explore →</button>
+  <div class="hero-glow"></div>
+
+  <div class="hero-eyebrow">
+    <span class="eyebrow-dot"></span>
+    Built for Bharat &nbsp;·&nbsp; Free Forever &nbsp;·&nbsp; 🇮🇳
   </div>
-  <div class="hero-stats">
-    <div class="stat"><span class="stat-num">9–12</span><span class="stat-label">Classes</span></div>
-    <div class="stat-divider"></div>
-    <div class="stat"><span class="stat-num">₹0</span><span class="stat-label">For Students</span></div>
-    <div class="stat-divider"></div>
-    <div class="stat"><span class="stat-num">AI</span><span class="stat-label">Powered</span></div>
+
+  <h1 class="hero-wordmark">
+    <span class="w-padh">padh</span><span class="w-iq">IQ</span>
+  </h1>
+
+  <p class="hero-sub">
+    India's first <strong>AI-powered study platform</strong> built by students, for students.<br>
+    NCERT-aligned. Board-exam focused. Zero cost.
+  </p>
+
+  <div class="hero-cta-row">
+    <a href="study-guide.html" class="cta-primary">🚀 Ask AI Tutor</a>
+    <a href="resources.html"   class="cta-ghost">Browse Resources →</a>
+  </div>
+
+  <div class="hero-stats-strip">
+    <div class="hstat"><span class="hstat-num">9–12</span><span class="hstat-label">Classes</span></div>
+    <div class="hstat"><span class="hstat-num">₹0</span><span class="hstat-label">Always Free</span></div>
+    <div class="hstat"><span class="hstat-num">8</span><span class="hstat-label">AI Tools</span></div>
+    <div class="hstat"><span class="hstat-num">24/7</span><span class="hstat-label">Available</span></div>
   </div>
 </header>
 
-<!-- FEATURES -->
-<section class="features-section" id="features">
-  <div class="section-label">WHAT WE OFFER</div>
-  <h2 class="section-title">Three pillars.<br>One platform.</h2>
-  <div class="features-grid">
+<!-- ════════════════════════════════════════
+     FEATURES — BENTO LAYOUT
+     ════════════════════════════════════════ -->
+<div class="s-wrap" style="padding-bottom:0">
+  <div class="s-label">What We Offer</div>
+  <h2 class="s-title">Three pillars.<br>One platform.</h2>
+  <p class="s-sub">Everything a Class 9–12 student needs — free resources, AI tools, and a marketplace — all under one roof.</p>
 
-    <div class="feature-card card-orange">
-      <div class="feature-icon">📚</div>
-      <div class="feature-tag">FREE FOREVER</div>
-      <h3>Free Resources</h3>
-      <p>NCERT-aligned notes, past papers, and summaries for Classes 9, 10, 11 &amp; 12 — all subjects, zero cost.</p>
-      <ul class="feature-list">
-        <li>✓ Chapter-wise notes</li>
-        <li>✓ Board exam question banks</li>
-        <li>✓ Formula sheets &amp; mind maps</li>
-        <li>✓ Available offline</li>
-      </ul>
-      <a href="resources.html" class="feature-link">Browse Resources →</a>
-    </div>
+  <div class="bento-grid">
 
-    <div class="feature-card card-cyan card-featured">
-      <div class="feature-glow"></div>
-      <div class="feature-icon">🤖</div>
-      <div class="feature-tag">AI POWERED</div>
+    <!-- BIG: AI Study Guide -->
+    <div class="bento bento-xl accent-cyan" style="cursor:pointer" onclick="location='study-guide.html'">
+      <div class="bento-glow"></div>
+      <span class="bento-tag">⭐ Most Used</span>
+      <span class="bento-icon">🤖</span>
       <h3>AI Study Guide</h3>
-      <p>Ask any doubt. Get instant, accurate answers tuned for CBSE/ICSE students. Like having a personal tutor at 2 AM.</p>
-      <ul class="feature-list">
-        <li>✓ Subject-specific AI</li>
-        <li>✓ Step-by-step solutions</li>
-        <li>✓ Exam strategy advice</li>
-        <li>✓ Available 24/7</li>
+      <p>Your personal tutor available 24/7. Ask any doubt and instantly receive a step-by-step explanation, an Indian example, practice questions, and a board exam tip — all in one reply.</p>
+      <ul class="bento-list">
+        <li>Subject-specific answers with NCERT context</li>
+        <li>Step-by-step solutions with Indian examples</li>
+        <li>3 practice questions per reply — Easy to Hard</li>
+        <li>Board exam tips baked into every answer</li>
       </ul>
-      <a href="study-guide.html" class="feature-link">Try AI Now →</a>
+      <a href="study-guide.html" class="bento-link">Start studying now →</a>
     </div>
 
-    <div class="feature-card card-green">
-      <div class="feature-icon">🛒</div>
-      <div class="feature-tag">LOCAL FIRST</div>
+    <!-- Free Resources -->
+    <div class="bento accent-orange" style="cursor:pointer" onclick="location='resources.html'">
+      <div class="bento-glow"></div>
+      <span class="bento-tag">Free Forever</span>
+      <span class="bento-icon">📚</span>
+      <h3>Free Resources</h3>
+      <p>NCERT-aligned notes, past papers, formula sheets, and summaries for Classes 9–12. Zero cost, zero signup required.</p>
+      <a href="resources.html" class="bento-link">Browse resources →</a>
+    </div>
+
+    <!-- Marketplace -->
+    <div class="bento accent-green" style="cursor:pointer" onclick="location='marketplace.html'">
+      <div class="bento-glow"></div>
+      <span class="bento-tag">Local First</span>
+      <span class="bento-icon">🛒</span>
       <h3>Marketplace</h3>
-      <p>Buy &amp; sell handwritten notes, books, and study material. Connect with local tutors in your city.</p>
-      <ul class="feature-list">
-        <li>✓ Sell your notes</li>
-        <li>✓ Buy used books cheap</li>
-        <li>✓ Find local tutors</li>
-        <li>✓ UPI payments</li>
-      </ul>
-      <a href="marketplace.html" class="feature-link">Visit Marketplace →</a>
+      <p>Buy and sell handwritten notes, used books, and connect with local tutors. Your city's student economy, digital.</p>
+      <a href="marketplace.html" class="bento-link">Visit marketplace →</a>
     </div>
 
   </div>
-</section>
+</div>
 
-<!-- AI TOOLS -->
-<section class="tools-section" id="tools">
-  <div class="section-label">AI TOOLKIT</div>
-  <h2 class="section-title">8 AI tools.<br>All in one place.</h2>
-  <div class="tool-grid">
-    <div class="tool t1" onclick="window.location='ai-tools.html'">
-      <div class="tool-icon">🤖</div>
-      <div class="tool-name">Study Guide</div>
-      <div class="tool-desc">Ask any doubt 24/7</div>
+<!-- ════════════════════════════════════════
+     NAMED AI TOOLS
+     ════════════════════════════════════════ -->
+<div class="tools-section-wrap">
+  <div class="tools-header-row">
+    <div>
+      <div class="s-label">AI Toolkit</div>
+      <h2 class="s-title" style="margin-bottom:0">Eight tools.<br>All named. All free.</h2>
     </div>
-    <div class="tool t2" onclick="window.location='ai-tools.html'">
-      <div class="tool-icon">📸</div>
-      <div class="tool-name">Doubt Solver</div>
-      <div class="tool-desc">Upload photo → solution</div>
+    <a href="ai-tools.html" class="tools-see-all">See all tools →</a>
+  </div>
+
+  <div class="named-tools-grid">
+
+    <div class="ntool nt-cyan" onclick="location='study-guide.html'">
+      <div class="ntool-num">01 / AI TUTOR</div>
+      <div class="ntool-icon">🤖</div>
+      <div class="ntool-name">VidyaBot</div>
+      <div class="ntool-tagline">Your AI study guide. Ask anything, get NCERT-aligned answers instantly, 24/7.</div>
+      <span class="ntool-badge">Always On</span>
     </div>
-    <div class="tool t3" onclick="window.location='ai-tools.html'">
-      <div class="tool-icon">🔮</div>
-      <div class="tool-name">Exam Predictor</div>
-      <div class="tool-desc">Predict board questions</div>
+
+    <div class="ntool nt-orange" onclick="location='doubt-solver.html'">
+      <div class="ntool-num">02 / DOUBT SOLVER</div>
+      <div class="ntool-icon">📸</div>
+      <div class="ntool-name">SnapSolve</div>
+      <div class="ntool-tagline">Snap a photo of any question. Get a full step-by-step solution in seconds.</div>
+      <span class="ntool-badge">Photo → Answer</span>
     </div>
-    <div class="tool t4" onclick="window.location='ai-tools.html'">
-      <div class="tool-icon">🎮</div>
-      <div class="tool-name">XP & Badges</div>
-      <div class="tool-desc">Gamified daily quiz</div>
+
+    <div class="ntool nt-purple" onclick="location='exam-predictor.html'">
+      <div class="ntool-num">03 / PREDICTOR</div>
+      <div class="ntool-icon">🔮</div>
+      <div class="ntool-name">BhavisyaAI</div>
+      <div class="ntool-tagline">Predicts your board exam questions from 10 years of CBSE patterns. Study smarter.</div>
+      <span class="ntool-badge">Board Focused</span>
     </div>
-    <div class="tool t5" onclick="window.location='ai-tools.html'">
-      <div class="tool-icon">📅</div>
-      <div class="tool-name">Study Planner</div>
-      <div class="tool-desc">AI 30-day schedule</div>
+
+    <div class="ntool nt-green" onclick="location='gamified.html'">
+      <div class="ntool-num">04 / XP SYSTEM</div>
+      <div class="ntool-icon">🎮</div>
+      <div class="ntool-name">XP Arena</div>
+      <div class="ntool-tagline">Earn XP, unlock badges, compete on a live global leaderboard. Fresh AI quizzes daily.</div>
+      <span class="ntool-badge">Daily Quiz</span>
     </div>
-    <div class="tool t6" onclick="window.location='ai-tools.html'">
-      <div class="tool-icon">⚡</div>
-      <div class="tool-name">Notes Generator</div>
-      <div class="tool-desc">Chapter notes instantly</div>
+
+    <div class="ntool nt-gold" onclick="location='study-planner.html'">
+      <div class="ntool-num">05 / PLANNER</div>
+      <div class="ntool-icon">📅</div>
+      <div class="ntool-name">CalendarAI</div>
+      <div class="ntool-tagline">Set your exam date. Get a personalised 30-day study plan, chapter by chapter.</div>
+      <span class="ntool-badge">30-Day Plan</span>
     </div>
-    <div class="tool t7" onclick="window.location='ai-tools.html'">
-      <div class="tool-icon">🎯</div>
-      <div class="tool-name">Exam Coach</div>
-      <div class="tool-desc">Score maximising strategy</div>
+
+    <div class="ntool nt-cyan" onclick="launchTool('Create detailed chapter-wise notes for Class 10 Science — Matter in Our Surroundings. Include all key points, definitions and formulas.')">
+      <div class="ntool-num">06 / NOTES</div>
+      <div class="ntool-icon">⚡</div>
+      <div class="ntool-name">NoteStorm</div>
+      <div class="ntool-tagline">Auto-generate structured NCERT notes for any chapter in any subject. Instant.</div>
+      <span class="ntool-badge">Instant Notes</span>
+    </div>
+
+    <div class="ntool nt-orange" onclick="launchTool('Give me 10 most important predicted questions for Class 12 Physics Board exam with short answers.')">
+      <div class="ntool-num">07 / QUESTION BANK</div>
+      <div class="ntool-icon">📚</div>
+      <div class="ntool-name">PaperCrack</div>
+      <div class="ntool-tagline">High-weightage predicted questions for any chapter. Built on 10 years of board patterns.</div>
+      <span class="ntool-badge">High Weightage</span>
+    </div>
+
+    <div class="ntool nt-purple" onclick="launchTool('Give me 5 practice problems on Trigonometry for Class 10 with full step-by-step solutions. Vary difficulty easy to hard.')">
+      <div class="ntool-num">08 / PRACTICE</div>
+      <div class="ntool-icon">🧩</div>
+      <div class="ntool-name">SolveLab</div>
+      <div class="ntool-tagline">Practice problems with full solutions for any topic. Levelled Easy → Hard.</div>
+      <span class="ntool-badge">With Solutions</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     MARKETPLACE PREVIEW
+     ════════════════════════════════════════ -->
+<div class="market-preview-wrap">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:0">
+    <div>
+      <div class="s-label">Marketplace</div>
+      <h2 class="s-title" style="margin-bottom:0">Buy. Sell. <span style="color:var(--green)">Connect.</span></h2>
+    </div>
+    <a href="marketplace.html" style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);text-decoration:none;border:1px solid rgba(255,255,255,.1);padding:.4rem 1rem;border-radius:999px;transition:all .2s" onmouseover="this.style.color='var(--cyan)';this.style.borderColor='rgba(0,240,255,.3)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='rgba(255,255,255,.1)'">Visit marketplace →</a>
+  </div>
+  <div class="market-cards-row">
+    <div class="mkt-card">
+      <div class="mkt-badge mb-orange">NOTES</div>
+      <div class="mkt-title">Class 12 Physics — All Chapters</div>
+      <div class="mkt-seller">Priya S. · Patna &nbsp;⭐ 4.9 (34 reviews)</div>
+      <div class="mkt-price">₹49 <span class="original">₹200</span></div>
+      <button class="mkt-btn" onclick="location='marketplace.html'">Buy Now</button>
+    </div>
+    <div class="mkt-card" style="border-color:rgba(0,240,255,.2);background:rgba(0,240,255,.03)">
+      <div class="mkt-badge mb-cyan">TOP TUTOR</div>
+      <div class="mkt-title">Maths Tutor · Class 9–12 · CBSE</div>
+      <div class="mkt-seller">Rahul Kumar · Patna &nbsp;⭐ 5.0 (61 reviews)</div>
+      <div class="mkt-price">₹299<span style="font-size:.75rem;opacity:.6">/session</span></div>
+      <button class="mkt-btn btn-cyan" onclick="location='marketplace.html'">Book Session</button>
+    </div>
+    <div class="mkt-card">
+      <div class="mkt-badge mb-green">BOOKS</div>
+      <div class="mkt-title">HC Verma Vol 1 + 2 (Used, Good Condition)</div>
+      <div class="mkt-seller">Amit R. · Bihar Sharif &nbsp;⭐ 4.7 (12 reviews)</div>
+      <div class="mkt-price">₹180 <span class="original">₹600</span></div>
+      <button class="mkt-btn" onclick="location='marketplace.html'">Buy Now</button>
+    </div>
+    <div class="mkt-card mkt-sell-card">
+      <div class="mkt-sell-icon">➕</div>
+      <div class="mkt-sell-title">List your notes or services</div>
+      <div class="mkt-sell-sub">Earn money from what you know</div>
+      <button class="mkt-btn btn-dashed" onclick="location='marketplace.html'">Sell Here →</button>
     </div>
   </div>
-  <div style="text-align:center;margin-top:2rem">
-    <a href="ai-tools.html" style="display:inline-block;padding:.7rem 2rem;border-radius:999px;border:1px solid rgba(0,240,255,.3);color:var(--cyan);font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;text-decoration:none;transition:all .2s" onmouseover="this.style.background='rgba(0,240,255,.08)'" onmouseout="this.style.background='transparent'">See All AI Tools →</a>
+</div>
+
+<!-- ════════════════════════════════════════
+     AI CHAT EMBED
+     ════════════════════════════════════════ -->
+<div class="chat-embed-wrap">
+  <div style="margin-bottom:0">
+    <div class="s-label">Live AI Tutor</div>
+    <h2 class="s-title" style="margin-bottom:0">Your AI tutor.<br>Ask anything.</h2>
   </div>
-</section>
-
-<!-- MARKETPLACE PREVIEW -->
-<section class="marketplace-section" id="marketplace">
-  <div class="section-label">MARKETPLACE</div>
-  <h2 class="section-title">Buy. Sell. Connect.<br>Locally.</h2>
-  <div class="market-grid">
-    <div class="market-card">
-      <div class="market-badge">NOTES</div>
-      <div class="market-title">Class 12 Physics — All Chapters</div>
-      <div class="market-seller">By Priya S., Patna · ⭐ 4.9</div>
-      <div class="market-price">₹49 <span class="original">₹200</span></div>
-      <button class="market-btn">Buy Now</button>
-    </div>
-    <div class="market-card market-featured">
-      <div class="market-badge badge-cyan">TUTOR</div>
-      <div class="market-title">Maths Tutor · Class 9–12</div>
-      <div class="market-seller">Rahul Kumar · Patna · ⭐ 5.0</div>
-      <div class="market-price">₹299<span style="font-size:0.75rem;opacity:0.7">/session</span></div>
-      <button class="market-btn btn-cyan">Book Session</button>
-    </div>
-    <div class="market-card">
-      <div class="market-badge badge-green">BOOKS</div>
-      <div class="market-title">HC Verma Vol 1 + 2 — Used</div>
-      <div class="market-seller">Amit R., Bihar Sharif · ⭐ 4.7</div>
-      <div class="market-price">₹180 <span class="original">₹600</span></div>
-      <button class="market-btn">Buy Now</button>
-    </div>
-    <div class="market-card market-sell">
-      <div class="market-icon">➕</div>
-      <div class="market-title">List your notes or services</div>
-      <div class="market-seller">Earn money from what you know</div>
-      <button class="market-btn btn-outline">Sell Here →</button>
-    </div>
-  </div>
-</section>
-
-<!-- AI CHAT -->
-<section class="chat-section" id="chat">
-  <div class="section-label">AI STUDY GUIDE</div>
-  <h2 class="section-title">Your AI tutor.<br>Ask anything.</h2>
-
-  <div class="chat-container glass">
-    <div class="chat-header">
-      <div class="chat-avatar">🤖</div>
-      <div>
-        <div class="chat-name">AAA Study Guide</div>
-        <div class="chat-status"><span class="status-dot"></span> Online · Powered by Claude AI</div>
+  <div class="chat-embed-grid">
+    <div class="chat-side-info">
+      <div class="chat-reason">
+        <div class="cr-icon">🕐</div>
+        <div class="cr-text">
+          <div class="cr-title">Available at 2 AM</div>
+          <div class="cr-desc">No coaching class needed. VidyaBot answers when teachers can't.</div>
+        </div>
       </div>
-      <button class="clear-btn" onclick="clearChat()">Clear</button>
-    </div>
-
-    <div class="chat-box" id="chatBox">
-      <div class="ai-message">
-        <div class="msg-icon">🤖</div>
-        <div class="msg-content">
-          Namaste! 👋 I'm your AI Study Guide for Classes 9–12.<br><br>
-          Ask me anything — doubts, explanations, exam tips, or try one of the <strong>AI Tools</strong> above!
+      <div class="chat-reason">
+        <div class="cr-icon">🇮🇳</div>
+        <div class="cr-text">
+          <div class="cr-title">Built for India</div>
+          <div class="cr-desc">Every answer uses Indian examples, NCERT context, and board exam focus.</div>
+        </div>
+      </div>
+      <div class="chat-reason">
+        <div class="cr-icon">📊</div>
+        <div class="cr-text">
+          <div class="cr-title">Tracks your progress</div>
+          <div class="cr-desc">Every question builds your subject profile, streak, and dashboard stats.</div>
+        </div>
+      </div>
+      <div class="chat-reason">
+        <div class="cr-icon">₹</div>
+        <div class="cr-text">
+          <div class="cr-title">Zero cost</div>
+          <div class="cr-desc">No subscription. No paywall. Powered by Groq AI, free for every student.</div>
         </div>
       </div>
     </div>
 
-    <div class="chat-suggestions">
-      <button class="suggestion" onclick="setInput('Explain Newton\'s laws with examples')">Newton's Laws</button>
-      <button class="suggestion" onclick="setInput('How does photosynthesis work?')">Photosynthesis</button>
-      <button class="suggestion" onclick="setInput('Solve: x² + 5x + 6 = 0')">Solve Quadratic</button>
-      <button class="suggestion" onclick="setInput('Tips for Class 10 board exam')">Board Tips</button>
-    </div>
-
-    <div class="chat-input-row">
-      <input type="text" id="userInput" placeholder="Ask a study question... (e.g. Explain photosynthesis)" onkeydown="if(event.key==='Enter') sendMessage()">
-      <button class="send-btn" onclick="sendMessage()" id="sendBtn">
-        <span id="sendBtnText">Send ✦</span>
-      </button>
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-avatar">🤖</div>
+        <div>
+          <div class="chat-name">VidyaBot · AI Study Guide</div>
+          <div class="chat-status"><span class="status-dot"></span> Online · Powered by Groq AI</div>
+        </div>
+        <button class="clear-btn" onclick="clearChat()">Clear</button>
+      </div>
+      <div class="chat-box" id="chatBox">
+        <div class="ai-message">
+          <div class="msg-icon">🤖</div>
+          <div class="msg-content">
+            Namaste! 👋 I'm <strong>VidyaBot</strong>, your AI Study Guide for Classes 9–12.<br><br>
+            Ask me any doubt — Maths, Science, Physics, Chemistry, History, Geography, or any CBSE/ICSE subject!
+          </div>
+        </div>
+      </div>
+      <div class="chat-suggestions">
+        <button class="suggestion" onclick="setInput('Explain Newton\'s laws with Indian examples')">Newton's Laws</button>
+        <button class="suggestion" onclick="setInput('How does photosynthesis work?')">Photosynthesis</button>
+        <button class="suggestion" onclick="setInput('Solve: x² + 5x + 6 = 0')">Solve Quadratic</button>
+        <button class="suggestion" onclick="setInput('Tips for Class 10 board exam')">Board Tips</button>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="userInput" placeholder="Ask VidyaBot anything..." onkeydown="if(event.key==='Enter')sendMessage()">
+        <button class="send-btn" onclick="sendMessage()" id="sendBtn"><span id="sendBtnText">Send ✦</span></button>
+      </div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-logo">Project AAA</div>
-  <p class="footer-tagline">Free education for every Indian student 🇮🇳</p>
-  <div class="footer-links">
-    <a href="about.html">About</a>
-    <a href="about.html">Privacy</a>
-    <a href="about.html">Contact</a>
-    <a href="marketplace.html">Sell on AAA</a>
+<footer style="border-top:1px solid rgba(255,255,255,0.06);padding:3rem 2rem 2.5rem;max-width:1140px;margin:0 auto">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-bottom:2rem">
+    <div style="font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:900;color:var(--cyan);text-shadow:0 0 20px var(--cyan);letter-spacing:4px">padhIQ</div>
+    <div style="display:flex;gap:1.8rem;flex-wrap:wrap">
+      <a href="about.html"       style="color:var(--muted);text-decoration:none;font-size:.82rem;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--muted)'">About</a>
+      <a href="resources.html"   style="color:var(--muted);text-decoration:none;font-size:.82rem;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--muted)'">Resources</a>
+      <a href="marketplace.html" style="color:var(--muted);text-decoration:none;font-size:.82rem;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--muted)'">Marketplace</a>
+      <a href="about.html"       style="color:var(--muted);text-decoration:none;font-size:.82rem;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--muted)'">Contact</a>
+    </div>
   </div>
-  <p class="footer-copy">© 2025 Project AAA · Built with ❤️ in India</p>
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.05)">
+    <span style="font-size:.7rem;color:rgba(100,116,139,.5);font-family:'JetBrains Mono',monospace">© 2025 Project AAA · padhIQ · Made in Bokaro, Jharkhand</span>
+    <span style="font-size:.72rem;color:var(--muted)">Free education for every Indian student 🇮🇳</span>
+  </div>
 </footer>
 
 <script src="script.js"></script>
-
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
 <script>
 initNavAuth();
-</script>
-<script>
-window.addEventListener('scroll',()=>{
-  document.querySelector('.navbar').classList.toggle('scrolled',window.scrollY>20);
+function launchTool(prompt) {
+  localStorage.setItem('aaa_tool_prompt', prompt);
+  window.location.href = 'study-guide.html';
+}
+window.addEventListener('scroll', () => {
+  document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 20);
 });
 </script>
 </body>
