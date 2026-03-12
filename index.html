@@ -3,551 +3,598 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>padhIQ — India's AI Study Platform</title>
+<title>padhIQ — India's AI Study OS</title>
 <link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
+
 /* ═══════════════════════════════════════════════
-   PADHIQ — HOMEPAGE REDESIGN
-   Aesthetic: Cosmic Indian Futurism
+   PADHIQ HOMEPAGE v5 — CINEMATIC MAXIMALIST
+   Aesthetic: Deep Space × Indian Futurism
    ═══════════════════════════════════════════════ */
+
+/* ── CURSOR ── */
+* { cursor: none !important; }
+#cursor {
+  position: fixed; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--cyan); mix-blend-mode: screen;
+  pointer-events: none; z-index: 9999; transform: translate(-50%,-50%);
+  transition: width .15s, height .15s, opacity .15s;
+  box-shadow: 0 0 16px var(--cyan), 0 0 32px rgba(0,240,255,.3);
+}
+#cursor-ring {
+  position: fixed; width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid rgba(0,240,255,.4);
+  pointer-events: none; z-index: 9998; transform: translate(-50%,-50%);
+  transition: all .08s ease-out;
+}
+body:hover #cursor { opacity: 1; }
 
 /* ── HERO ─────────────────────────────────────── */
 .hero {
   min-height: 100vh;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+  display: grid; place-items: center;
   text-align: center;
-  padding: 120px 2rem 80px;
+  padding: 140px 2rem 100px;
   position: relative; overflow: hidden;
 }
 
-/* Animated scan line */
-.hero::before {
-  content: '';
-  position: absolute;
-  left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-  animation: scanDown 6s linear infinite;
-  opacity: 0.4;
-  pointer-events: none;
-}
-@keyframes scanDown {
-  0%   { top: 10%; opacity: 0; }
-  10%  { opacity: 0.4; }
-  90%  { opacity: 0.4; }
-  100% { top: 90%; opacity: 0; }
+/* SVG grid lines */
+.hero-grid-svg {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  opacity: .25;
 }
 
-/* Radial glow behind headline */
-.hero-glow {
-  position: absolute;
-  width: 700px; height: 700px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0,240,255,0.07) 0%, rgba(0,100,200,0.04) 40%, transparent 70%);
-  top: 50%; left: 50%;
-  transform: translate(-50%, -55%);
-  pointer-events: none;
-  animation: glowPulse 4s ease-in-out infinite alternate;
+/* Atmospheric glow layers */
+.hero-glow-1 {
+  position: absolute; width: 1000px; height: 1000px; border-radius: 50%;
+  top: 50%; left: 50%; transform: translate(-50%, -55%);
+  background: radial-gradient(circle, rgba(0,240,255,.07) 0%, rgba(0,80,180,.04) 40%, transparent 65%);
+  animation: breathe 6s ease-in-out infinite alternate;
+  pointer-events: none; z-index: 0;
 }
-@keyframes glowPulse {
-  from { opacity: 0.6; transform: translate(-50%,-55%) scale(1); }
-  to   { opacity: 1;   transform: translate(-50%,-55%) scale(1.1); }
+.hero-glow-2 {
+  position: absolute; width: 600px; height: 600px; border-radius: 50%;
+  top: 40%; left: 40%;
+  background: radial-gradient(circle, rgba(0,255,136,.04) 0%, transparent 60%);
+  animation: breathe 9s ease-in-out infinite alternate-reverse;
+  pointer-events: none; z-index: 0;
+}
+@keyframes breathe {
+  from { transform: translate(-50%,-55%) scale(0.9); opacity: .6; }
+  to   { transform: translate(-50%,-55%) scale(1.1); opacity: 1; }
 }
 
-.hero-eyebrow {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  background: rgba(0,240,255,0.06);
-  border: 1px solid rgba(0,240,255,0.18);
-  color: var(--cyan);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.68rem; font-weight: 600;
-  letter-spacing: 0.18em; text-transform: uppercase;
-  padding: 0.45rem 1.1rem; border-radius: 999px;
-  margin-bottom: 2.5rem;
-  animation: fadeUp 0.8s 0.2s both;
+/* Diagonal accent lines */
+.hero-diag {
+  position: absolute; pointer-events: none; z-index: 0;
+  width: 1px; height: 60%; opacity: .07;
+  background: linear-gradient(180deg, transparent, var(--cyan), transparent);
+  transform-origin: top;
+}
+.hd-1 { left: 15%; transform: rotate(15deg); animation: diagFloat 8s ease-in-out infinite; }
+.hd-2 { right: 18%; transform: rotate(-12deg); animation: diagFloat 10s ease-in-out infinite reverse; }
+.hd-3 { left: 50%; transform: rotate(3deg); opacity: .04; }
+@keyframes diagFloat { 0%,100%{opacity:.05} 50%{opacity:.12} }
+
+/* Scan line */
+.hero-scan {
+  position: absolute; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,240,255,.5) 50%, transparent 100%);
+  pointer-events: none; z-index: 1;
+  animation: scanLine 10s linear infinite;
+}
+@keyframes scanLine {
+  0%   { top: 5%; opacity: 0; }
+  5%   { opacity: .5; }
+  95%  { opacity: .5; }
+  100% { top: 95%; opacity: 0; }
+}
+
+/* Corner brackets */
+.bracket {
+  position: absolute; width: 80px; height: 80px;
+  border-color: rgba(0,240,255,.2); border-style: solid;
+  pointer-events: none; z-index: 2;
+  animation: bracketPulse 4s ease-in-out infinite;
+}
+.br-tl { top: 72px; left: 32px; border-width: 1px 0 0 1px; }
+.br-tr { top: 72px; right: 32px; border-width: 1px 1px 0 0; animation-delay: 1s; }
+.br-bl { bottom: 40px; left: 32px; border-width: 0 0 1px 1px; animation-delay: 2s; }
+.br-br { bottom: 40px; right: 32px; border-width: 0 1px 1px 0; animation-delay: 3s; }
+@keyframes bracketPulse { 0%,100%{opacity:.2} 50%{opacity:.6} }
+
+/* EYEBROW PILL */
+.eyebrow {
+  position: relative; z-index: 3;
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: rgba(0,240,255,.04); border: 1px solid rgba(0,240,255,.14);
+  color: var(--cyan); font-family: 'JetBrains Mono',monospace;
+  font-size: .62rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+  padding: .4rem 1.1rem; border-radius: 999px;
+  margin-bottom: 2.2rem;
+  animation: revealFade .8s .2s both;
 }
 .eyebrow-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--cyan);
-  box-shadow: 0 0 8px var(--cyan);
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--cyan); box-shadow: 0 0 8px var(--cyan);
   animation: pulse 2s infinite;
 }
 
-/* BIG LOGO */
-.hero-wordmark {
-  font-family: 'Orbitron', monospace;
-  font-weight: 900;
-  font-size: clamp(4rem, 14vw, 9.5rem);
-  line-height: 0.92;
-  letter-spacing: -0.03em;
-  color: #fff;
-  animation: logoReveal 1.2s 0.3s both;
-  position: relative;
+/* MEGA LOGOTYPE */
+.hero-logotype {
+  position: relative; z-index: 3;
+  animation: revealUp 1s .3s both;
+  line-height: 1; margin-bottom: .5rem;
 }
-.hero-wordmark .w-padh { color: #fff; }
-.hero-wordmark .w-iq {
-  color: transparent;
-  -webkit-text-stroke: 2px var(--cyan);
-  text-shadow: none;
-  position: relative;
+.logo-padh {
+  display: block;
+  font-family: 'Orbitron', monospace; font-weight: 900;
+  font-size: clamp(5rem, 16vw, 12rem);
+  letter-spacing: -.03em; color: #fff;
+  text-shadow: 0 0 60px rgba(255,255,255,.06);
 }
-.hero-wordmark .w-iq::after {
-  content: 'IQ';
-  position: absolute; left: 0; top: 0;
-  color: var(--cyan);
-  filter: blur(18px);
-  opacity: 0.5;
-  -webkit-text-stroke: 0;
+.logo-iq {
+  display: block;
+  font-family: 'Orbitron', monospace; font-weight: 900;
+  font-size: clamp(5rem, 16vw, 12rem);
+  letter-spacing: -.03em;
+  background: linear-gradient(120deg, #00f0ff 0%, #00ff88 45%, #00f0ff 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 40px rgba(0,240,255,.5));
+  animation: gradShift 4s ease-in-out infinite alternate;
 }
+@keyframes gradShift { from{background-position:0% 50%} to{background-position:100% 50%} }
 
-.hero-sub {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
-  color: rgba(148,163,184,0.8);
-  margin-top: 1.5rem; line-height: 1.7;
-  max-width: 520px;
-  animation: fadeUp 0.8s 0.7s both;
+/* SUBHEADING */
+.hero-deck {
+  position: relative; z-index: 3;
+  font-family: 'Syne', sans-serif; font-size: clamp(.95rem, 2vw, 1.2rem);
+  color: rgba(148,163,184,.75); line-height: 1.8; max-width: 520px; margin: 0 auto;
+  animation: revealFade .8s .7s both;
 }
-.hero-sub strong { color: #e2e8f0; font-weight: 700; }
+.hero-deck strong { color: #e2e8f0; font-weight: 700; }
 
-/* Hero CTA row */
-.hero-cta-row {
-  display: flex; gap: 0.9rem; flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 2.5rem;
-  animation: fadeUp 0.8s 0.9s both;
+/* CTA PAIR */
+.cta-pair {
+  position: relative; z-index: 3;
+  display: flex; gap: .9rem; flex-wrap: wrap; justify-content: center;
+  margin-top: 2.8rem;
+  animation: revealFade .8s .9s both;
 }
-.cta-primary {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  padding: 0.9rem 2rem; border-radius: 999px;
-  background: linear-gradient(135deg, var(--cyan), var(--green));
-  color: #020617; font-family: 'Syne', sans-serif;
-  font-weight: 800; font-size: 0.95rem;
-  border: none; cursor: pointer;
-  box-shadow: 0 0 32px rgba(0,240,255,0.35), 0 4px 24px rgba(0,0,0,0.3);
-  transition: all 0.25s; text-decoration: none;
+.cta-prime {
   position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: 1rem 2.2rem; border-radius: 999px;
+  background: linear-gradient(135deg, #00f0ff 0%, #00ff88 100%);
+  color: #020617; font-family: 'Syne',sans-serif; font-weight: 800; font-size: .95rem;
+  border: none; cursor: none; text-decoration: none;
+  box-shadow: 0 0 40px rgba(0,240,255,.35), 0 8px 32px rgba(0,0,0,.4);
+  transition: transform .2s, box-shadow .2s;
 }
-.cta-primary::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-  opacity: 0; transition: opacity 0.2s;
+.cta-prime::after {
+  content: ''; position: absolute;
+  top: -50%; left: -75%; width: 50%; height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+  transform: skewX(-20deg);
+  animation: shimmer 2.5s ease-in-out infinite;
 }
-.cta-primary:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 0 48px rgba(0,240,255,0.5), 0 8px 32px rgba(0,0,0,0.3); }
-.cta-primary:hover::before { opacity: 1; }
+@keyframes shimmer { 0%{left:-75%} 100%{left:125%} }
+.cta-prime:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 0 70px rgba(0,240,255,.55), 0 16px 48px rgba(0,0,0,.5); }
 
 .cta-ghost {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  padding: 0.9rem 1.8rem; border-radius: 999px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(226,232,240,0.8); font-family: 'Syne', sans-serif;
-  font-weight: 700; font-size: 0.95rem;
-  cursor: pointer; transition: all 0.2s; text-decoration: none;
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: 1rem 2rem; border-radius: 999px;
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.14);
+  color: rgba(226,232,240,.75); font-family: 'Syne',sans-serif;
+  font-weight: 700; font-size: .95rem; transition: all .2s; text-decoration: none;
 }
-.cta-ghost:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.07); color: #fff; }
+.cta-ghost:hover { border-color: rgba(0,240,255,.4); color: #fff; background: rgba(0,240,255,.06); transform: translateY(-2px); }
 
-/* Stats strip */
-.hero-stats-strip {
-  display: flex; align-items: center; gap: 0;
-  margin-top: 4rem;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 16px; overflow: hidden;
-  animation: fadeUp 0.8s 1.1s both;
+/* STATS BAR */
+.stat-bar {
+  position: relative; z-index: 3;
+  display: flex; margin-top: 4.5rem;
+  background: rgba(255,255,255,.022); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,.07); border-radius: 18px; overflow: hidden;
+  animation: revealFade .8s 1.1s both;
 }
-.hstat {
-  padding: 1rem 2.2rem; text-align: center;
-  border-right: 1px solid rgba(255,255,255,0.07);
+.sbar-item {
+  flex: 1; padding: 1.1rem 0; text-align: center;
+  border-right: 1px solid rgba(255,255,255,.06); transition: background .2s;
 }
-.hstat:last-child { border-right: none; }
-.hstat-num {
-  display: block;
-  font-family: 'Orbitron', monospace;
-  font-size: 1.5rem; font-weight: 700; color: var(--cyan);
+.sbar-item:last-child { border-right: none; }
+.sbar-item:hover { background: rgba(0,240,255,.03); }
+.sbar-num {
+  display: block; font-family: 'Orbitron', monospace; font-weight: 700;
+  font-size: 1.5rem; color: var(--cyan);
+  text-shadow: 0 0 20px rgba(0,240,255,.6);
 }
-.hstat-label {
-  display: block; font-size: 0.65rem;
-  color: var(--muted); letter-spacing: 0.12em;
-  text-transform: uppercase; margin-top: 0.2rem;
-  font-family: 'JetBrains Mono', monospace;
+.sbar-lbl {
+  display: block; font-family: 'JetBrains Mono', monospace;
+  font-size: .6rem; letter-spacing: .14em; color: var(--muted);
+  text-transform: uppercase; margin-top: .15rem;
 }
 
-/* ── SECTION COMMON ──────────────────────────── */
-.s-wrap {
-  max-width: 1140px; margin: 0 auto;
-  padding: 7rem 2rem;
+/* SCROLL CARET */
+.scroll-caret {
+  position: absolute; bottom: 2.2rem; left: 50%; transform: translateX(-50%);
+  z-index: 3; display: flex; flex-direction: column; align-items: center; gap: .4rem;
+  animation: revealFade 1s 1.5s both;
 }
-.s-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.62rem; letter-spacing: 0.22em;
-  color: var(--cyan); text-transform: uppercase;
-  margin-bottom: 1rem;
-}
-.s-title {
-  font-family: 'Orbitron', monospace;
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  font-weight: 700; line-height: 1.15; color: #fff;
-  margin-bottom: 0.75rem;
-}
-.s-sub {
-  font-size: 0.95rem; color: var(--muted); line-height: 1.7;
-  max-width: 480px;
-}
+.sc-line { width: 1px; height: 44px; background: linear-gradient(180deg, var(--cyan), transparent); animation: scLine 2s ease-in-out infinite; }
+.sc-label { font-family: 'JetBrains Mono',monospace; font-size: .55rem; letter-spacing: .18em; color: var(--muted); text-transform: uppercase; }
+@keyframes scLine { 0%,100%{opacity:.3} 50%{opacity:.9} }
 
-/* ── FEATURES — ASYMMETRIC BENTO ─────────────── */
-.bento-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: auto auto;
-  gap: 1.1rem;
-  margin-top: 3.5rem;
+/* ── MARQUEE ────────────────────────────────────── */
+.marquee-wrap {
+  overflow: hidden; border-top: 1px solid rgba(255,255,255,.05);
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  padding: .8rem 0; background: rgba(255,255,255,.01);
 }
+.marquee-inner {
+  display: flex; width: max-content; gap: 3.5rem;
+  animation: marquee 25s linear infinite;
+}
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.mq-item {
+  display: flex; align-items: center; gap: .55rem; white-space: nowrap;
+  font-family: 'JetBrains Mono',monospace; font-size: .65rem;
+  letter-spacing: .1em; color: var(--muted); text-transform: uppercase;
+}
+.mq-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--cyan); opacity: .5; }
 
+/* ── SECTIONS BASE ──────────────────────────────── */
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 2rem; }
+.sec { padding: 8rem 0; }
+.sec-label {
+  display: flex; align-items: center; gap: .7rem; margin-bottom: 1.1rem;
+}
+.sl-bar { width: 28px; height: 1px; background: var(--cyan); opacity: .7; }
+.sl-text {
+  font-family: 'JetBrains Mono',monospace; font-size: .6rem;
+  letter-spacing: .22em; color: var(--cyan); text-transform: uppercase;
+}
+.sec-h {
+  font-family: 'Orbitron',monospace; font-weight: 700;
+  font-size: clamp(2rem, 4.5vw, 3.2rem); color: #fff; line-height: 1.1; margin-bottom: .7rem;
+}
+.sec-h em { font-style: normal; color: var(--cyan); }
+.sec-p { font-size: .95rem; color: var(--muted); line-height: 1.75; max-width: 460px; }
+
+/* ── BENTO GRID ─────────────────────────────────── */
 .bento {
-  background: rgba(10,22,40,0.6);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 20px; padding: 2rem;
-  position: relative; overflow: hidden;
-  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-  backdrop-filter: blur(16px);
-}
-.bento:hover { transform: translateY(-5px); }
-
-/* Shimmer top edge on hover */
-.bento::before {
-  content: '';
-  position: absolute; top: 0; left: -100%; right: -100%; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  transition: left 0.6s;
-}
-.bento:hover::before { left: 0; right: 0; }
-
-.bento-xl { grid-column: span 2; }
-.bento-tall { grid-row: span 2; }
-
-.bento.accent-cyan  { border-color: rgba(0,240,255,0.15); }
-.bento.accent-orange{ border-color: rgba(255,107,53,0.15); }
-.bento.accent-green { border-color: rgba(0,255,136,0.15); }
-
-.bento.accent-cyan:hover  { border-color: rgba(0,240,255,0.35); box-shadow: 0 20px 60px rgba(0,240,255,0.08); }
-.bento.accent-orange:hover{ border-color: rgba(255,107,53,0.35); box-shadow: 0 20px 60px rgba(255,107,53,0.08); }
-.bento.accent-green:hover { border-color: rgba(0,255,136,0.35); box-shadow: 0 20px 60px rgba(0,255,136,0.08); }
-
-.bento-glow {
-  position: absolute; width: 200px; height: 200px; border-radius: 50%;
-  pointer-events: none; top: -60px; right: -60px; opacity: 0.12;
-}
-.accent-cyan  .bento-glow { background: radial-gradient(circle, var(--cyan), transparent 70%); }
-.accent-orange .bento-glow { background: radial-gradient(circle, var(--orange), transparent 70%); }
-.accent-green .bento-glow { background: radial-gradient(circle, var(--green), transparent 70%); }
-
-.bento-tag {
-  display: inline-block;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.14em;
-  padding: 0.2rem 0.6rem; border-radius: 4px;
-  margin-bottom: 1rem; text-transform: uppercase;
-}
-.accent-cyan   .bento-tag { background: rgba(0,240,255,0.1);  color: var(--cyan);   border: 1px solid rgba(0,240,255,0.2); }
-.accent-orange .bento-tag { background: rgba(255,107,53,0.1); color: var(--orange); border: 1px solid rgba(255,107,53,0.2); }
-.accent-green  .bento-tag { background: rgba(0,255,136,0.1);  color: var(--green);  border: 1px solid rgba(0,255,136,0.2); }
-
-.bento-icon { font-size: 2.8rem; margin-bottom: 0.75rem; display: block; }
-.bento h3 {
-  font-family: 'Orbitron', monospace;
-  font-size: 1.15rem; font-weight: 700; color: #fff;
-  margin-bottom: 0.6rem;
-}
-.bento p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
-.bento-link {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  margin-top: 1.5rem; font-size: 0.82rem; font-weight: 700;
-  text-decoration: none; transition: gap 0.2s;
-}
-.accent-cyan   .bento-link { color: var(--cyan); }
-.accent-orange .bento-link { color: var(--orange); }
-.accent-green  .bento-link { color: var(--green); }
-.bento-link:hover { gap: 0.7rem; }
-
-/* Feature list in bento */
-.bento-list { list-style: none; margin-top: 1rem; }
-.bento-list li {
-  font-size: 0.8rem; color: rgba(226,232,240,0.75);
-  padding: 0.3rem 0;
-  display: flex; align-items: center; gap: 0.5rem;
-}
-.bento-list li::before {
-  content: ''; width: 4px; height: 4px; border-radius: 50%;
-  flex-shrink: 0;
-}
-.accent-cyan   .bento-list li::before { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
-.accent-orange .bento-list li::before { background: var(--orange); box-shadow: 0 0 6px var(--orange); }
-.accent-green  .bento-list li::before { background: var(--green); box-shadow: 0 0 6px var(--green); }
-
-/* ── AI TOOLS — NAMED TOOLS ──────────────────── */
-.tools-section-wrap {
-  max-width: 1140px; margin: 0 auto; padding: 0 2rem 7rem;
-}
-.tools-header-row {
-  display: flex; align-items: flex-end; justify-content: space-between;
-  margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem;
-}
-.tools-see-all {
-  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
-  color: var(--muted); text-decoration: none; letter-spacing: 0.08em;
-  border: 1px solid rgba(255,255,255,0.1); padding: 0.4rem 1rem;
-  border-radius: 999px; transition: all 0.2s;
-}
-.tools-see-all:hover { color: var(--cyan); border-color: rgba(0,240,255,0.3); }
-
-/* Named tool cards — horizontal scroll on mobile */
-.named-tools-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem; margin-top: 4rem;
 }
 
-.ntool {
-  background: rgba(10,22,40,0.65);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 18px; padding: 1.6rem 1.4rem;
-  cursor: pointer; text-decoration: none;
-  transition: all 0.3s;
+/* card base */
+.bc {
+  background: linear-gradient(145deg, rgba(8,18,36,.9), rgba(4,10,22,.95));
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 22px; padding: 2.2rem;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   position: relative; overflow: hidden;
-  display: flex; flex-direction: column;
-  animation: fadeUp 0.5s ease both;
+  transition: transform .3s cubic-bezier(.34,1.2,.64,1), border-color .3s, box-shadow .3s;
 }
-.ntool::after {
-  content: '';
-  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--tool-color, var(--cyan)), transparent);
-  transform: scaleX(0); transition: transform 0.3s;
+.bc::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+  transform: translateX(-100%); transition: transform .5s;
 }
-.ntool:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.14); }
-.ntool:hover::after { transform: scaleX(1); }
+.bc:hover { transform: translateY(-7px); }
+.bc:hover::before { transform: translateX(100%); }
 
-.ntool-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.6rem; font-weight: 600; letter-spacing: 0.1em;
-  color: var(--muted); margin-bottom: 1rem;
-}
-.ntool-icon { font-size: 2rem; margin-bottom: 0.75rem; }
-.ntool-name {
-  font-family: 'Orbitron', monospace;
-  font-size: 0.85rem; font-weight: 700; color: #fff;
-  margin-bottom: 0.35rem; line-height: 1.3;
-}
-.ntool-tagline {
-  font-size: 0.75rem; color: var(--muted); line-height: 1.5; flex: 1;
-}
-.ntool-badge {
-  display: inline-block; margin-top: 1rem;
-  font-family: 'JetBrains Mono', monospace; font-size: 0.58rem;
-  font-weight: 700; letter-spacing: 0.1em;
-  padding: 0.18rem 0.55rem; border-radius: 4px;
-  text-transform: uppercase; width: fit-content;
+/* Accent glow corner */
+.bc::after {
+  content: ''; position: absolute; top: -30px; right: -30px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: radial-gradient(circle, var(--bc-glow, rgba(0,240,255,.1)), transparent 70%);
+  pointer-events: none;
 }
 
-/* Tool color themes */
-.nt-cyan   { --tool-color: #00f0ff; }
-.nt-cyan   .ntool-num, .nt-cyan .ntool-badge { color: #00f0ff; }
-.nt-cyan   .ntool-badge { background: rgba(0,240,255,.1); border: 1px solid rgba(0,240,255,.25); }
-.nt-cyan:hover { box-shadow: 0 16px 40px rgba(0,240,255,0.08); }
+.bc-c { --bc-glow: rgba(0,240,255,.1); }
+.bc-c:hover { border-color: rgba(0,240,255,.22); box-shadow: 0 24px 64px rgba(0,240,255,.07); }
+.bc-o { --bc-glow: rgba(255,107,53,.1); }
+.bc-o:hover { border-color: rgba(255,107,53,.22); box-shadow: 0 24px 64px rgba(255,107,53,.07); }
+.bc-g { --bc-glow: rgba(0,255,136,.1); }
+.bc-g:hover { border-color: rgba(0,255,136,.22); box-shadow: 0 24px 64px rgba(0,255,136,.07); }
+.bc-p { --bc-glow: rgba(192,132,252,.1); }
+.bc-p:hover { border-color: rgba(192,132,252,.22); box-shadow: 0 24px 64px rgba(192,132,252,.07); }
 
-.nt-orange { --tool-color: #ff6b35; }
-.nt-orange .ntool-num, .nt-orange .ntool-badge { color: #ff6b35; }
-.nt-orange .ntool-badge { background: rgba(255,107,53,.1); border: 1px solid rgba(255,107,53,.25); }
-.nt-orange:hover { box-shadow: 0 16px 40px rgba(255,107,53,0.08); }
+/* spans */
+.s8  { grid-column: span 8; }
+.s4  { grid-column: span 4; }
+.s6  { grid-column: span 6; }
+.s5  { grid-column: span 5; }
+.s7  { grid-column: span 7; }
+.s12 { grid-column: span 12; }
 
-.nt-green  { --tool-color: #00ff88; }
-.nt-green  .ntool-num, .nt-green .ntool-badge { color: #00ff88; }
-.nt-green  .ntool-badge { background: rgba(0,255,136,.1); border: 1px solid rgba(0,255,136,.25); }
-.nt-green:hover { box-shadow: 0 16px 40px rgba(0,255,136,0.08); }
-
-.nt-purple { --tool-color: #c084fc; }
-.nt-purple .ntool-num, .nt-purple .ntool-badge { color: #c084fc; }
-.nt-purple .ntool-badge { background: rgba(192,132,252,.1); border: 1px solid rgba(192,132,252,.25); }
-.nt-purple:hover { box-shadow: 0 16px 40px rgba(192,132,252,0.08); }
-
-.nt-gold   { --tool-color: #ffd700; }
-.nt-gold   .ntool-num, .nt-gold .ntool-badge { color: #ffd700; }
-.nt-gold   .ntool-badge { background: rgba(255,215,0,.1); border: 1px solid rgba(255,215,0,.25); }
-.nt-gold:hover { box-shadow: 0 16px 40px rgba(255,215,0,0.08); }
-
-/* ── MARKET PREVIEW ──────────────────────────── */
-.market-preview-wrap {
-  max-width: 1140px; margin: 0 auto; padding: 0 2rem 7rem;
-}
-.market-cards-row {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-  gap: 1.25rem; margin-top: 3rem;
-}
-.mkt-card {
-  background: rgba(10,22,40,0.65); border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 18px; padding: 1.5rem;
-  transition: all 0.3s; position: relative; overflow: hidden;
-}
-.mkt-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,0.3); }
-.mkt-badge {
+.bc-tag {
   display: inline-block; font-family: 'JetBrains Mono',monospace;
-  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.12em;
-  padding: 0.2rem 0.6rem; border-radius: 4px; margin-bottom: 0.75rem;
-  text-transform: uppercase;
+  font-size: .55rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  padding: .2rem .6rem; border-radius: 4px; margin-bottom: 1rem;
 }
-.mb-orange { background: rgba(255,107,53,.12); color: var(--orange); border: 1px solid rgba(255,107,53,.2); }
-.mb-cyan   { background: rgba(0,240,255,.1);   color: var(--cyan);   border: 1px solid rgba(0,240,255,.2); }
-.mb-green  { background: rgba(0,255,136,.1);   color: var(--green);  border: 1px solid rgba(0,255,136,.2); }
-.mkt-title { font-weight: 700; font-size: 0.92rem; color: #fff; margin-bottom: 0.35rem; line-height: 1.4; }
-.mkt-seller { font-size: 0.72rem; color: var(--muted); margin-bottom: 1rem; }
-.mkt-price {
-  font-family: 'Orbitron', monospace; font-size: 1.3rem;
-  font-weight: 700; color: var(--cyan); margin-bottom: 1rem;
-}
-.mkt-price .original { font-size: 0.78rem; color: var(--muted); text-decoration: line-through; margin-left: 0.4rem; }
-.mkt-btn {
-  width: 100%; padding: 0.6rem; border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04);
-  color: var(--text); font-family: 'Syne',sans-serif; font-weight: 700;
-  font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
-}
-.mkt-btn:hover { background: rgba(255,255,255,0.09); }
-.mkt-btn.btn-cyan { background: rgba(0,240,255,.08); border-color: rgba(0,240,255,.25); color: var(--cyan); }
-.mkt-btn.btn-cyan:hover { background: rgba(0,240,255,.16); }
-.mkt-sell-card {
-  border: 1px dashed rgba(255,255,255,0.12); display: flex; flex-direction: column;
-  align-items: center; justify-content: center; text-align: center; gap: 0.75rem; min-height: 200px;
-}
-.mkt-sell-icon { font-size: 2.5rem; opacity: 0.35; }
-.mkt-sell-title { font-weight: 700; font-size: 0.9rem; color: rgba(255,255,255,0.6); }
-.mkt-sell-sub { font-size: 0.75rem; color: var(--muted); }
-.mkt-btn.btn-dashed { border: 1px dashed rgba(255,255,255,0.2); color: var(--muted); }
-.mkt-btn.btn-dashed:hover { border-color: var(--cyan); color: var(--cyan); }
+.tag-c { background: rgba(0,240,255,.08); color: var(--cyan); border: 1px solid rgba(0,240,255,.18); }
+.tag-o { background: rgba(255,107,53,.08); color: #ff8c55; border: 1px solid rgba(255,107,53,.18); }
+.tag-g { background: rgba(0,255,136,.08); color: var(--green); border: 1px solid rgba(0,255,136,.18); }
+.tag-p { background: rgba(192,132,252,.08); color: #c084fc; border: 1px solid rgba(192,132,252,.18); }
 
-/* ── CHAT EMBED ───────────────────────────────── */
-.chat-embed-wrap {
-  max-width: 1140px; margin: 0 auto; padding: 0 2rem 7rem;
+.bc-ico { font-size: 2.8rem; margin-bottom: .8rem; display: block; }
+.bc-title { font-family: 'Orbitron',monospace; font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: .55rem; }
+.bc-desc  { font-size: .84rem; color: rgba(148,163,184,.85); line-height: 1.75; }
+
+.bc-features {
+  display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; margin-top: 1.2rem;
 }
-.chat-embed-grid {
-  display: grid; grid-template-columns: 1fr 1.6fr; gap: 2.5rem;
-  align-items: start; margin-top: 3rem;
+.bcf {
+  font-size: .76rem; color: rgba(226,232,240,.65);
+  display: flex; align-items: center; gap: .4rem;
 }
-.chat-side-info { padding-top: 1rem; }
+.bcf::before {
+  content: ''; width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0;
+}
+.bc-c .bcf::before { background: var(--cyan); box-shadow: 0 0 5px var(--cyan); }
+.bc-o .bcf::before { background: #ff8c55; }
+.bc-g .bcf::before { background: var(--green); box-shadow: 0 0 5px var(--green); }
+
+.bc-link {
+  display: inline-flex; align-items: center; gap: .4rem;
+  margin-top: 1.6rem; font-size: .8rem; font-weight: 700;
+  text-decoration: none; transition: gap .2s;
+}
+.bc-c .bc-link { color: var(--cyan); }
+.bc-o .bc-link { color: #ff8c55; }
+.bc-g .bc-link { color: var(--green); }
+.bc-p .bc-link { color: #c084fc; }
+.bc-link:hover { gap: .75rem; }
+
+/* Ghost number watermark */
+.bc-ghost-num {
+  position: absolute; bottom: -.1em; right: .1em;
+  font-family: 'Orbitron',monospace; font-weight: 900;
+  font-size: 9rem; line-height: 1; color: rgba(255,255,255,.025);
+  pointer-events: none; user-select: none;
+}
+
+/* ── PRODUCT CARDS ──────────────────────────────── */
+.prod-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 4rem;
+}
+.prod-card {
+  border-radius: 24px; padding: 2.8rem 2.5rem 2.5rem;
+  position: relative; overflow: hidden; min-height: 280px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  transition: transform .35s cubic-bezier(.34,1.2,.64,1), box-shadow .35s;
+  cursor: none; text-decoration: none;
+}
+.prod-card:hover { transform: scale(1.025) translateY(-4px); }
+
+.pc-1 { background: linear-gradient(140deg, #001428 0%, #002a52 60%, #001428 100%); border: 1px solid rgba(0,240,255,.18); }
+.pc-2 { background: linear-gradient(140deg, #1f0700 0%, #3d1200 60%, #1a0500 100%); border: 1px solid rgba(255,107,53,.18); }
+.pc-3 { background: linear-gradient(140deg, #001a0f 0%, #003320 60%, #000f08 100%); border: 1px solid rgba(0,255,136,.18); }
+.pc-4 { background: linear-gradient(140deg, #180030 0%, #2e0055 60%, #100020 100%); border: 1px solid rgba(192,132,252,.18); }
+
+.pc-orb {
+  position: absolute; top: -80px; right: -80px;
+  width: 320px; height: 320px; border-radius: 50%; filter: blur(70px); opacity: .16;
+}
+.pc-1 .pc-orb { background: var(--cyan); }
+.pc-2 .pc-orb { background: var(--orange); }
+.pc-3 .pc-orb { background: var(--green); }
+.pc-4 .pc-orb { background: #c084fc; }
+
+.pc-letter {
+  position: absolute; right: -.05em; bottom: -.15em;
+  font-family: 'Orbitron',monospace; font-weight: 900; font-size: 15rem;
+  line-height: 1; color: rgba(255,255,255,.04); pointer-events: none; user-select: none;
+}
+.pc-1 .pc-letter { color: rgba(0,240,255,.05); }
+.pc-2 .pc-letter { color: rgba(255,107,53,.05); }
+.pc-3 .pc-letter { color: rgba(0,255,136,.05); }
+.pc-4 .pc-letter { color: rgba(192,132,252,.05); }
+
+.pc-tag {
+  font-family: 'JetBrains Mono',monospace; font-size: .56rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase; padding: .2rem .65rem;
+  border-radius: 4px; display: inline-block; margin-bottom: 1.2rem;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.65);
+}
+.pc-name {
+  font-family: 'Orbitron',monospace; font-weight: 700;
+  font-size: 1.55rem; color: #fff; margin-bottom: .55rem; line-height: 1.2;
+}
+.pc-desc { font-size: .84rem; color: rgba(255,255,255,.5); line-height: 1.7; max-width: 320px; }
+.pc-go {
+  display: inline-flex; align-items: center; gap: .4rem;
+  margin-top: 1.4rem; font-size: .8rem; font-weight: 700;
+  color: rgba(255,255,255,.6); text-decoration: none; transition: all .2s;
+}
+.pc-go:hover { color: #fff; gap: .75rem; }
+
+/* ── TOOL GRID ─────────────────────────────────── */
+.tool-grid {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: .9rem; margin-top: 4rem;
+}
+.tc {
+  background: linear-gradient(145deg, rgba(8,18,36,.9), rgba(4,10,22,.95));
+  border: 1px solid rgba(255,255,255,.07); border-radius: 18px;
+  padding: 1.6rem 1.4rem; position: relative; overflow: hidden;
+  display: flex; flex-direction: column; transition: all .3s;
+  cursor: none;
+}
+.tc::before {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: var(--tc-color); box-shadow: 0 0 8px var(--tc-color);
+  transform: scaleX(0); transition: transform .3s;
+}
+.tc:hover { transform: translateY(-7px); border-color: rgba(255,255,255,.13); }
+.tc:hover::before { transform: scaleX(1); }
+
+.tc-seq { font-family: 'JetBrains Mono',monospace; font-size: .57rem; color: var(--tc-color); letter-spacing: .1em; margin-bottom: .9rem; }
+.tc-ico  { font-size: 2rem; margin-bottom: .7rem; }
+.tc-name { font-family: 'Orbitron',monospace; font-size: .82rem; font-weight: 700; color: #fff; margin-bottom: .3rem; line-height: 1.3; }
+.tc-desc { font-size: .74rem; color: var(--muted); line-height: 1.55; flex: 1; }
+.tc-badge {
+  display: inline-block; margin-top: .9rem; font-family: 'JetBrains Mono',monospace;
+  font-size: .55rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: .17rem .55rem; border-radius: 3px; background: rgba(255,255,255,.04);
+  color: var(--tc-color); border: 1px solid color-mix(in srgb, var(--tc-color) 30%, transparent);
+}
+
+/* ── CHAT WIDGET ────────────────────────────────── */
+.chat-section {
+  display: grid; grid-template-columns: 1fr 1.45fr; gap: 4rem; align-items: start;
+}
+.chat-info .sec-h { font-size: clamp(1.7rem,3vw,2.3rem); }
 .chat-reason {
-  display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-start;
+  display: flex; gap: .9rem; align-items: flex-start; margin-top: 1.75rem;
 }
-.cr-icon {
-  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+.cr-ico {
+  width: 40px; height: 40px; border-radius: 11px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
-  background: rgba(0,240,255,0.08); border: 1px solid rgba(0,240,255,0.15);
+  background: rgba(0,240,255,.07); border: 1px solid rgba(0,240,255,.14);
 }
-.cr-text .cr-title { font-weight: 700; font-size: 0.88rem; color: #fff; margin-bottom: 0.2rem; }
-.cr-text .cr-desc  { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+.cr-h { font-weight: 700; font-size: .87rem; color: #e2e8f0; margin-bottom: .12rem; }
+.cr-d { font-size: .77rem; color: var(--muted); line-height: 1.55; }
 
-.chat-container {
-  background: rgba(8,16,32,0.8); border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px; overflow: hidden; backdrop-filter: blur(20px);
-  box-shadow: 0 0 60px rgba(0,240,255,0.04);
+.chat-widget {
+  background: linear-gradient(145deg, rgba(4,10,22,.96), rgba(8,18,36,.94));
+  border: 1px solid rgba(255,255,255,.08); border-radius: 22px; overflow: hidden;
+  box-shadow: 0 0 80px rgba(0,240,255,.04), 0 40px 80px rgba(0,0,0,.5);
 }
-.chat-header {
-  display: flex; align-items: center; gap: 0.75rem;
-  padding: 1.1rem 1.4rem; border-bottom: 1px solid rgba(255,255,255,0.07);
-  background: rgba(0,240,255,0.03);
+.cw-head {
+  display: flex; align-items: center; gap: .75rem; padding: 1.1rem 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  background: linear-gradient(90deg, rgba(0,240,255,.04), transparent);
 }
-.chat-avatar {
-  font-size: 1.3rem; width: 38px; height: 38px;
-  background: rgba(0,240,255,0.1); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  border: 1px solid rgba(0,240,255,0.2); flex-shrink: 0;
-}
-.chat-name { font-weight: 700; font-size: 0.88rem; color: #fff; }
-.chat-status {
-  font-size: 0.68rem; color: var(--muted);
-  display: flex; align-items: center; gap: 0.35rem; margin-top: 0.1rem;
-}
-.status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
-.clear-btn { margin-left: auto; background: none; border: 1px solid rgba(255,255,255,0.08); color: var(--muted); padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.72rem; cursor: pointer; transition: all 0.2s; font-family: 'Syne',sans-serif; }
-.clear-btn:hover { border-color: rgba(255,80,80,.4); color: #ff6464; }
+.cw-av { width: 36px; height: 36px; border-radius: 50%; background: rgba(0,240,255,.1); border: 1px solid rgba(0,240,255,.22); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.cw-nm { font-weight: 700; font-size: .86rem; color: #fff; }
+.cw-st { font-size: .67rem; color: var(--muted); display: flex; align-items: center; gap: .33rem; margin-top: .08rem; }
+.cw-online { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+.cw-clr { margin-left: auto; background: none; border: 1px solid rgba(255,255,255,.08); color: var(--muted); padding: .28rem .7rem; border-radius: 6px; font-size: .68rem; cursor: none; transition: all .2s; font-family: 'Syne',sans-serif; }
+.cw-clr:hover { border-color: rgba(255,80,80,.3); color: #ff6464; }
 
-.chat-box { height: 300px; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.9rem; scrollbar-width: thin; scrollbar-color: rgba(0,240,255,.2) transparent; }
-.chat-box::-webkit-scrollbar { width: 3px; }
-.chat-box::-webkit-scrollbar-thumb { background: rgba(0,240,255,.2); border-radius: 999px; }
+.cw-msgs { height: 270px; overflow-y: auto; padding: 1.15rem; display: flex; flex-direction: column; gap: .85rem; scrollbar-width: thin; scrollbar-color: rgba(0,240,255,.12) transparent; }
+.cw-msgs::-webkit-scrollbar { width: 3px; }
+.cw-msgs::-webkit-scrollbar-thumb { background: rgba(0,240,255,.15); border-radius: 999px; }
 
-.ai-message { display: flex; align-items: flex-start; gap: 0.6rem; max-width: 88%; animation: msgIn .3s ease both; }
-.user-message { display: flex; flex-direction: row-reverse; align-items: flex-start; gap: 0.6rem; max-width: 88%; margin-left: auto; animation: msgIn .3s ease both; }
-@keyframes msgIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-.msg-icon { font-size: 1rem; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,240,255,.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
-.user-message .msg-icon { background: rgba(255,107,53,.12); }
-.msg-content { background: rgba(0,240,255,.05); border: 1px solid rgba(0,240,255,.1); border-radius: 10px 10px 10px 3px; padding: 0.75rem 0.9rem; font-size: 0.83rem; line-height: 1.65; color: var(--text); }
-.user-message .msg-content { background: rgba(255,107,53,.07); border-color: rgba(255,107,53,.12); border-radius: 10px 10px 3px 10px; }
-.typing-dot { display: inline-block; width: 5px; height: 5px; background: var(--cyan); border-radius: 50%; animation: typingBounce 1s infinite; margin: 0 2px; }
-.typing-dot:nth-child(2) { animation-delay: .15s; }
-.typing-dot:nth-child(3) { animation-delay: .3s; }
-@keyframes typingBounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-5px)} }
+.ai-msg  { display:flex; align-items:flex-start; gap:.55rem; max-width:90%; animation:msgIn .3s ease both; }
+.usr-msg { display:flex; flex-direction:row-reverse; align-items:flex-start; gap:.55rem; max-width:90%; margin-left:auto; animation:msgIn .3s ease both; }
+@keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.m-ico { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.9rem; flex-shrink:0; margin-top:2px; }
+.ai-msg .m-ico  { background:rgba(0,240,255,.09); border:1px solid rgba(0,240,255,.14); }
+.usr-msg .m-ico { background:rgba(255,107,53,.09); border:1px solid rgba(255,107,53,.14); }
+.m-bub { background:rgba(0,240,255,.04); border:1px solid rgba(0,240,255,.08); border-radius:10px 10px 10px 3px; padding:.7rem .9rem; font-size:.81rem; line-height:1.65; color:var(--text); }
+.usr-msg .m-bub { background:rgba(255,107,53,.05); border-color:rgba(255,107,53,.1); border-radius:10px 10px 3px 10px; }
+.tdot { display:inline-block; width:5px; height:5px; background:var(--cyan); border-radius:50%; animation:tbounce 1s infinite; margin:0 2px; }
+.tdot:nth-child(2){animation-delay:.15s} .tdot:nth-child(3){animation-delay:.3s}
+@keyframes tbounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
 
-.chat-suggestions { display: flex; gap: .4rem; padding: 0 1.25rem .6rem; flex-wrap: wrap; }
-.suggestion { background: rgba(255,255,255,.03); border: 1px solid var(--border); color: var(--muted); padding: .3rem .8rem; border-radius: 999px; font-family: 'Syne',sans-serif; font-size: .72rem; font-weight: 600; cursor: pointer; transition: all .2s; }
-.suggestion:hover { border-color: rgba(0,240,255,.3); color: var(--cyan); background: rgba(0,240,255,.04); }
+.cw-chips { display:flex; gap:.38rem; padding:0 1.15rem .55rem; flex-wrap:wrap; }
+.chip { background:rgba(255,255,255,.03); border:1px solid var(--border); color:var(--muted); padding:.26rem .72rem; border-radius:999px; font-family:'Syne',sans-serif; font-size:.69rem; font-weight:600; cursor:none; transition:all .2s; white-space:nowrap; }
+.chip:hover { border-color:rgba(0,240,255,.3); color:var(--cyan); background:rgba(0,240,255,.04); }
 
-.chat-input-row { display: flex; gap: .6rem; padding: .9rem 1.25rem 1.1rem; border-top: 1px solid rgba(255,255,255,.07); }
-.chat-input-row input { flex: 1; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 8px; padding: .65rem .9rem; color: #fff; font-family: 'Syne',sans-serif; font-size: .84rem; outline: none; transition: border-color .2s; }
-.chat-input-row input:focus { border-color: rgba(0,240,255,.4); }
-.chat-input-row input::placeholder { color: var(--muted); }
-.send-btn { background: var(--cyan); color: var(--navy); border: none; padding: .65rem 1.25rem; border-radius: 8px; font-family: 'Syne',sans-serif; font-weight: 800; font-size: .84rem; cursor: pointer; transition: all .2s; white-space: nowrap; }
-.send-btn:hover { box-shadow: 0 0 20px rgba(0,240,255,.4); transform: translateY(-1px); }
-.send-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.cw-foot { display:flex; gap:.55rem; padding:.85rem 1.15rem 1rem; border-top:1px solid rgba(255,255,255,.06); }
+.cw-input { flex:1; background:rgba(255,255,255,.04); border:1px solid var(--border); border-radius:8px; padding:.62rem .88rem; color:#fff; font-family:'Syne',sans-serif; font-size:.81rem; outline:none; transition:border-color .2s; }
+.cw-input:focus { border-color:rgba(0,240,255,.38); }
+.cw-input::placeholder { color:var(--muted); }
+.cw-send { background:linear-gradient(135deg,var(--cyan),var(--green)); color:#020617; border:none; padding:.62rem 1.15rem; border-radius:8px; font-family:'Syne',sans-serif; font-weight:800; font-size:.81rem; cursor:none; transition:all .2s; white-space:nowrap; }
+.cw-send:hover { transform:translateY(-1px); box-shadow:0 0 20px rgba(0,240,255,.3); }
+.cw-send:disabled { opacity:.5; cursor:none; transform:none; }
 
-/* ── FOOTER ───────────────────────────────────── */
-.site-footer {
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding: 3rem 2rem 2.5rem;
-  max-width: 1140px; margin: 0 auto;
+/* ── MARKET STRIP ───────────────────────────────── */
+.mkt-grid {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-top: 3.5rem;
 }
-.footer-row {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem;
+.mc {
+  background: linear-gradient(145deg, rgba(8,18,36,.9), rgba(4,10,22,.95));
+  border: 1px solid rgba(255,255,255,.07); border-radius: 18px; padding: 1.4rem;
+  transition: all .3s;
 }
-.footer-logo {
-  font-family: 'Orbitron', monospace; font-size: 1.3rem; font-weight: 900;
-  color: var(--cyan); text-shadow: 0 0 20px var(--cyan); letter-spacing: 4px;
+.mc:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,.35); border-color: rgba(255,255,255,.13); }
+.mc-badge {
+  font-family: 'JetBrains Mono',monospace; font-size: .54rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase; padding: .18rem .58rem;
+  border-radius: 3px; display: inline-block; margin-bottom: .7rem;
 }
-.footer-links { display: flex; gap: 1.8rem; flex-wrap: wrap; }
-.footer-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
-.footer-links a:hover { color: var(--cyan); }
-.footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); }
-.footer-copy { font-size: 0.72rem; color: rgba(100,116,139,0.5); font-family: 'JetBrains Mono', monospace; }
-.footer-bharat { font-size: 0.72rem; color: var(--muted); }
+.mb-o { background:rgba(255,107,53,.1); color:#ff8c55; border:1px solid rgba(255,107,53,.2); }
+.mb-c { background:rgba(0,240,255,.08); color:var(--cyan); border:1px solid rgba(0,240,255,.2); }
+.mb-g { background:rgba(0,255,136,.08); color:var(--green); border:1px solid rgba(0,255,136,.2); }
+.mc-title { font-weight:700; font-size:.88rem; color:#fff; margin-bottom:.28rem; line-height:1.35; }
+.mc-seller { font-size:.69rem; color:var(--muted); margin-bottom:.85rem; }
+.mc-price { font-family:'Orbitron',monospace; font-size:1.15rem; font-weight:700; color:var(--cyan); margin-bottom:.85rem; }
+.mc-price s { font-size:.7rem; color:var(--muted); margin-left:.3rem; }
+.mc-btn { width:100%; padding:.52rem; border-radius:8px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04); color:var(--text); font-family:'Syne',sans-serif; font-weight:700; font-size:.77rem; cursor:none; transition:all .2s; }
+.mc-btn:hover { background:rgba(255,255,255,.09); }
+.mc-btn.btc { background:rgba(0,240,255,.07); border-color:rgba(0,240,255,.2); color:var(--cyan); }
+.mc-btn.btc:hover { background:rgba(0,240,255,.13); }
+.mc-sell { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:.6rem; min-height:170px; border-style:dashed !important; border-color:rgba(255,255,255,.1) !important; }
+.mc-sell-ico { font-size:2rem; opacity:.25; }
+.mc-sell-txt { font-size:.82rem; font-weight:700; color:rgba(255,255,255,.35); }
 
-/* ── RESPONSIVE ───────────────────────────────── */
-@media (max-width: 900px) {
-  .bento-grid { grid-template-columns: 1fr 1fr; }
-  .bento-xl { grid-column: span 2; }
-  .named-tools-grid { grid-template-columns: repeat(2,1fr); }
-  .chat-embed-grid { grid-template-columns: 1fr; }
-  .chat-side-info { display: none; }
+/* ── FOOTER ─────────────────────────────────────── */
+.footer {
+  border-top: 1px solid rgba(255,255,255,.06);
+  max-width: 1180px; margin: 0 auto; padding: 4rem 2rem 3rem;
 }
-@media (max-width: 600px) {
-  .bento-grid { grid-template-columns: 1fr; }
-  .bento-xl, .bento-tall { grid-column: span 1; grid-row: span 1; }
-  .named-tools-grid { grid-template-columns: 1fr 1fr; }
-  .hero-stats-strip { flex-wrap: wrap; }
-  .hstat { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); width: 50%; }
-  .market-cards-row { grid-template-columns: 1fr; }
+.footer-top { display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
+.f-logo { font-family:'Orbitron',monospace; font-size:1.35rem; font-weight:900; color:var(--cyan); text-shadow:0 0 24px rgba(0,240,255,.5); letter-spacing:4px; margin-bottom:.65rem; }
+.f-tagline { font-size:.78rem; color:var(--muted); line-height:1.65; max-width:200px; }
+.f-col h4 { font-family:'Orbitron',monospace; font-size:.58rem; font-weight:700; letter-spacing:.14em; color:rgba(255,255,255,.4); text-transform:uppercase; margin-bottom:.9rem; }
+.f-col a  { display:block; font-size:.8rem; color:var(--muted); text-decoration:none; padding:.22rem 0; transition:color .2s; }
+.f-col a:hover { color:var(--cyan); }
+.footer-btm { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; padding-top:1.75rem; border-top:1px solid rgba(255,255,255,.05); }
+.f-copy { font-family:'JetBrains Mono',monospace; font-size:.66rem; color:rgba(100,116,139,.4); }
+
+/* ── ANIMATIONS ─────────────────────────────────── */
+@keyframes revealFade { from{opacity:0} to{opacity:1} }
+@keyframes revealUp   { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+/* Scroll reveal */
+.reveal { opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ── RESPONSIVE ─────────────────────────────────── */
+@media(max-width:1100px) {
+  .bento { grid-template-columns:1fr 1fr; }
+  .s8,.s7 { grid-column:span 2; }
+  .s4,.s5,.s6 { grid-column:span 1; }
+  .tool-grid { grid-template-columns:repeat(2,1fr); }
+  .footer-top { grid-template-columns:1fr 1fr; }
+}
+@media(max-width:700px) {
+  .bento { grid-template-columns:1fr; }
+  .s8,.s7,.s4,.s5,.s6 { grid-column:span 1; }
+  .prod-grid { grid-template-columns:1fr; }
+  .mkt-grid { grid-template-columns:1fr 1fr; }
+  .chat-section { grid-template-columns:1fr; }
+  .chat-info { display:none; }
+  .stat-bar { flex-wrap:wrap; }
+  .sbar-item { min-width:50%; border-bottom:1px solid rgba(255,255,255,.06); }
+  .br-bl,.br-br { display:none; }
+  .footer-top { grid-template-columns:1fr; gap:2rem; }
+  .tool-grid { grid-template-columns:1fr 1fr; }
 }
 </style>
 </head>
 <body>
 
-<!-- BACKGROUND -->
+<!-- CUSTOM CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- BACKGROUNDS -->
 <div class="stars" id="stars"></div>
 <div class="nebula"></div>
 <div class="grid-overlay"></div>
 <div class="meteor-container" id="meteorContainer"></div>
 
 <!-- NAV -->
-<nav class="navbar">
+<nav class="navbar" id="mainNav">
   <a href="index.html" class="nav-logo">AAA</a>
   <div class="nav-links">
     <a href="resources.html">Resources</a>
@@ -558,297 +605,406 @@
   <div id="navAuth"></div>
 </nav>
 
-<!-- ════════════════════════════════════════
-     HERO
-     ════════════════════════════════════════ -->
-<header class="hero" id="home">
-  <div class="hero-glow"></div>
+<!-- ══════════ HERO ══════════ -->
+<section class="hero" id="home">
+  <!-- SVG perspective grid -->
+  <svg class="hero-grid-svg" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="gl" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#00f0ff" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#00f0ff" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <!-- Perspective horizontal lines -->
+    <line x1="720" y1="450" x2="0" y2="900" stroke="url(#gl)" stroke-width="0.4"/>
+    <line x1="720" y1="450" x2="240" y2="900" stroke="url(#gl)" stroke-width="0.4"/>
+    <line x1="720" y1="450" x2="480" y2="900" stroke="url(#gl)" stroke-width="0.4"/>
+    <line x1="720" y1="450" x2="720" y2="900" stroke="url(#gl)" stroke-width="0.5"/>
+    <line x1="720" y1="450" x2="960" y2="900" stroke="url(#gl)" stroke-width="0.4"/>
+    <line x1="720" y1="450" x2="1200" y2="900" stroke="url(#gl)" stroke-width="0.4"/>
+    <line x1="720" y1="450" x2="1440" y2="900" stroke="url(#gl)" stroke-width="0.4"/>
+    <!-- Horizontal bands -->
+    <line x1="0" y1="620" x2="1440" y2="620" stroke="#00f0ff" stroke-opacity="0.04" stroke-width="1"/>
+    <line x1="0" y1="700" x2="1440" y2="700" stroke="#00f0ff" stroke-opacity="0.04" stroke-width="1"/>
+    <line x1="0" y1="780" x2="1440" y2="780" stroke="#00f0ff" stroke-opacity="0.03" stroke-width="1"/>
+  </svg>
 
-  <div class="hero-eyebrow">
-    <span class="eyebrow-dot"></span>
-    Built for Bharat &nbsp;·&nbsp; Free Forever &nbsp;·&nbsp; 🇮🇳
-  </div>
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-diag hd-1"></div>
+  <div class="hero-diag hd-2"></div>
+  <div class="hero-diag hd-3"></div>
+  <div class="hero-scan"></div>
+  <div class="bracket br-tl"></div>
+  <div class="bracket br-tr"></div>
+  <div class="bracket br-bl"></div>
+  <div class="bracket br-br"></div>
+  <div id="heroParticles"></div>
 
-  <h1 class="hero-wordmark">
-    <span class="w-padh">padh</span><span class="w-iq">IQ</span>
-  </h1>
-
-  <p class="hero-sub">
-    India's first <strong>AI-powered study platform</strong> built by students, for students.<br>
-    NCERT-aligned. Board-exam focused. Zero cost.
-  </p>
-
-  <div class="hero-cta-row">
-    <a href="study-guide.html" class="cta-primary">🚀 Ask AI Tutor</a>
-    <a href="resources.html"   class="cta-ghost">Browse Resources →</a>
-  </div>
-
-  <div class="hero-stats-strip">
-    <div class="hstat"><span class="hstat-num">9–12</span><span class="hstat-label">Classes</span></div>
-    <div class="hstat"><span class="hstat-num">₹0</span><span class="hstat-label">Always Free</span></div>
-    <div class="hstat"><span class="hstat-num">8</span><span class="hstat-label">AI Tools</span></div>
-    <div class="hstat"><span class="hstat-num">24/7</span><span class="hstat-label">Available</span></div>
-  </div>
-</header>
-
-<!-- ════════════════════════════════════════
-     FEATURES — BENTO LAYOUT
-     ════════════════════════════════════════ -->
-<div class="s-wrap" style="padding-bottom:0">
-  <div class="s-label">What We Offer</div>
-  <h2 class="s-title">Three pillars.<br>One platform.</h2>
-  <p class="s-sub">Everything a Class 9–12 student needs — free resources, AI tools, and a marketplace — all under one roof.</p>
-
-  <div class="bento-grid">
-
-    <!-- BIG: AI Study Guide -->
-    <div class="bento bento-xl accent-cyan" style="cursor:pointer" onclick="location='study-guide.html'">
-      <div class="bento-glow"></div>
-      <span class="bento-tag">⭐ Most Used</span>
-      <span class="bento-icon">🤖</span>
-      <h3>AI Study Guide</h3>
-      <p>Your personal tutor available 24/7. Ask any doubt and instantly receive a step-by-step explanation, an Indian example, practice questions, and a board exam tip — all in one reply.</p>
-      <ul class="bento-list">
-        <li>Subject-specific answers with NCERT context</li>
-        <li>Step-by-step solutions with Indian examples</li>
-        <li>3 practice questions per reply — Easy to Hard</li>
-        <li>Board exam tips baked into every answer</li>
-      </ul>
-      <a href="study-guide.html" class="bento-link">Start studying now →</a>
+  <div style="position:relative;z-index:3;display:flex;flex-direction:column;align-items:center">
+    <div class="eyebrow">
+      <span class="eyebrow-dot"></span>
+      Built for Bharat &nbsp;·&nbsp; Free Forever &nbsp;·&nbsp; 🇮🇳
     </div>
 
-    <!-- Free Resources -->
-    <div class="bento accent-orange" style="cursor:pointer" onclick="location='resources.html'">
-      <div class="bento-glow"></div>
-      <span class="bento-tag">Free Forever</span>
-      <span class="bento-icon">📚</span>
-      <h3>Free Resources</h3>
-      <p>NCERT-aligned notes, past papers, formula sheets, and summaries for Classes 9–12. Zero cost, zero signup required.</p>
-      <a href="resources.html" class="bento-link">Browse resources →</a>
+    <div class="hero-logotype">
+      <span class="logo-padh">padh</span>
+      <span class="logo-iq">IQ</span>
+    </div>
+
+    <p class="hero-deck">
+      India's <strong>AI Study OS</strong> — built by students, for students.<br>
+      NCERT-aligned · Board-exam focused · Zero rupees.
+    </p>
+
+    <div class="cta-pair">
+      <a href="study-guide.html" class="cta-prime">🚀 Ask AI Tutor — Free</a>
+      <a href="resources.html"   class="cta-ghost">Browse Resources →</a>
+    </div>
+
+    <div class="stat-bar">
+      <div class="sbar-item"><span class="sbar-num">9–12</span><span class="sbar-lbl">All Classes</span></div>
+      <div class="sbar-item"><span class="sbar-num">₹0</span><span class="sbar-lbl">Always Free</span></div>
+      <div class="sbar-item"><span class="sbar-num">8</span><span class="sbar-lbl">AI Tools</span></div>
+      <div class="sbar-item"><span class="sbar-num">24/7</span><span class="sbar-lbl">Online</span></div>
+      <div class="sbar-item"><span class="sbar-num">🇮🇳</span><span class="sbar-lbl">Made in Bharat</span></div>
+    </div>
+  </div>
+
+  <div class="scroll-caret">
+    <div class="sc-line"></div>
+    <span class="sc-label">scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <span class="mq-item"><span class="mq-dot"></span>CBSE Boards</span>
+    <span class="mq-item"><span class="mq-dot"></span>ICSE Boards</span>
+    <span class="mq-item"><span class="mq-dot"></span>Class 9 to 12</span>
+    <span class="mq-item"><span class="mq-dot"></span>Physics · Chemistry · Maths</span>
+    <span class="mq-item"><span class="mq-dot"></span>Biology · History · Geography</span>
+    <span class="mq-item"><span class="mq-dot"></span>Free NCERT Notes</span>
+    <span class="mq-item"><span class="mq-dot"></span>AI Study Guide · VidyaBot</span>
+    <span class="mq-item"><span class="mq-dot"></span>Board Exam Prep</span>
+    <span class="mq-item"><span class="mq-dot"></span>Daily XP Quizzes</span>
+    <span class="mq-item"><span class="mq-dot"></span>Student Marketplace</span>
+    <span class="mq-item"><span class="mq-dot"></span>CBSE Boards</span>
+    <span class="mq-item"><span class="mq-dot"></span>ICSE Boards</span>
+    <span class="mq-item"><span class="mq-dot"></span>Class 9 to 12</span>
+    <span class="mq-item"><span class="mq-dot"></span>Physics · Chemistry · Maths</span>
+    <span class="mq-item"><span class="mq-dot"></span>Biology · History · Geography</span>
+    <span class="mq-item"><span class="mq-dot"></span>Free NCERT Notes</span>
+    <span class="mq-item"><span class="mq-dot"></span>AI Study Guide · VidyaBot</span>
+    <span class="mq-item"><span class="mq-dot"></span>Board Exam Prep</span>
+    <span class="mq-item"><span class="mq-dot"></span>Daily XP Quizzes</span>
+    <span class="mq-item"><span class="mq-dot"></span>Student Marketplace</span>
+  </div>
+</div>
+
+<!-- ══════════ BENTO FEATURES ══════════ -->
+<div class="wrap sec">
+  <div class="sec-label"><div class="sl-bar"></div><div class="sl-text">What We Offer</div></div>
+  <h2 class="sec-h reveal">Three pillars.<br><em>One platform.</em></h2>
+  <p class="sec-p reveal">Everything a Class 9–12 student needs — free resources, AI tools, and a marketplace, under one roof.</p>
+
+  <div class="bento">
+
+    <!-- BIG: AI -->
+    <div class="bc bc-c s8 reveal" style="cursor:none" onclick="location='study-guide.html'">
+      <div class="bc-ghost-num">01</div>
+      <div class="bc-tag tag-c">⭐ Most Used · Always Free</div>
+      <span class="bc-ico">🤖</span>
+      <div class="bc-title">AI Study Guide — VidyaBot</div>
+      <div class="bc-desc">Your personal tutor available 24/7. Ask any doubt and get a step-by-step explanation with an Indian example, 3 levelled practice questions, and a board exam tip — instantly.</div>
+      <div class="bc-features">
+        <span class="bcf">NCERT-aligned answers</span>
+        <span class="bcf">Indian examples only</span>
+        <span class="bcf">3 practice Qs per reply</span>
+        <span class="bcf">Board exam tips baked in</span>
+        <span class="bcf">Available at 2 AM</span>
+        <span class="bcf">No sign-up needed</span>
+      </div>
+      <a href="study-guide.html" class="bc-link">Start studying now →</a>
+    </div>
+
+    <!-- Resources -->
+    <div class="bc bc-o s4 reveal" onclick="location='resources.html'">
+      <div class="bc-tag tag-o">Free Forever</div>
+      <span class="bc-ico">📚</span>
+      <div class="bc-title">Free Resources</div>
+      <div class="bc-desc">NCERT notes, past papers, formula sheets and chapter summaries for Classes 9–12. All subjects. Zero cost.</div>
+      <a href="resources.html" class="bc-link">Browse resources →</a>
     </div>
 
     <!-- Marketplace -->
-    <div class="bento accent-green" style="cursor:pointer" onclick="location='marketplace.html'">
-      <div class="bento-glow"></div>
-      <span class="bento-tag">Local First</span>
-      <span class="bento-icon">🛒</span>
-      <h3>Marketplace</h3>
-      <p>Buy and sell handwritten notes, used books, and connect with local tutors. Your city's student economy, digital.</p>
-      <a href="marketplace.html" class="bento-link">Visit marketplace →</a>
+    <div class="bc bc-g s4 reveal" onclick="location='marketplace.html'">
+      <div class="bc-tag tag-g">Local First</div>
+      <span class="bc-ico">🛒</span>
+      <div class="bc-title">Bazaar Marketplace</div>
+      <div class="bc-desc">Buy handwritten notes, used books, find tutors nearby. Your city's student economy — now digital.</div>
+      <a href="marketplace.html" class="bc-link">Visit marketplace →</a>
+    </div>
+
+    <!-- XP -->
+    <div class="bc bc-p s4 reveal" onclick="location='gamified.html'">
+      <div class="bc-tag tag-p">Daily Challenge</div>
+      <span class="bc-ico">🎮</span>
+      <div class="bc-title">XP Arena</div>
+      <div class="bc-desc">Earn XP, unlock badges, compete on a real global leaderboard. Fresh AI quizzes every single day.</div>
+      <a href="gamified.html" class="bc-link">Enter arena →</a>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="bc bc-c s4 reveal" onclick="location='dashboard.html'">
+      <div class="bc-tag tag-c">Personal Stats</div>
+      <span class="bc-ico">📊</span>
+      <div class="bc-title">Progress Dashboard</div>
+      <div class="bc-desc">Track your streak, subject breakdown, achievements. Every question builds your profile automatically.</div>
+      <a href="dashboard.html" class="bc-link">See your stats →</a>
     </div>
 
   </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     NAMED AI TOOLS
-     ════════════════════════════════════════ -->
-<div class="tools-section-wrap">
-  <div class="tools-header-row">
+<!-- ══════════ PRODUCT CARDS ══════════ -->
+<div class="wrap" style="padding-bottom:8rem">
+  <div class="sec-label"><div class="sl-bar"></div><div class="sl-text">Product Suite</div></div>
+  <h2 class="sec-h reveal">Four products.<br><em>One brain.</em></h2>
+  <p class="sec-p reveal">Each built to solve a real problem Indian students face every single day.</p>
+
+  <div class="prod-grid">
+    <a class="prod-card pc-1 reveal" href="study-guide.html">
+      <div class="pc-orb"></div>
+      <div class="pc-letter">V</div>
+      <div class="pc-tag">AI TUTOR</div>
+      <div class="pc-name">VidyaBot:<br>Study Intelligence</div>
+      <div class="pc-desc">Your 24/7 AI tutor that understands NCERT, speaks in Indian examples, and prepares you for boards — not just theory.</div>
+      <span class="pc-go">Start studying →</span>
+    </a>
+
+    <a class="prod-card pc-2 reveal" href="resources.html">
+      <div class="pc-orb"></div>
+      <div class="pc-letter">N</div>
+      <div class="pc-tag">FREE RESOURCES</div>
+      <div class="pc-name">NoteBank:<br>Free For All</div>
+      <div class="pc-desc">Chapter notes, formula sheets, past papers for every subject in Classes 9–12. No paywall. Never.</div>
+      <span class="pc-go">Browse notes →</span>
+    </a>
+
+    <a class="prod-card pc-3 reveal" href="gamified.html">
+      <div class="pc-orb"></div>
+      <div class="pc-letter">X</div>
+      <div class="pc-tag">GAMIFIED LEARNING</div>
+      <div class="pc-name">XP Arena:<br>Study Like a Game</div>
+      <div class="pc-desc">Daily AI quizzes. Real XP. Real global leaderboard. Competing makes you study harder without realising it.</div>
+      <span class="pc-go">Enter arena →</span>
+    </a>
+
+    <a class="prod-card pc-4 reveal" href="marketplace.html">
+      <div class="pc-orb"></div>
+      <div class="pc-letter">B</div>
+      <div class="pc-tag">STUDENT MARKETPLACE</div>
+      <div class="pc-name">Bazaar:<br>Student Economy</div>
+      <div class="pc-desc">Sell your notes, buy used HC Verma, find a tutor nearby. The student economy of Jharkhand & Bihar — now digital.</div>
+      <span class="pc-go">Visit bazaar →</span>
+    </a>
+  </div>
+</div>
+
+<!-- ══════════ NAMED TOOLS ══════════ -->
+<div class="wrap" style="padding-bottom:8rem">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:4rem">
     <div>
-      <div class="s-label">AI Toolkit</div>
-      <h2 class="s-title" style="margin-bottom:0">Eight tools.<br>All named. All free.</h2>
+      <div class="sec-label"><div class="sl-bar"></div><div class="sl-text">AI Toolkit</div></div>
+      <h2 class="sec-h reveal" style="margin-bottom:0">Eight tools.<br><em>All named. All free.</em></h2>
     </div>
-    <a href="ai-tools.html" class="tools-see-all">See all tools →</a>
+    <a href="ai-tools.html" style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none;border:1px solid rgba(255,255,255,.1);padding:.45rem 1rem;border-radius:999px;transition:all .2s;white-space:nowrap" onmouseover="this.style.color='var(--cyan)';this.style.borderColor='rgba(0,240,255,.3)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='rgba(255,255,255,.1)'">See all tools →</a>
   </div>
 
-  <div class="named-tools-grid">
-
-    <div class="ntool nt-cyan" onclick="location='study-guide.html'">
-      <div class="ntool-num">01 / AI TUTOR</div>
-      <div class="ntool-icon">🤖</div>
-      <div class="ntool-name">VidyaBot</div>
-      <div class="ntool-tagline">Your AI study guide. Ask anything, get NCERT-aligned answers instantly, 24/7.</div>
-      <span class="ntool-badge">Always On</span>
+  <div class="tool-grid">
+    <div class="tc reveal" style="--tc-color:var(--cyan)" onclick="location='study-guide.html'">
+      <div class="tc-seq">01 / AI TUTOR</div>
+      <div class="tc-ico">🤖</div>
+      <div class="tc-name">VidyaBot</div>
+      <div class="tc-desc">Your NCERT-aligned AI tutor. Ask any doubt, get board-exam-ready answers, 24/7.</div>
+      <span class="tc-badge">Always On</span>
     </div>
-
-    <div class="ntool nt-orange" onclick="location='doubt-solver.html'">
-      <div class="ntool-num">02 / DOUBT SOLVER</div>
-      <div class="ntool-icon">📸</div>
-      <div class="ntool-name">SnapSolve</div>
-      <div class="ntool-tagline">Snap a photo of any question. Get a full step-by-step solution in seconds.</div>
-      <span class="ntool-badge">Photo → Answer</span>
+    <div class="tc reveal" style="--tc-color:var(--orange)" onclick="location='doubt-solver.html'">
+      <div class="tc-seq">02 / DOUBT SOLVER</div>
+      <div class="tc-ico">📸</div>
+      <div class="tc-name">SnapSolve</div>
+      <div class="tc-desc">Snap any question from your textbook. Get a full step-by-step solution instantly.</div>
+      <span class="tc-badge">Photo → Answer</span>
     </div>
-
-    <div class="ntool nt-purple" onclick="location='exam-predictor.html'">
-      <div class="ntool-num">03 / PREDICTOR</div>
-      <div class="ntool-icon">🔮</div>
-      <div class="ntool-name">BhavisyaAI</div>
-      <div class="ntool-tagline">Predicts your board exam questions from 10 years of CBSE patterns. Study smarter.</div>
-      <span class="ntool-badge">Board Focused</span>
+    <div class="tc reveal" style="--tc-color:#c084fc" onclick="location='exam-predictor.html'">
+      <div class="tc-seq">03 / PREDICTOR</div>
+      <div class="tc-ico">🔮</div>
+      <div class="tc-name">BhavisyaAI</div>
+      <div class="tc-desc">Predicts board exam questions from 10 years of CBSE patterns. Study what actually matters.</div>
+      <span class="tc-badge">Board Focused</span>
     </div>
-
-    <div class="ntool nt-green" onclick="location='gamified.html'">
-      <div class="ntool-num">04 / XP SYSTEM</div>
-      <div class="ntool-icon">🎮</div>
-      <div class="ntool-name">XP Arena</div>
-      <div class="ntool-tagline">Earn XP, unlock badges, compete on a live global leaderboard. Fresh AI quizzes daily.</div>
-      <span class="ntool-badge">Daily Quiz</span>
+    <div class="tc reveal" style="--tc-color:var(--green)" onclick="location='gamified.html'">
+      <div class="tc-seq">04 / XP SYSTEM</div>
+      <div class="tc-ico">🎮</div>
+      <div class="tc-name">XP Arena</div>
+      <div class="tc-desc">Daily AI quizzes. Earn XP. Unlock badges. Climb the global leaderboard. Real competition.</div>
+      <span class="tc-badge">Daily Quiz</span>
     </div>
-
-    <div class="ntool nt-gold" onclick="location='study-planner.html'">
-      <div class="ntool-num">05 / PLANNER</div>
-      <div class="ntool-icon">📅</div>
-      <div class="ntool-name">CalendarAI</div>
-      <div class="ntool-tagline">Set your exam date. Get a personalised 30-day study plan, chapter by chapter.</div>
-      <span class="ntool-badge">30-Day Plan</span>
+    <div class="tc reveal" style="--tc-color:#ffd700" onclick="location='study-planner.html'">
+      <div class="tc-seq">05 / PLANNER</div>
+      <div class="tc-ico">📅</div>
+      <div class="tc-name">CalendarAI</div>
+      <div class="tc-desc">Set your exam date. Get a personalised 30-day study plan — chapter by chapter, day by day.</div>
+      <span class="tc-badge">30-Day Plan</span>
     </div>
-
-    <div class="ntool nt-cyan" onclick="launchTool('Create detailed chapter-wise notes for Class 10 Science — Matter in Our Surroundings. Include all key points, definitions and formulas.')">
-      <div class="ntool-num">06 / NOTES</div>
-      <div class="ntool-icon">⚡</div>
-      <div class="ntool-name">NoteStorm</div>
-      <div class="ntool-tagline">Auto-generate structured NCERT notes for any chapter in any subject. Instant.</div>
-      <span class="ntool-badge">Instant Notes</span>
+    <div class="tc reveal" style="--tc-color:var(--cyan)" onclick="launchTool('Create detailed NCERT notes for Class 10 Science — Matter in Our Surroundings with all key points and formulas.')">
+      <div class="tc-seq">06 / NOTES</div>
+      <div class="tc-ico">⚡</div>
+      <div class="tc-name">NoteStorm</div>
+      <div class="tc-desc">Auto-generate structured NCERT chapter notes for any subject. Revision-ready in seconds.</div>
+      <span class="tc-badge">Instant Notes</span>
     </div>
-
-    <div class="ntool nt-orange" onclick="launchTool('Give me 10 most important predicted questions for Class 12 Physics Board exam with short answers.')">
-      <div class="ntool-num">07 / QUESTION BANK</div>
-      <div class="ntool-icon">📚</div>
-      <div class="ntool-name">PaperCrack</div>
-      <div class="ntool-tagline">High-weightage predicted questions for any chapter. Built on 10 years of board patterns.</div>
-      <span class="ntool-badge">High Weightage</span>
+    <div class="tc reveal" style="--tc-color:var(--orange)" onclick="launchTool('Give 10 most important predicted questions for Class 12 Physics Board exam with answers.')">
+      <div class="tc-seq">07 / QUESTION BANK</div>
+      <div class="tc-ico">📚</div>
+      <div class="tc-name">PaperCrack</div>
+      <div class="tc-desc">High-weightage predicted questions for any chapter. Built on real board exam patterns.</div>
+      <span class="tc-badge">High Weightage</span>
     </div>
-
-    <div class="ntool nt-purple" onclick="launchTool('Give me 5 practice problems on Trigonometry for Class 10 with full step-by-step solutions. Vary difficulty easy to hard.')">
-      <div class="ntool-num">08 / PRACTICE</div>
-      <div class="ntool-icon">🧩</div>
-      <div class="ntool-name">SolveLab</div>
-      <div class="ntool-tagline">Practice problems with full solutions for any topic. Levelled Easy → Hard.</div>
-      <span class="ntool-badge">With Solutions</span>
-    </div>
-
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════
-     MARKETPLACE PREVIEW
-     ════════════════════════════════════════ -->
-<div class="market-preview-wrap">
-  <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:0">
-    <div>
-      <div class="s-label">Marketplace</div>
-      <h2 class="s-title" style="margin-bottom:0">Buy. Sell. <span style="color:var(--green)">Connect.</span></h2>
-    </div>
-    <a href="marketplace.html" style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);text-decoration:none;border:1px solid rgba(255,255,255,.1);padding:.4rem 1rem;border-radius:999px;transition:all .2s" onmouseover="this.style.color='var(--cyan)';this.style.borderColor='rgba(0,240,255,.3)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='rgba(255,255,255,.1)'">Visit marketplace →</a>
-  </div>
-  <div class="market-cards-row">
-    <div class="mkt-card">
-      <div class="mkt-badge mb-orange">NOTES</div>
-      <div class="mkt-title">Class 12 Physics — All Chapters</div>
-      <div class="mkt-seller">Priya S. · Patna &nbsp;⭐ 4.9 (34 reviews)</div>
-      <div class="mkt-price">₹49 <span class="original">₹200</span></div>
-      <button class="mkt-btn" onclick="location='marketplace.html'">Buy Now</button>
-    </div>
-    <div class="mkt-card" style="border-color:rgba(0,240,255,.2);background:rgba(0,240,255,.03)">
-      <div class="mkt-badge mb-cyan">TOP TUTOR</div>
-      <div class="mkt-title">Maths Tutor · Class 9–12 · CBSE</div>
-      <div class="mkt-seller">Rahul Kumar · Patna &nbsp;⭐ 5.0 (61 reviews)</div>
-      <div class="mkt-price">₹299<span style="font-size:.75rem;opacity:.6">/session</span></div>
-      <button class="mkt-btn btn-cyan" onclick="location='marketplace.html'">Book Session</button>
-    </div>
-    <div class="mkt-card">
-      <div class="mkt-badge mb-green">BOOKS</div>
-      <div class="mkt-title">HC Verma Vol 1 + 2 (Used, Good Condition)</div>
-      <div class="mkt-seller">Amit R. · Bihar Sharif &nbsp;⭐ 4.7 (12 reviews)</div>
-      <div class="mkt-price">₹180 <span class="original">₹600</span></div>
-      <button class="mkt-btn" onclick="location='marketplace.html'">Buy Now</button>
-    </div>
-    <div class="mkt-card mkt-sell-card">
-      <div class="mkt-sell-icon">➕</div>
-      <div class="mkt-sell-title">List your notes or services</div>
-      <div class="mkt-sell-sub">Earn money from what you know</div>
-      <button class="mkt-btn btn-dashed" onclick="location='marketplace.html'">Sell Here →</button>
+    <div class="tc reveal" style="--tc-color:#c084fc" onclick="launchTool('Give 5 practice problems on Trigonometry for Class 10 with full solutions, easy to hard.')">
+      <div class="tc-seq">08 / PRACTICE</div>
+      <div class="tc-ico">🧩</div>
+      <div class="tc-name">SolveLab</div>
+      <div class="tc-desc">Practice problems with full solutions for any topic. Levelled Easy → Medium → Hard.</div>
+      <span class="tc-badge">With Solutions</span>
     </div>
   </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     AI CHAT EMBED
-     ════════════════════════════════════════ -->
-<div class="chat-embed-wrap">
-  <div style="margin-bottom:0">
-    <div class="s-label">Live AI Tutor</div>
-    <h2 class="s-title" style="margin-bottom:0">Your AI tutor.<br>Ask anything.</h2>
-  </div>
-  <div class="chat-embed-grid">
-    <div class="chat-side-info">
-      <div class="chat-reason">
-        <div class="cr-icon">🕐</div>
-        <div class="cr-text">
-          <div class="cr-title">Available at 2 AM</div>
-          <div class="cr-desc">No coaching class needed. VidyaBot answers when teachers can't.</div>
-        </div>
+<!-- ══════════ LIVE CHAT ══════════ -->
+<div class="wrap" style="padding-bottom:8rem">
+  <div class="chat-section">
+    <div class="chat-info">
+      <div class="sec-label"><div class="sl-bar"></div><div class="sl-text">Live AI Tutor</div></div>
+      <h2 class="sec-h reveal" style="font-size:clamp(1.7rem,3vw,2.3rem)">Talk to<br><em>VidyaBot</em><br>right now.</h2>
+      <p class="sec-p reveal" style="margin-top:.6rem">No account. No download. No cost. Type your doubt and get an answer better than what your textbook gives you.</p>
+      <div class="chat-reason reveal">
+        <div class="cr-ico">🕐</div>
+        <div><div class="cr-h">Available at 2 AM</div><div class="cr-d">When coaching closes, VidyaBot keeps running.</div></div>
       </div>
-      <div class="chat-reason">
-        <div class="cr-icon">🇮🇳</div>
-        <div class="cr-text">
-          <div class="cr-title">Built for India</div>
-          <div class="cr-desc">Every answer uses Indian examples, NCERT context, and board exam focus.</div>
-        </div>
+      <div class="chat-reason reveal">
+        <div class="cr-ico">🇮🇳</div>
+        <div><div class="cr-h">Indian examples only</div><div class="cr-d">No foreign analogies. Every answer uses desi context.</div></div>
       </div>
-      <div class="chat-reason">
-        <div class="cr-icon">📊</div>
-        <div class="cr-text">
-          <div class="cr-title">Tracks your progress</div>
-          <div class="cr-desc">Every question builds your subject profile, streak, and dashboard stats.</div>
-        </div>
-      </div>
-      <div class="chat-reason">
-        <div class="cr-icon">₹</div>
-        <div class="cr-text">
-          <div class="cr-title">Zero cost</div>
-          <div class="cr-desc">No subscription. No paywall. Powered by Groq AI, free for every student.</div>
-        </div>
+      <div class="chat-reason reveal">
+        <div class="cr-ico">📊</div>
+        <div><div class="cr-h">Builds your profile</div><div class="cr-d">Every Q updates your dashboard, streak and stats.</div></div>
       </div>
     </div>
 
-    <div class="chat-container">
-      <div class="chat-header">
-        <div class="chat-avatar">🤖</div>
+    <div class="chat-widget reveal">
+      <div class="cw-head">
+        <div class="cw-av">🤖</div>
         <div>
-          <div class="chat-name">VidyaBot · AI Study Guide</div>
-          <div class="chat-status"><span class="status-dot"></span> Online · Powered by Groq AI</div>
+          <div class="cw-nm">VidyaBot · AI Study Guide</div>
+          <div class="cw-st"><span class="cw-online"></span>Online · Groq AI · Free</div>
         </div>
-        <button class="clear-btn" onclick="clearChat()">Clear</button>
+        <button class="cw-clr" onclick="clearChat()">Clear</button>
       </div>
-      <div class="chat-box" id="chatBox">
-        <div class="ai-message">
-          <div class="msg-icon">🤖</div>
-          <div class="msg-content">
-            Namaste! 👋 I'm <strong>VidyaBot</strong>, your AI Study Guide for Classes 9–12.<br><br>
-            Ask me any doubt — Maths, Science, Physics, Chemistry, History, Geography, or any CBSE/ICSE subject!
-          </div>
+      <div class="cw-msgs" id="chatBox">
+        <div class="ai-msg">
+          <div class="m-ico">🤖</div>
+          <div class="m-bub">Namaste! 👋 I'm <strong>VidyaBot</strong> — your free AI tutor for Classes 9–12.<br><br>Ask me any doubt in Maths, Science, Physics, Chemistry, History, Geography, or any CBSE/ICSE subject!</div>
         </div>
       </div>
-      <div class="chat-suggestions">
-        <button class="suggestion" onclick="setInput('Explain Newton\'s laws with Indian examples')">Newton's Laws</button>
-        <button class="suggestion" onclick="setInput('How does photosynthesis work?')">Photosynthesis</button>
-        <button class="suggestion" onclick="setInput('Solve: x² + 5x + 6 = 0')">Solve Quadratic</button>
-        <button class="suggestion" onclick="setInput('Tips for Class 10 board exam')">Board Tips</button>
+      <div class="cw-chips">
+        <button class="chip" onclick="setInput('Explain Newton\'s laws with Indian examples')">Newton's Laws</button>
+        <button class="chip" onclick="setInput('How does photosynthesis work?')">Photosynthesis</button>
+        <button class="chip" onclick="setInput('Solve: x² + 5x + 6 = 0')">Quadratic</button>
+        <button class="chip" onclick="setInput('Class 10 board exam tips')">Board Tips</button>
       </div>
-      <div class="chat-input-row">
-        <input type="text" id="userInput" placeholder="Ask VidyaBot anything..." onkeydown="if(event.key==='Enter')sendMessage()">
-        <button class="send-btn" onclick="sendMessage()" id="sendBtn"><span id="sendBtnText">Send ✦</span></button>
+      <div class="cw-foot">
+        <input class="cw-input" type="text" id="userInput" placeholder="Ask VidyaBot anything..." onkeydown="if(event.key==='Enter')sendMessage()">
+        <button class="cw-send" onclick="sendMessage()" id="sendBtn"><span id="sendBtnText">Send ✦</span></button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- FOOTER -->
-<footer style="border-top:1px solid rgba(255,255,255,0.06);padding:3rem 2rem 2.5rem;max-width:1140px;margin:0 auto">
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-bottom:2rem">
-    <div style="font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:900;color:var(--cyan);text-shadow:0 0 20px var(--cyan);letter-spacing:4px">padhIQ</div>
-    <div style="display:flex;gap:1.8rem;flex-wrap:wrap">
-      <a href="about.html"       style="color:var(--muted);text-decoration:none;font-size:.82rem;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--muted)'">About</a>
-      <a href="resources.html"   style="color:var(--muted);text-decoration:none;font-size:.82rem;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--muted)'">Resources</a>
-      <a href="marketplace.html" style="color:var(--muted);text-decoration:none;font-size:.82rem;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--muted)'">Marketplace</a>
-      <a href="about.html"       style="color:var(--muted);text-decoration:none;font-size:.82rem;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--muted)'">Contact</a>
+<!-- ══════════ MARKETPLACE ══════════ -->
+<div class="wrap" style="padding-bottom:8rem">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+    <div>
+      <div class="sec-label"><div class="sl-bar"></div><div class="sl-text">Bazaar Marketplace</div></div>
+      <h2 class="sec-h reveal" style="margin-bottom:0">Buy. Sell. <em>Connect.</em></h2>
+    </div>
+    <a href="marketplace.html" style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none;border:1px solid rgba(255,255,255,.1);padding:.45rem 1rem;border-radius:999px;transition:all .2s" onmouseover="this.style.color='var(--cyan)';this.style.borderColor='rgba(0,240,255,.3)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='rgba(255,255,255,.1)'">Visit Bazaar →</a>
+  </div>
+  <div class="mkt-grid">
+    <div class="mc reveal">
+      <div class="mc-badge mb-o">NOTES</div>
+      <div class="mc-title">Class 12 Physics — All Chapters</div>
+      <div class="mc-seller">Priya S. · Patna · ⭐ 4.9 (34)</div>
+      <div class="mc-price">₹49 <s>₹200</s></div>
+      <button class="mc-btn" onclick="location='marketplace.html'">Buy Now</button>
+    </div>
+    <div class="mc reveal" style="border-color:rgba(0,240,255,.14)">
+      <div class="mc-badge mb-c">TOP TUTOR</div>
+      <div class="mc-title">Maths Tutor · Class 9–12 · CBSE</div>
+      <div class="mc-seller">Rahul K. · Patna · ⭐ 5.0 (61)</div>
+      <div class="mc-price">₹299<span style="font-size:.7rem;opacity:.6">/session</span></div>
+      <button class="mc-btn btc" onclick="location='marketplace.html'">Book Session</button>
+    </div>
+    <div class="mc reveal">
+      <div class="mc-badge mb-g">BOOKS</div>
+      <div class="mc-title">HC Verma Vol 1+2 (Good Condition)</div>
+      <div class="mc-seller">Amit R. · Bihar Sharif · ⭐ 4.7 (12)</div>
+      <div class="mc-price">₹180 <s>₹600</s></div>
+      <button class="mc-btn" onclick="location='marketplace.html'">Buy Now</button>
+    </div>
+    <div class="mc mc-sell reveal">
+      <div class="mc-sell-ico">➕</div>
+      <div class="mc-sell-txt">List your notes or services</div>
+      <button class="mc-btn" onclick="location='marketplace.html'" style="border-style:dashed;color:var(--muted)">Sell on Bazaar →</button>
     </div>
   </div>
-  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.05)">
-    <span style="font-size:.7rem;color:rgba(100,116,139,.5);font-family:'JetBrains Mono',monospace">© 2025 Project AAA · padhIQ · Made in Bokaro, Jharkhand</span>
-    <span style="font-size:.72rem;color:var(--muted)">Free education for every Indian student 🇮🇳</span>
+</div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="footer">
+  <div class="footer-top">
+    <div>
+      <div class="f-logo">padhIQ</div>
+      <p class="f-tagline">India's AI Study OS. Free for every student, forever. Built in Bokaro, Jharkhand.</p>
+    </div>
+    <div class="f-col">
+      <h4>Platform</h4>
+      <a href="study-guide.html">AI Study Guide</a>
+      <a href="ai-tools.html">All AI Tools</a>
+      <a href="resources.html">Free Resources</a>
+      <a href="marketplace.html">Marketplace</a>
+    </div>
+    <div class="f-col">
+      <h4>Named Tools</h4>
+      <a href="study-guide.html">VidyaBot</a>
+      <a href="doubt-solver.html">SnapSolve</a>
+      <a href="exam-predictor.html">BhavisyaAI</a>
+      <a href="gamified.html">XP Arena</a>
+    </div>
+    <div class="f-col">
+      <h4>Project AAA</h4>
+      <a href="about.html">About Us</a>
+      <a href="about.html">Our Story</a>
+      <a href="dashboard.html">My Dashboard</a>
+      <a href="login.html">Sign Up Free</a>
+    </div>
+  </div>
+  <div class="footer-btm">
+    <span class="f-copy">© 2025 Project AAA · padhIQ · Made in Bokaro, Jharkhand</span>
+    <span style="font-size:.7rem;color:var(--muted)">Free education for every Indian student 🇮🇳</span>
   </div>
 </footer>
 
@@ -856,14 +1012,62 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
 <script>
+// Init nav
 initNavAuth();
-function launchTool(prompt) {
-  localStorage.setItem('aaa_tool_prompt', prompt);
-  window.location.href = 'study-guide.html';
-}
+
+// Scroll glass nav
 window.addEventListener('scroll', () => {
-  document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 20);
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 30);
 });
+
+// Custom cursor
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+(function animCursor(){
+  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+  if(cur)  { cur.style.left=mx+'px'; cur.style.top=my+'px'; }
+  if(ring) { ring.style.left=rx+'px'; ring.style.top=ry+'px'; }
+  requestAnimationFrame(animCursor);
+})();
+document.querySelectorAll('a,button,.bc,.tc,.mc,.prod-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { if(cur){cur.style.width='18px';cur.style.height='18px';cur.style.opacity='.7';} if(ring){ring.style.width='50px';ring.style.height='50px';} });
+  el.addEventListener('mouseleave', () => { if(cur){cur.style.width='10px';cur.style.height='10px';cur.style.opacity='1';} if(ring){ring.style.width='36px';ring.style.height='36px';} });
+});
+
+// Floating particles
+(function spawnParticles(){
+  const c = document.getElementById('heroParticles');
+  if(!c) return;
+  c.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:1';
+  const cols=['rgba(0,240,255,','rgba(0,255,136,','rgba(255,107,53,'];
+  function spawn(){
+    const p=document.createElement('div');
+    const col=cols[Math.floor(Math.random()*cols.length)];
+    const sz=Math.random()*3+1, dur=7+Math.random()*9;
+    p.style.cssText=`position:absolute;border-radius:50%;width:${sz}px;height:${sz}px;background:${col}${Math.random()*.5+.2});box-shadow:0 0 ${sz*3}px ${col}.4);left:${Math.random()*100}%;bottom:${Math.random()*30}%;animation:particleFloat ${dur}s linear ${Math.random()*dur}s both`;
+    c.appendChild(p);
+    setTimeout(()=>p.remove(),(dur+6)*1000);
+  }
+  const style=document.createElement('style');
+  style.textContent='@keyframes particleFloat{0%{transform:translateY(0) translateX(0) scale(1);opacity:0}10%{opacity:1}90%{opacity:.5}100%{transform:translateY(-220px) translateX(50px) scale(.2);opacity:0}}';
+  document.head.appendChild(style);
+  for(let i=0;i<25;i++) spawn();
+  setInterval(spawn,1300);
+})();
+
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Tool launcher
+function launchTool(prompt){
+  localStorage.setItem('aaa_tool_prompt', prompt);
+  window.location.href='study-guide.html';
+}
 </script>
 </body>
 </html>
