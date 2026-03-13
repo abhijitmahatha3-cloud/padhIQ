@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VidyaBot — AI Study Guide · padhIQ</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shell.css">
 <style>
 /* ═══════════════════════════════════════════════════════════════
    VIDYABOT 4.0 — DEEP SPACE INDIGO THEME
@@ -53,14 +54,11 @@ body::before {
     radial-gradient(ellipse at 80% 80%, rgba(0,206,201,.05) 0%, transparent 50%);
 }
 
-/* ── NAV ── */
-nav {
-  position:fixed; top:0; left:0; right:0; z-index:200; height:56px;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:0 1.25rem; gap:.75rem;
-  background:rgba(7,8,15,.92); backdrop-filter:blur(32px) saturate(180%);
-  border-bottom:1px solid var(--border);
-}
+/* Shell topbar replaces the old nav — hide it */
+nav { display: none !important; }
+.mobile-drawer { display: none !important; }
+/* Adjust padding since shell topbar is 54px */
+.app-shell { padding-top: var(--header-h, 54px) !important; }
 .nav-logo {
   font-family:'Orbitron',monospace; font-weight:900; font-size:.88rem;
   color:var(--lav); text-shadow:0 0 20px rgba(162,155,254,.4);
@@ -122,7 +120,10 @@ nav {
   height:100vh;
   padding-top:56px;
   overflow:hidden;
+  /* Offset for shell sidebar */
+  margin-left: var(--sb-w, 240px);
 }
+@media(max-width:768px){ .app-shell { margin-left:0 !important; } }
 
 /* ── LEFT SIDEBAR ── */
 .sidebar-left {
@@ -1488,9 +1489,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   window.addEventListener('scroll',()=>{
     document.querySelector('nav').style.borderBottomColor=window.scrollY>10?'rgba(108,92,231,.25)':'';
   });
+  if(typeof Shell!=='undefined') Shell.init('study');
   if(typeof initNavAuth==='function') initNavAuth();
 });
 </script>
+<script src="shell.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
 </body>

@@ -3,388 +3,335 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mission Control — Dashboard · padhIQ</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Syne:wght@400;600;700&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<title>Dashboard · padhIQ</title>
+<link rel="stylesheet" href="shell.css">
 <style>
-/* ══ MISSION CONTROL THEME ═══════════════════════════
-   Concept: NASA ops room. Military green on near-black.
-   Palette: #020a04 bg · #00ff66 green · #00cc44 mid
-            #004422 card · phosphor green monitors
-   Fonts: Orbitron mono + JetBrains Mono everywhere
-   ═══════════════════════════════════════════════════ */
-:root{
-  --bg:#020a04; --bg2:#041008; --bg3:#06180a;
-  --g1:#00ff66; --g2:#00cc44; --g3:#008830;
-  --text:#c8ffd4; --muted:#3a7a4a; --dim:#1a3a22;
-  --border:rgba(0,255,102,.08); --card:rgba(4,16,8,.85);
-  --warn:#ffcc00; --crit:#ff4444;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh;overflow-x:hidden;}
-
-/* Scanline effect */
-body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(0,0,0,.08) 3px,rgba(0,0,0,.08) 4px);
-  animation:scanlines 8s linear infinite;}
-@keyframes scanlines{from{background-position:0 0}to{background-position:0 100px}}
-
-/* Corner decorations */
-body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 0%,rgba(0,255,102,.04) 0%,transparent 60%);}
-
-/* NAV — terminal style */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:50px;
-  display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;
-  background:rgba(2,10,4,.95);border-bottom:1px solid rgba(0,255,102,.12);}
-.nav-brand{font-family:'Orbitron',monospace;font-weight:700;font-size:.85rem;
-  color:var(--g1);text-shadow:0 0 12px rgba(0,255,102,.5);text-decoration:none;letter-spacing:3px;}
-.nav-breadcrumb{font-size:.62rem;color:var(--muted);letter-spacing:.1em;}
-.nav-breadcrumb span{color:var(--g2);}
-.nav-time{font-size:.65rem;color:var(--muted);}
-#navAuth{font-size:.7rem;}
-
-/* MAIN LAYOUT */
-.mc-layout{position:relative;z-index:2;display:grid;grid-template-columns:220px 1fr;min-height:100vh;padding-top:50px;}
-
-/* SIDEBAR */
-.mc-sidebar{background:rgba(2,10,4,.9);border-right:1px solid rgba(0,255,102,.08);
-  padding:1.5rem 0;display:flex;flex-direction:column;gap:0;}
-.sb-section{padding:.5rem 1.2rem;margin-bottom:.25rem;}
-.sb-section-label{font-size:.52rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;
-  padding:.5rem .5rem .3rem;border-bottom:1px solid var(--border);margin-bottom:.4rem;}
-.sb-item{display:flex;align-items:center;gap:.65rem;padding:.55rem .5rem;border-radius:6px;
-  color:rgba(200,255,212,.45);font-size:.72rem;cursor:pointer;transition:all .2s;text-decoration:none;}
-.sb-item:hover{background:rgba(0,255,102,.06);color:var(--text);}
-.sb-item.active{background:rgba(0,255,102,.1);color:var(--g1);border-left:2px solid var(--g1);}
-.sb-dot{width:5px;height:5px;border-radius:50%;background:var(--g3);}
-.sb-item.active .sb-dot{background:var(--g1);box-shadow:0 0 6px var(--g1);}
-.sb-footer{margin-top:auto;padding:1rem 1.2rem;border-top:1px solid var(--border);}
-.sb-status{font-size:.6rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;}
-.status-ok{width:5px;height:5px;border-radius:50%;background:var(--g1);box-shadow:0 0 6px var(--g1);animation:pulse 2s infinite;}
-
-/* MAIN PANEL */
-.mc-main{padding:1.5rem;overflow-y:auto;}
-
-/* Terminal header */
-.term-header{display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);}
-.th-left{}
-.th-prompt{font-size:.58rem;color:var(--muted);margin-bottom:.3rem;letter-spacing:.08em;}
-.th-title{font-family:'Orbitron',monospace;font-size:1.3rem;font-weight:700;color:var(--g1);
-  text-shadow:0 0 20px rgba(0,255,102,.3);}
-.th-sub{font-size:.65rem;color:var(--muted);margin-top:.2rem;}
-.th-right{display:flex;gap:.5rem;align-items:center;}
-.indicator{display:flex;align-items:center;gap:.35rem;padding:.3rem .7rem;border-radius:4px;
-  background:rgba(0,255,102,.06);border:1px solid rgba(0,255,102,.12);font-size:.6rem;}
-.ind-dot{width:5px;height:5px;border-radius:50%;background:var(--g1);
-  box-shadow:0 0 6px var(--g1);animation:pulse 2s infinite;}
-
-/* STAT GRID */
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem;}
-.stat-tile{
-  background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;
-  position:relative;overflow:hidden;transition:all .2s;}
-.stat-tile:hover{border-color:rgba(0,255,102,.2);box-shadow:0 8px 24px rgba(0,0,0,.4);}
-.stat-tile::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;
-  background:radial-gradient(circle at top right,rgba(0,255,102,.08),transparent 70%);
-  border-radius:0 12px 0 0;}
-.st-label{font-size:.58rem;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:.6rem;}
-.st-val{font-family:'Orbitron',monospace;font-size:1.8rem;font-weight:700;color:var(--g1);
-  text-shadow:0 0 16px rgba(0,255,102,.4);line-height:1;margin-bottom:.3rem;}
-.st-val.warn{color:var(--warn);text-shadow:0 0 16px rgba(255,204,0,.4);}
-.st-sub{font-size:.6rem;color:var(--muted);}
-.st-delta{font-size:.6rem;color:var(--g2);display:flex;align-items:center;gap:.2rem;}
-.st-delta.up::before{content:'▲ ';}
-.st-delta.down{color:var(--crit);}
-.st-delta.down::before{content:'▼ ';}
-
-/* CHARTS SECTION */
-.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.5rem;}
-.chart-tile{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem;}
-.ct-title{font-size:.62rem;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:1rem;}
-
-/* Subject bars */
-.subj-bar{display:flex;align-items:center;gap:.7rem;margin-bottom:.65rem;}
-.sb-name{width:80px;font-size:.66rem;color:rgba(200,255,212,.6);flex-shrink:0;}
-.sb-track{flex:1;height:6px;background:rgba(0,255,102,.08);border-radius:999px;overflow:hidden;}
-.sb-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--g2),var(--g1));
-  box-shadow:0 0 6px rgba(0,255,102,.4);transition:width 1s ease;}
-.sb-pct{font-size:.62rem;color:var(--g2);width:30px;text-align:right;flex-shrink:0;}
-
-/* Activity log */
-.activity-tile{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem;margin-bottom:1.5rem;}
-.act-item{display:flex;align-items:flex-start;gap:.75rem;padding:.55rem 0;border-bottom:1px solid rgba(0,255,102,.04);}
-.act-item:last-child{border-bottom:none;}
-.act-time{font-size:.58rem;color:var(--muted);white-space:nowrap;margin-top:.1rem;min-width:40px;}
-.act-dot{width:6px;height:6px;border-radius:50%;margin-top:.3rem;flex-shrink:0;}
-.act-msg{font-size:.72rem;color:rgba(200,255,212,.7);line-height:1.5;}
-.act-tag{display:inline-block;font-size:.55rem;font-weight:700;padding:.08rem .4rem;
-  border-radius:3px;margin-left:.35rem;}
-.tag-ai{background:rgba(0,255,102,.1);color:var(--g1);border:1px solid rgba(0,255,102,.2);}
-.tag-quiz{background:rgba(255,204,0,.1);color:var(--warn);border:1px solid rgba(255,204,0,.2);}
-.tag-mkt{background:rgba(212,136,26,.1);color:#d4881a;border:1px solid rgba(212,136,26,.2);}
-
-/* BADGES */
-.badges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.65rem;}
-.badge-item{background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:.9rem .8rem;text-align:center;transition:all .2s;}
-.badge-item.earned{border-color:rgba(0,255,102,.2);}
-.badge-item.earned:hover{box-shadow:0 0 20px rgba(0,255,102,.08);}
-.badge-item.locked{opacity:.4;}
-.bi-icon{font-size:2rem;margin-bottom:.4rem;display:block;}
-.bi-name{font-size:.65rem;color:var(--text);font-weight:600;}
-.bi-sub{font-size:.58rem;color:var(--muted);margin-top:.15rem;}
-
-/* Quick actions */
-.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;margin-bottom:1.5rem;}
-.qa-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:.85rem;display:flex;flex-direction:column;align-items:center;gap:.45rem;
-  cursor:pointer;transition:all .2s;text-decoration:none;}
-.qa-btn:hover{border-color:rgba(0,255,102,.25);background:rgba(0,255,102,.04);transform:translateY(-2px);}
-.qa-icon{font-size:1.5rem;}
-.qa-label{font-size:.63rem;color:rgba(200,255,212,.6);text-align:center;line-height:1.3;}
-
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-
-/* Responsive */
-@media(max-width:900px){
-  .mc-layout{grid-template-columns:1fr;}
-  .mc-sidebar{display:none;}
-  .stat-grid{grid-template-columns:1fr 1fr;}
-  .charts-row{grid-template-columns:1fr;}
-  .quick-actions{grid-template-columns:repeat(2,1fr);}
-}
-@media(max-width:480px){.stat-grid{grid-template-columns:1fr 1fr;}}
+.dash-grid-top { display:grid; grid-template-columns:repeat(4,1fr); gap:.9rem; margin-bottom:1.1rem; }
+.dash-grid-mid { display:grid; grid-template-columns:2fr 1fr; gap:1.1rem; margin-bottom:1.1rem; }
+.dash-grid-bot { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.1rem; }
+.plan-item { display:flex; align-items:center; gap:.75rem; padding:.6rem .4rem; border-radius:var(--r-md); transition:background .15s; }
+.plan-item:hover { background:rgba(108,92,231,.06); }
+.plan-check { width:20px; height:20px; border-radius:5px; flex-shrink:0; border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s; }
+.plan-check:hover { border-color:rgba(108,92,231,.5); }
+.plan-check.done { background:rgba(108,92,231,.2); border-color:var(--brand-lt); }
+.plan-check.done::after { content:'✓'; font-size:.65rem; color:var(--brand-lt); font-weight:700; }
+.plan-text { font-size:.83rem; color:var(--text-2); flex:1; }
+.plan-text.done-txt { text-decoration:line-through; color:var(--text-3); }
+.plan-sub { font-size:.64rem; color:var(--text-3); margin-top:.08rem; }
+.plan-tag { font-family:'JetBrains Mono',monospace; font-size:.54rem; padding:.1rem .38rem; border-radius:var(--r-pill); background:rgba(108,92,231,.12); color:var(--brand-lt); flex-shrink:0; }
+.subj-row { display:flex; align-items:center; gap:.75rem; padding:.4rem 0; }
+.subj-icon { font-size:1rem; width:22px; text-align:center; flex-shrink:0; }
+.subj-label { font-size:.78rem; color:var(--text-2); width:80px; flex-shrink:0; }
+.subj-bar { flex:1; }
+.subj-pct { font-family:'JetBrains Mono',monospace; font-size:.63rem; color:var(--text-3); width:28px; text-align:right; flex-shrink:0; }
+.exam-item { display:flex; align-items:center; gap:.75rem; padding:.6rem .4rem; border-radius:var(--r-md); transition:background .15s; }
+.exam-item:hover { background:rgba(108,92,231,.06); }
+.exam-days { width:42px; height:42px; border-radius:var(--r-md); flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(253,203,110,.1); border:1px solid rgba(253,203,110,.2); }
+.exam-days-n { font-family:'Orbitron',monospace; font-size:.88rem; font-weight:700; color:var(--gold); line-height:1; }
+.exam-days-l { font-size:.44rem; color:var(--text-3); text-transform:uppercase; letter-spacing:.06em; }
+.exam-name { font-size:.82rem; font-weight:600; color:var(--text); }
+.exam-sub  { font-size:.66rem; color:var(--text-3); margin-top:.08rem; }
+.activity-item { display:flex; align-items:flex-start; gap:.6rem; padding:.52rem 0; border-bottom:1px solid var(--border-2); }
+.activity-item:last-child { border-bottom:none; }
+.act-icon { width:28px; height:28px; border-radius:var(--r-sm); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.85rem; background:var(--surface3); }
+.act-text { font-size:.79rem; color:var(--text-2); line-height:1.45; flex:1; }
+.act-text strong { color:var(--text); font-weight:600; }
+.act-time { font-family:'JetBrains Mono',monospace; font-size:.59rem; color:var(--text-3); flex-shrink:0; }
+.quick-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem; }
+.quick-btn { display:flex; flex-direction:column; align-items:flex-start; gap:.28rem; padding:.8rem .85rem; border-radius:var(--r-lg); background:var(--surface2); border:1px solid var(--border-2); cursor:pointer; transition:all .2s; text-decoration:none; color:inherit; }
+.quick-btn:hover { background:rgba(108,92,231,.1); border-color:var(--border); transform:translateY(-1px); }
+.quick-ico { font-size:1.3rem; }
+.quick-lbl { font-size:.76rem; font-weight:700; color:var(--text); }
+.quick-desc { font-size:.63rem; color:var(--text-3); }
+.week-chart { display:flex; align-items:flex-end; gap:.4rem; height:60px; }
+.wc-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:.3rem; height:100%; justify-content:flex-end; }
+.wc-bar { width:100%; border-radius:3px 3px 0 0; background:rgba(108,92,231,.22); min-height:3px; }
+.wc-bar.today { background:linear-gradient(180deg,var(--brand-lt),var(--brand)); }
+@media(max-width:1024px){ .dash-grid-top{grid-template-columns:repeat(2,1fr);} .dash-grid-bot{grid-template-columns:repeat(2,1fr);} }
+@media(max-width:768px) { .dash-grid-top{grid-template-columns:repeat(2,1fr);gap:.6rem;} .dash-grid-mid{grid-template-columns:1fr;} .dash-grid-bot{grid-template-columns:1fr;} }
+@media(max-width:480px) { .quick-grid{grid-template-columns:repeat(2,1fr);} }
 </style>
 </head>
 <body>
+<div class="main-wrap">
+<div class="page-content">
 
-<nav>
-  <a href="index.html" class="nav-brand">padhIQ</a>
-  <div class="nav-breadcrumb">MISSION_CONTROL / <span>STUDENT_DASHBOARD</span></div>
-  <div class="nav-time" id="navTime"></div>
-  <div id="navAuth"></div>
-</nav>
+  <div class="page-header animate-fadeUp">
+    <div class="page-header-top">
+      <h1 class="page-h1" id="pageGreeting">Good morning, <span style="color:var(--brand-lt)" id="userName">Student</span> 👋</h1>
+      <div class="page-actions">
+        <a href="study-planner.html" class="btn btn-ghost btn-sm">📅 Update Plan</a>
+        <a href="study-guide.html"   class="btn btn-primary btn-sm">🤖 Ask VidyaBot</a>
+      </div>
+    </div>
+    <p class="page-sub" id="dashSub">Loading your progress…</p>
+  </div>
 
-<div class="mc-layout">
-  <!-- SIDEBAR -->
-  <div class="mc-sidebar">
-    <div class="sb-section">
-      <div class="sb-section-label">Navigation</div>
-      <a href="index.html" class="sb-item"><span class="sb-dot"></span>Home Base</a>
-      <a href="dashboard.html" class="sb-item active"><span class="sb-dot"></span>Dashboard</a>
-      <a href="study-guide.html" class="sb-item"><span class="sb-dot"></span>VidyaBot</a>
-      <a href="gamified.html" class="sb-item"><span class="sb-dot"></span>XP Arena</a>
+  <!-- Stat cards -->
+  <div class="dash-grid-top animate-fadeUp" style="animation-delay:.06s">
+    <div class="stat-card">
+      <div class="stat-icon si-gold">🔥</div>
+      <div class="stat-body">
+        <div class="stat-val" id="sc-streak">0</div>
+        <div class="stat-lbl">Day Streak</div>
+        <div class="stat-sub" id="sc-streak-sub">Start today!</div>
+      </div>
     </div>
-    <div class="sb-section">
-      <div class="sb-section-label">Tools</div>
-      <a href="doubt-solver.html" class="sb-item"><span class="sb-dot"></span>SnapSolve</a>
-      <a href="exam-predictor.html" class="sb-item"><span class="sb-dot"></span>BhavisyaAI</a>
-      <a href="study-planner.html" class="sb-item"><span class="sb-dot"></span>CalendarAI</a>
-      <a href="resources.html" class="sb-item"><span class="sb-dot"></span>Resources</a>
+    <div class="stat-card">
+      <div class="stat-icon si-violet">🧠</div>
+      <div class="stat-body">
+        <div class="stat-val" id="sc-q">0</div>
+        <div class="stat-lbl">Questions Asked</div>
+        <div class="stat-sub" id="sc-top"></div>
+      </div>
     </div>
-    <div class="sb-section">
-      <div class="sb-section-label">Community</div>
-      <a href="marketplace.html" class="sb-item"><span class="sb-dot"></span>Bazaar</a>
-      <a href="about.html" class="sb-item"><span class="sb-dot"></span>Project AAA</a>
+    <div class="stat-card">
+      <div class="stat-icon si-teal">⚡</div>
+      <div class="stat-body">
+        <div class="stat-val" id="sc-xp">0</div>
+        <div class="stat-lbl">XP Earned</div>
+        <div class="stat-sub" id="sc-rank">Earn more!</div>
+      </div>
     </div>
-    <div class="sb-footer">
-      <div class="sb-status"><span class="status-ok"></span>All systems operational</div>
+    <div class="stat-card">
+      <div class="stat-icon si-green">📅</div>
+      <div class="stat-body">
+        <div class="stat-val" id="sc-sess">0</div>
+        <div class="stat-lbl">Study Sessions</div>
+        <div class="stat-sub">Total</div>
+      </div>
     </div>
   </div>
 
-  <!-- MAIN -->
-  <div class="mc-main">
-    <!-- Header -->
-    <div class="term-header">
-      <div class="th-left">
-        <div class="th-prompt">> STUDENT_PROFILE / MISSION_STATUS</div>
-        <div class="th-title">Mission Control</div>
-        <div class="th-sub" id="dashSubtitle">Loading student data...</div>
+  <!-- Plan + Exams -->
+  <div class="dash-grid-mid animate-fadeUp" style="animation-delay:.1s">
+    <div class="card">
+      <div class="card-accent accent-violet"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem">
+        <div>
+          <div class="label">Today</div>
+          <div class="heading-md" style="margin-top:.2rem">📋 Study Plan</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="openAddTask()">+ Add Task</button>
       </div>
-      <div class="th-right">
-        <div class="indicator"><span class="ind-dot"></span>LIVE</div>
-        <div class="indicator" style="border-color:rgba(255,204,0,.15);color:var(--warn)">⚠ BOARDS APPROACHING</div>
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-      <a href="study-guide.html" class="qa-btn"><span class="qa-icon">🤖</span><span class="qa-label">Ask VidyaBot</span></a>
-      <a href="gamified.html" class="qa-btn"><span class="qa-icon">🎮</span><span class="qa-label">Daily Quiz</span></a>
-      <a href="study-planner.html" class="qa-btn"><span class="qa-icon">📅</span><span class="qa-label">Study Plan</span></a>
-      <a href="resources.html" class="qa-btn"><span class="qa-icon">📚</span><span class="qa-label">Resources</span></a>
-    </div>
-
-    <!-- Stats -->
-    <div class="stat-grid">
-      <div class="stat-tile">
-        <div class="st-label">🔥 Day Streak</div>
-        <div class="st-val" id="streakVal">0</div>
-        <div class="st-sub">days consecutive</div>
-        <div class="st-delta up" id="streakDelta">Active today</div>
-      </div>
-      <div class="stat-tile">
-        <div class="st-label">🧠 Questions Asked</div>
-        <div class="st-val" id="qaskedVal">0</div>
-        <div class="st-sub">total interactions</div>
-        <div class="st-delta up" id="qaskedDelta">Keep going</div>
-      </div>
-      <div class="stat-tile">
-        <div class="st-label">📅 Study Sessions</div>
-        <div class="st-val" id="sessVal">0</div>
-        <div class="st-sub">sessions logged</div>
-        <div class="st-delta up">This week</div>
-      </div>
-      <div class="stat-tile">
-        <div class="st-label">⭐ Top Subject</div>
-        <div class="st-val" id="topSubVal" style="font-size:1rem;padding-top:.4rem;">—</div>
-        <div class="st-sub">most studied</div>
-        <div class="st-delta" id="topSubDelta">Based on activity</div>
+      <div id="planList"></div>
+      <div style="margin-top:.85rem;padding-top:.7rem;border-top:1px solid var(--border-2)">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span class="body-sm" id="planProg">0 of 0 tasks done</span>
+          <a href="study-planner.html" style="font-size:.74rem;color:var(--brand-lt);font-weight:600">Full Planner →</a>
+        </div>
+        <div class="progress-bar" style="margin-top:.5rem"><div class="progress-fill violet" id="planBar" style="width:0%"></div></div>
       </div>
     </div>
+    <div class="card">
+      <div class="card-accent accent-gold"></div>
+      <div class="label" style="margin-bottom:.4rem">Upcoming</div>
+      <div class="heading-md" style="margin-bottom:.85rem">⏳ Exam Countdown</div>
+      <div id="examList"></div>
+      <a href="exam-predictor.html" class="btn btn-ghost btn-sm" style="margin-top:.9rem;width:100%;justify-content:center">🔮 Predict Exam Qs →</a>
+    </div>
+  </div>
 
-    <!-- Charts row -->
-    <div class="charts-row">
-      <div class="chart-tile">
-        <div class="ct-title">> SUBJECT_BREAKDOWN / ACTIVITY_MAP</div>
-        <div id="subjBars"></div>
+  <!-- Progress + Activity + Quick -->
+  <div class="dash-grid-bot animate-fadeUp" style="animation-delay:.14s">
+    <div class="card">
+      <div class="card-accent accent-teal"></div>
+      <div class="label" style="margin-bottom:.4rem">Analytics</div>
+      <div class="heading-md" style="margin-bottom:.75rem">📊 Subject Progress</div>
+      <div class="week-chart" id="weekChart" style="margin-bottom:.35rem"></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:.9rem">
+        <span class="label" style="font-size:.44rem">M</span><span class="label" style="font-size:.44rem">T</span>
+        <span class="label" style="font-size:.44rem">W</span><span class="label" style="font-size:.44rem">T</span>
+        <span class="label" style="font-size:.44rem">F</span><span class="label" style="font-size:.44rem">S</span>
+        <span class="label" style="font-size:.44rem;color:var(--brand-lt)">TODAY</span>
       </div>
-      <div class="chart-tile">
-        <div class="ct-title">> PERFORMANCE_INDEX / WEEK</div>
-        <canvas id="perfChart" height="140"></canvas>
+      <div id="subjProg"></div>
+    </div>
+    <div class="card">
+      <div class="card-accent accent-pink"></div>
+      <div class="label" style="margin-bottom:.4rem">History</div>
+      <div class="heading-md" style="margin-bottom:.85rem">🕒 Recent Activity</div>
+      <div id="actList"></div>
+    </div>
+    <div class="card">
+      <div class="card-accent accent-green"></div>
+      <div class="label" style="margin-bottom:.4rem">Shortcuts</div>
+      <div class="heading-md" style="margin-bottom:.85rem">🚀 Quick Actions</div>
+      <div class="quick-grid">
+        <a href="study-guide.html"     class="quick-btn"><span class="quick-ico">🤖</span><span class="quick-lbl">VidyaBot</span><span class="quick-desc">AI study guide</span></a>
+        <a href="doubt-solver.html"    class="quick-btn"><span class="quick-ico">🔬</span><span class="quick-lbl">Solve Doubt</span><span class="quick-desc">Instant answers</span></a>
+        <a href="gamified.html"        class="quick-btn"><span class="quick-ico">⚡</span><span class="quick-lbl">Daily Quiz</span><span class="quick-desc">Earn XP today</span></a>
+        <a href="exam-predictor.html"  class="quick-btn"><span class="quick-ico">🔮</span><span class="quick-lbl">Exam Pred.</span><span class="quick-desc">Board prep</span></a>
+        <a href="resources.html"       class="quick-btn"><span class="quick-ico">📚</span><span class="quick-lbl">Resources</span><span class="quick-desc">Notes & PDFs</span></a>
+        <a href="marketplace.html"     class="quick-btn"><span class="quick-ico">🛒</span><span class="quick-lbl">Bazaar</span><span class="quick-desc">Buy/sell notes</span></a>
       </div>
     </div>
+  </div>
+</div>
+</div>
 
-    <!-- Activity log -->
-    <div class="activity-tile">
-      <div class="ct-title">> SYSTEM_LOG / RECENT_ACTIVITY</div>
-      <div id="activityLog"></div>
+<!-- Add Task Modal -->
+<div class="overlay" id="taskModal">
+  <div class="modal">
+    <div class="modal-title">Add Study Task</div>
+    <div class="modal-sub">Add something to your today's study plan.</div>
+    <div class="input-group" style="margin-bottom:.6rem">
+      <label class="input-label">Task</label>
+      <input type="text" class="input-field" id="taskInput" placeholder="e.g. Revise Newton's Laws">
     </div>
-
-    <!-- Badges -->
-    <div class="chart-tile" style="margin-bottom:1.5rem;">
-      <div class="ct-title">> ACHIEVEMENT_REGISTRY / BADGES</div>
-      <div class="badges-grid" style="margin-top:1rem;" id="badgesGrid"></div>
+    <div class="input-group">
+      <label class="input-label">Subject</label>
+      <select class="input-field" id="taskSubj">
+        <option>Physics</option><option>Chemistry</option><option>Biology</option>
+        <option>Maths</option><option>History</option><option>Geography</option>
+        <option>Economics</option><option>English</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTask()">Add Task ✦</button>
     </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js"></script>
 <script>
-if(typeof initNavAuth==='function') initNavAuth();
+const TASK_KEY='padhiq_tasks',EXAM_KEY='padhiq_exams',GAME_KEY='padhiq_game',PROG_KEY='padhiq_progress';
+const SICONS={Physics:'⚡',Chemistry:'⚗️',Biology:'🌿',Maths:'📐',History:'🏛',Geography:'🌍',Economics:'📈',English:'📖',Other:'📚'};
+const SCOLORS={Physics:'#6c5ce7',Chemistry:'#00cec9',Biology:'#00b894',Maths:'#fdcb6e',History:'#fd79a8',Geography:'#a29bfe',Economics:'#74b9ff',English:'#e17055',Other:'#636e72'};
+const lp=k=>{try{return JSON.parse(localStorage.getItem(k)||'{}')}catch{return{}}};
+const la=k=>{try{return JSON.parse(localStorage.getItem(k)||'[]')}catch{return[]}};
+const topSubj=p=>{const s=p.subjects||{};return Object.entries(s).filter(([,v])=>v>0).sort(([,a],[,b])=>b-a)[0]?.[0]||null;};
 
-// Live clock
-(function tick(){
-  const el=document.getElementById('navTime');
-  if(el){const n=new Date();el.textContent=n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
-  setTimeout(tick,1000);
-})();
+function greeting(){const h=new Date().getHours();return h<12?'Good morning':h<17?'Good afternoon':'Good evening';}
 
-// Load progress
-const Progress={
-  load(){try{return JSON.parse(localStorage.getItem('padhiq_progress')||'null');}catch(e){return null;}},
-  getTopSubject(d){if(!d||!d.subjects)return'—';const s=d.subjects;return Object.keys(s).sort((a,b)=>s[b]-s[a])[0]||'—';}
-};
-const data=Progress.load();
-const streak=data?.streak||0, questions=data?.totalQuestions||0, sessions=data?.sessions||0;
-const topSub=Progress.getTopSubject(data);
-
-document.getElementById('streakVal').textContent=streak;
-document.getElementById('qaskedVal').textContent=questions;
-document.getElementById('sessVal').textContent=sessions;
-document.getElementById('topSubVal').textContent=topSub;
-document.getElementById('dashSubtitle').textContent=`Student · ${questions} questions asked · Last active: ${data?.lastDate||'Never'}`;
-document.getElementById('streakDelta').textContent=streak>0?`${streak} day${streak>1?'s':''} strong`:'Start today!';
-
-// Subject bars
-const subjects=['Physics','Chemistry','Biology','Maths','History','Geography','English'];
-const subjectData=data?.subjects||{};
-const bars=document.getElementById('subjBars');
-if(bars){
-  const max=Math.max(...subjects.map(s=>subjectData[s]||0),1);
-  bars.innerHTML=subjects.map(s=>{
-    const val=subjectData[s]||0;
-    const pct=Math.round((val/max)*100);
-    return `<div class="subj-bar">
-      <div class="sb-name">${s}</div>
-      <div class="sb-track"><div class="sb-fill" style="width:${pct}%"></div></div>
-      <div class="sb-pct">${val}</div>
-    </div>`;
-  }).join('');
+function renderStats(){
+  const p=lp(PROG_KEY),g=lp(GAME_KEY),u=lp('padhiq_user');
+  const streak=p.streak?.count||0,q=p.questionsAsked||0,xp=g.xp||0,sess=p.totalSessions||0;
+  document.getElementById('sc-streak').textContent=streak;
+  document.getElementById('sc-q').textContent=q;
+  document.getElementById('sc-xp').textContent=xp;
+  document.getElementById('sc-sess').textContent=sess;
+  document.getElementById('sc-streak-sub').textContent=streak>0?`${streak} days running!`:'Start today!';
+  const top=topSubj(p);
+  document.getElementById('sc-top').textContent=top?`Top: ${top}`:'';
+  document.getElementById('sc-rank').textContent=xp>=100?'🏆 Top learner':xp>=50?'Rising star ⭐':'Keep earning!';
+  const name=u.email?u.email.split('@')[0]:'Student';
+  document.getElementById('userName').textContent=name;
+  document.getElementById('pageGreeting').innerHTML=`${greeting()}, <span style="color:var(--brand-lt)">${name}</span> 👋`;
+  document.getElementById('dashSub').textContent=q===0?'Welcome! Start by asking VidyaBot a question or taking the daily quiz.':`${q} questions asked · ${streak}-day streak · ${xp} XP${top?' · Top subject: '+top:''}.`;
 }
 
-// Performance chart (simple canvas)
-(function(){
-  const c=document.getElementById('perfChart');
-  if(!c)return;
-  const ctx=c.getContext('2d');
-  c.width=c.parentElement.clientWidth-40;
-  const pts=Array.from({length:7},()=>Math.random()*80+10);
-  const max=Math.max(...pts);
-  const w=c.width,h=c.height,pad=10;
-  ctx.clearRect(0,0,w,h);
-  // Grid lines
-  for(let i=0;i<=4;i++){
-    const y=pad+(h-2*pad)*(i/4);
-    ctx.strokeStyle='rgba(0,255,102,.06)'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(w-pad,y); ctx.stroke();
+function renderPlan(){
+  let tasks=la(TASK_KEY);
+  const today=new Date().toDateString();
+  let tt=tasks.filter(t=>t.date===today||!t.date);
+  if(!tt.length){
+    const def=[
+      {id:1,text:"Revise Newton's Laws",subject:'Physics',done:false,date:today},
+      {id:2,text:'Practice Quadratic Equations',subject:'Maths',done:false,date:today},
+      {id:3,text:'Read Photosynthesis Chapter',subject:'Biology',done:false,date:today},
+      {id:4,text:'Take Daily Quiz on XP Arena',subject:'General',done:false,date:today},
+      {id:5,text:"Review yesterday's notes",subject:'General',done:false,date:today},
+    ];
+    localStorage.setItem(TASK_KEY,JSON.stringify(def));
+    tt=def;
   }
-  // Line
-  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  ctx.beginPath();
-  pts.forEach((p,i)=>{
-    const x=pad+(w-2*pad)*(i/(pts.length-1));
-    const y=h-pad-(h-2*pad)*(p/max);
-    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-    // dot
-    ctx.save();
-    ctx.fillStyle='rgba(0,255,102,.8)'; ctx.shadowColor='#00ff66'; ctx.shadowBlur=8;
-    ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
-    ctx.restore();
-    // label
-    ctx.fillStyle='rgba(0,200,80,.4)'; ctx.font='9px JetBrains Mono'; ctx.textAlign='center';
-    ctx.fillText(days[i],x,h-1);
-  });
-  ctx.strokeStyle='#00cc44'; ctx.lineWidth=1.5;
-  ctx.shadowColor='#00ff66'; ctx.shadowBlur=6; ctx.stroke();
-})();
+  const done=tt.filter(t=>t.done).length,pct=Math.round(done/tt.length*100);
+  document.getElementById('planProg').textContent=`${done} of ${tt.length} tasks done · ${pct}%`;
+  document.getElementById('planBar').style.width=pct+'%';
+  document.getElementById('planList').innerHTML=tt.map(t=>`
+    <div class="plan-item">
+      <div class="plan-check${t.done?' done':''}" onclick="toggleTask(${t.id})"></div>
+      <div style="flex:1">
+        <div class="plan-text${t.done?' done-txt':''}">${t.text}</div>
+        ${t.subject&&t.subject!=='General'?`<div class="plan-sub">${t.subject}</div>`:''}
+      </div>
+      ${t.subject&&t.subject!=='General'?`<span class="plan-tag">${t.subject.slice(0,4).toUpperCase()}</span>`:''}
+    </div>`).join('');
+}
 
-// Activity log
-const activities=[
-  {time:'2h',color:'var(--g1)',msg:'Asked VidyaBot about Newton's 3rd Law',tag:'AI',tagCls:'tag-ai'},
-  {time:'5h',color:'var(--warn)',msg:'Completed daily quiz — scored 4/5',tag:'QUIZ',tagCls:'tag-quiz'},
-  {time:'1d',color:'var(--g2)',msg:'Opened study session: Physics Chapter 3',tag:'AI',tagCls:'tag-ai'},
-  {time:'1d',color:'#d4881a',msg:'Viewed listing on Bazaar marketplace',tag:'MKT',tagCls:'tag-mkt'},
-  {time:'2d',color:'var(--g1)',msg:'Asked VidyaBot about Photosynthesis process',tag:'AI',tagCls:'tag-ai'},
-];
-const log=document.getElementById('activityLog');
-if(log) log.innerHTML=activities.map(a=>`
-<div class="act-item">
-  <div class="act-time">${a.time} ago</div>
-  <div class="act-dot" style="background:${a.color};box-shadow:0 0 5px ${a.color}"></div>
-  <div class="act-msg">${a.msg}<span class="act-tag ${a.tagCls}">${a.tag}</span></div>
-</div>`).join('');
+function toggleTask(id){
+  let tasks=la(TASK_KEY);const t=tasks.find(x=>x.id===id);
+  if(t){t.done=!t.done;localStorage.setItem(TASK_KEY,JSON.stringify(tasks));renderPlan();}
+}
+function openAddTask(){document.getElementById('taskModal').classList.add('open');document.getElementById('taskInput').focus();}
+function closeModal(){document.getElementById('taskModal').classList.remove('open');}
+function saveTask(){
+  const text=document.getElementById('taskInput').value.trim();if(!text)return;
+  const subj=document.getElementById('taskSubj').value;
+  let tasks=la(TASK_KEY);
+  tasks.push({id:Date.now(),text,subject:subj,done:false,date:new Date().toDateString()});
+  localStorage.setItem(TASK_KEY,JSON.stringify(tasks));
+  closeModal();document.getElementById('taskInput').value='';renderPlan();
+}
+document.getElementById('taskInput').addEventListener('keydown',e=>{if(e.key==='Enter')saveTask();});
 
-// Badges
-const badges=[
-  {icon:'🔥',name:'Streak Master',sub:'7 day streak',earned:streak>=7},
-  {icon:'🧠',name:'Curious Mind',sub:'10 questions',earned:questions>=10},
-  {icon:'📚',name:'Book Worm',sub:'25 questions',earned:questions>=25},
-  {icon:'⚡',name:'Speed Learner',sub:'50 questions',earned:questions>=50},
-  {icon:'🎮',name:'Quiz Ace',sub:'Win a quiz',earned:false},
-  {icon:'🌟',name:'All-Rounder',sub:'5 subjects',earned:Object.keys(data?.subjects||{}).length>=5},
-  {icon:'🏆',name:'Top Student',sub:'Leaderboard',earned:false},
-  {icon:'💯',name:'Perfect Round',sub:'5/5 quiz',earned:false},
-];
-const bg=document.getElementById('badgesGrid');
-if(bg) bg.innerHTML=badges.map(b=>`
-<div class="badge-item ${b.earned?'earned':'locked'}">
-  <span class="bi-icon">${b.icon}</span>
-  <div class="bi-name">${b.name}</div>
-  <div class="bi-sub">${b.sub}</div>
-</div>`).join('');
+function renderExams(){
+  let exams=la(EXAM_KEY);
+  if(!exams.length){
+    exams=[{name:'Physics Unit Test',subject:'Physics',date:'2026-04-15'},{name:'Half-Yearly Exam',subject:'All Subjects',date:'2026-05-01'},{name:'CBSE Board Maths',subject:'Maths',date:'2026-03-25'}];
+    localStorage.setItem(EXAM_KEY,JSON.stringify(exams));
+  }
+  const now=new Date();
+  const items=exams.map(e=>({...e,days:Math.ceil((new Date(e.date)-now)/86400000)})).filter(e=>e.days>=-1).slice(0,4);
+  document.getElementById('examList').innerHTML=items.length?items.map(e=>`
+    <div class="exam-item">
+      <div class="exam-days"><div class="exam-days-n">${e.days<=0?'⏰':e.days}</div><div class="exam-days-l">${e.days<=0?'NOW':'days'}</div></div>
+      <div><div class="exam-name">${e.name}</div><div class="exam-sub">${e.subject}</div></div>
+      <span class="badge ${e.days<=7?'badge-pink':e.days<=14?'badge-gold':'badge-violet'}">${e.days<=7?'SOON':e.days<=30?'NEAR':'PREP'}</span>
+    </div>`).join(''):
+    `<div style="text-align:center;padding:1.2rem 0;color:var(--text-3);font-size:.8rem">No upcoming exams. Add exam dates in Study Planner.</div>`;
+}
+
+function renderSubjects(){
+  const p=lp(PROG_KEY);
+  const subjs=['Physics','Chemistry','Biology','Maths','History','Geography','Economics','English'];
+  const counts=subjs.map(s=>p.subjects?.[s]||0);
+  const max=Math.max(...counts,1);
+  const active=subjs.filter((_,i)=>counts[i]>0);
+  document.getElementById('subjProg').innerHTML=active.length?active.slice(0,5).map(s=>{
+    const v=p.subjects[s]||0,pct=Math.round(v/max*100);
+    return `<div class="subj-row">
+      <span class="subj-icon">${SICONS[s]||'📚'}</span>
+      <span class="subj-label">${s}</span>
+      <div class="subj-bar progress-bar"><div class="progress-fill" style="width:${pct}%;background:${SCOLORS[s]}"></div></div>
+      <span class="subj-pct">${v}</span>
+    </div>`;
+  }).join(''):`<div style="text-align:center;padding:1rem 0;color:var(--text-3);font-size:.79rem">Ask VidyaBot questions to track subject activity here.</div>`;
+}
+
+function renderWeekChart(){
+  const p=lp(PROG_KEY),streak=p.streak?.count||0;
+  const bars=[20,35,25,50,40,30,Math.min(100,streak*15+10)];
+  document.getElementById('weekChart').innerHTML=bars.map((h,i)=>`<div class="wc-col"><div class="wc-bar${i===6?' today':''}" style="height:${h}%"></div></div>`).join('');
+}
+
+function renderActivity(){
+  const p=lp(PROG_KEY),top=topSubj(p),q=p.questionsAsked||0,s=p.streak?.count||0;
+  const items=[
+    q>0?{icon:'🤖',text:`Asked VidyaBot <strong>${q} question${q>1?'s':''}</strong>`,time:'Today'}:null,
+    s>0?{icon:'🔥',text:`Maintained a <strong>${s}-day</strong> study streak`,time:'Ongoing'}:null,
+    top?{icon:SICONS[top]||'📚',text:`Most active in <strong>${top}</strong>`,time:'This week'}:null,
+    {icon:'⚡',text:'Joined <strong>XP Arena</strong> — earn points daily',time:'Setup'},
+    {icon:'📅',text:'Study planner is <strong>ready</strong> for your schedule',time:'Ready'},
+  ].filter(Boolean).slice(0,5);
+  document.getElementById('actList').innerHTML=items.map(a=>`
+    <div class="activity-item">
+      <div class="act-icon">${a.icon}</div>
+      <div class="act-text">${a.text}</div>
+      <div class="act-time">${a.time}</div>
+    </div>`).join('');
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  if(typeof Shell!=='undefined') Shell.init('dashboard');
+  if(typeof initNavAuth==='function') initNavAuth();
+  renderStats(); renderPlan(); renderExams(); renderSubjects(); renderWeekChart(); renderActivity();
+  document.getElementById('taskModal').addEventListener('click',e=>{if(e.target===document.getElementById('taskModal'))closeModal();});
+});
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="shell.js"></script>
+<script src="auth.js"></script>
 </body>
 </html>
