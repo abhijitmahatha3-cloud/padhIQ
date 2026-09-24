@@ -951,25 +951,43 @@ function buildPrompt(){
    ═══════════════════════════════════════════════════════ */
 async function callAI(msg,silent=false){
   if(!silent) Progress.update(msg);
-  const messages=[{role:'system',content:buildPrompt()},...history.slice(-12),{role:'user',content:msg}];
+
+  // The frontend supplies student context; the server-side VidyaBot engine
+  // decides the pedagogical strategy before Groq generates the response.
+  const d=Progress.load();
+  const student={
+    classLevel: localStorage.getItem('padhiq_class') || '',
+    board: localStorage.getItem('padhiq_board') || 'CBSE',
+    strongSubjects: [Progress.topSubject(d)].filter(Boolean),
+    weakSubjects: Progress.weakSubjects(d)
+  };
+
+  const messages=[...history.slice(-12),{role:'user',content:msg}];
+
   try{
-    const r=await fetch(`${location.origin}/api/chat`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages}),signal:AbortSignal.timeout(25000)});
+    const r=await fetch(`${location.origin}/api/chat`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages,student,mode}),
+      signal:AbortSignal.timeout(25000)
+    });
     if(!r.ok) throw new Error(`API ${r.status}`);
-    const d=await r.json(); if(!d.text) throw new Error('Empty');
-    if(!silent){history.push({role:'user',content:msg});history.push({role:'assistant',content:d.text});if(history.length>20)history=history.slice(-20);}
-    return d.text;
-  }catch(e){console.warn('Proxy:',e.message);}
-  for(const model of['mistralai/Mistral-7B-Instruct-v0.2','HuggingFaceH4/zephyr-7b-beta']){
-    try{
-      const p=`<s>[INST] <<SYS>>\n${buildPrompt()}\n<</SYS>>\n\nStudent: ${msg} [/INST] Tutor:`;
-      const r=await fetch(`https://api-inference.huggingface.co/models/${model}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({inputs:p,parameters:{max_new_tokens:500,temperature:0.7,return_full_text:false}}),signal:AbortSignal.timeout(25000)});
-      if(!r.ok) continue;
-      const data=await r.json(); let t=Array.isArray(data)?data[0]?.generated_text:data.generated_text;
-      if(!t) continue; t=t.replace(/^(Tutor:|Assistant:)\s*/i,'').replace(/Student:[\s\S]*/i,'').trim();
-      if(t.length>20) return t;
-    }catch(e2){continue;}
+    const data=await r.json();
+    if(!data.text) throw new Error('Empty');
+
+    if(!silent){
+      history.push({role:'user',content:msg});
+      history.push({role:'assistant',content:data.text});
+      if(history.length>20) history=history.slice(-20);
+    }
+
+    // Keep the decision available to the UI for the next iteration.
+    window.lastVidyaLearningPlan=data.learning||null;
+    return data.text;
+  }catch(e){
+    console.warn('VidyaBot API:',e.message);
+    throw new Error('VidyaBot is offline. Please check your connection and try again.');
   }
-  throw new Error('VidyaBot is offline. Please check your internet connection and try again.');
 }
 
 /* ═══════════════════════════════════════════════════════
