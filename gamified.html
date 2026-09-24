@@ -178,7 +178,7 @@ main{position:relative;z-index:2;max-width:960px;margin:0 auto;padding:76px 1.5r
   .xp-display{flex-wrap:wrap;}
 }
 </style>
-</head>
+<link id="padhiq-shell-css" rel="stylesheet" href="shell.css">\n</head>
 <body>
 
 <nav>
@@ -543,5 +543,7 @@ async function loadLeaderboard(){
 }
 loadLeaderboard();
 </script>
+<script id="padhiq-shell-js" src="shell.js"></script>
+<script>document.addEventListener('DOMContentLoaded',()=>Shell.init('quiz'));</script>
 </body>
 </html>
