@@ -581,3 +581,112 @@ body::before {
   .page-h1 { font-size: 1.1rem; }
   .page-actions .btn-ghost { display: none; }
 }
+
+
+/* ================================================================
+   PADHIQ UI SYSTEM v2 — BHARAT FUTURISM
+   Shared visual language for every student surface.
+   ================================================================ */
+:root{
+  --pq-saffron:#ff8a2a;
+  --pq-royal:#6c5ce7;
+  --pq-teal:#16c7b7;
+  --pq-gold:#f6c85f;
+  --pq-rose:#e85d9e;
+  --pq-sky:#46b9ff;
+  --pq-ink:#070912;
+  --pq-glass:rgba(18,20,34,.72);
+  --pq-line:rgba(255,255,255,.075);
+  --pq-shadow:0 24px 80px rgba(0,0,0,.38);
+}
+body{
+  background:
+    radial-gradient(circle at 12% 8%,rgba(255,138,42,.075),transparent 28%),
+    radial-gradient(circle at 86% 12%,rgba(108,92,231,.09),transparent 30%),
+    radial-gradient(circle at 70% 92%,rgba(22,199,183,.06),transparent 30%),
+    var(--bg);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.8),transparent 92%);
+}
+.topbar{
+  height:64px;padding:0 1.15rem;
+  background:rgba(7,9,18,.76);
+  border-bottom:1px solid var(--pq-line);
+  box-shadow:0 10px 40px rgba(0,0,0,.16);
+}
+.brand-logo{
+  font-size:1rem;letter-spacing:2.5px;
+  background:linear-gradient(90deg,var(--pq-saffron),#ffd166 45%,var(--pq-teal));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.sidebar{
+  top:64px;width:248px;
+  background:linear-gradient(180deg,rgba(10,12,23,.94),rgba(7,9,17,.9));
+  border-right:1px solid var(--pq-line);
+}
+.main-wrap{margin-left:248px;padding-top:64px;}
+.page-content{max-width:1320px;padding:2rem 2.2rem 4rem;}
+.page-header{padding:1rem 0 .4rem;}
+.page-h1{font-size:clamp(1.45rem,2.4vw,2.15rem);letter-spacing:-.025em;}
+.page-sub{max-width:680px;font-size:.88rem;}
+.sb-section-label{color:#70779a;}
+.sb-item{padding:.68rem .72rem;border:1px solid transparent;}
+.sb-item:hover{background:linear-gradient(90deg,rgba(108,92,231,.13),rgba(22,199,183,.04));border-color:rgba(255,255,255,.04);}
+.sb-item.active{background:linear-gradient(90deg,rgba(108,92,231,.22),rgba(255,138,42,.06));color:#fff;border-color:rgba(162,155,254,.12);}
+.sb-item.active::before{background:linear-gradient(180deg,var(--pq-saffron),var(--pq-royal),var(--pq-teal));}
+.topbar-search{border-radius:999px;background:rgba(255,255,255,.035);padding:.45rem 1rem;}
+.topbar-search input{width:240px;}
+.sidebar-scrim{background:rgba(0,0,0,.58);backdrop-filter:blur(3px);}
+
+/* Shared product primitives */
+.pq-card,.card,.panel,.tool-card,.resource-card{
+  border-radius:20px!important;
+  border:1px solid var(--pq-line)!important;
+  box-shadow:0 12px 50px rgba(0,0,0,.18);
+  backdrop-filter:blur(18px);
+}
+.pq-btn,.primary-btn,.cta,.res-btn,.quick-btn{
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease!important;
+}
+.pq-btn:hover,.primary-btn:hover,.cta:hover,.res-btn:hover,.quick-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 30px rgba(108,92,231,.2);
+}
+
+/* Legacy pages get the same navigation without forcing a content rewrite. */
+body.pq-legacy-shell nav{display:none!important;}
+body.pq-legacy-shell{padding-top:64px;padding-left:248px;}
+body.pq-legacy-shell .topbar{left:248px;}
+body.pq-legacy-shell .sidebar{left:0;}
+body.pq-legacy-shell main,
+body.pq-legacy-shell .tools-hub,
+body.pq-legacy-shell .page-hero,
+body.pq-legacy-shell .resources-grid,
+body.pq-legacy-shell .class-tabs,
+body.pq-legacy-shell .back-home-bar{
+  position:relative;z-index:2;
+}
+body.pq-legacy-shell .page-hero,
+body.pq-legacy-shell .tools-hub,
+body.pq-legacy-shell .resources-grid,
+body.pq-legacy-shell .class-tabs,
+body.pq-legacy-shell main{max-width:1320px;margin-left:auto;margin-right:auto;}
+body.pq-legacy-shell .back-home-bar{display:none;}
+@media(max-width:800px){
+  .topbar-search{display:none;}
+  .main-wrap{margin-left:0;}
+  .page-content{padding:1.25rem 1rem 3rem;}
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  body.pq-legacy-shell{padding-left:0;}
+  body.pq-legacy-shell .topbar{left:0;}
+  body.pq-legacy-shell main,
+  body.pq-legacy-shell .tools-hub,
+  body.pq-legacy-shell .page-hero,
+  body.pq-legacy-shell .resources-grid,
+  body.pq-legacy-shell .class-tabs{padding-left:1rem;padding-right:1rem;}
+}
