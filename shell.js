@@ -38,6 +38,7 @@ const Shell = {
     this._buildSidebar(activePage);
     this._setupMobile();
     this._loadProgress();
+    this._buildJourney(activePage);
   },
 
   /* ── FONTS ── */
@@ -165,6 +166,33 @@ const Shell = {
     scrim?.classList.remove('open');
     btn?.classList.remove('open');
     document.body.style.overflow = '';
+  },
+
+  /* ── CONTINUOUS LEARNING JOURNEY ── */
+  _buildJourney(activePage) {
+    if (document.getElementById('pqJourney')) return;
+    const order = ['dashboard','study','doubts','quiz','planner','resources','predictor','marketplace'];
+    const labels = {
+      dashboard:'Start here', study:'Learn', doubts:'Solve', quiz:'Practise',
+      planner:'Plan', resources:'Explore', predictor:'Prepare', marketplace:'Discover'
+    };
+    const i = Math.max(0, order.indexOf(activePage));
+    const next = order[(i + 1) % order.length];
+    const item = this.nav.find(x => x.id === next);
+    if (!item) return;
+    const bar = document.createElement('div');
+    bar.id = 'pqJourney';
+    bar.className = 'pq-journey';
+    bar.innerHTML = `
+      <div class="pq-journey-line"><span></span><span></span><span></span></div>
+      <div class="pq-journey-copy">
+        <div class="pq-journey-kicker">CONTINUE YOUR LEARNING JOURNEY</div>
+        <strong>${labels[next] || item.label}</strong>
+        <small>Move from this page to the next step without losing your flow.</small>
+      </div>
+      <a class="pq-journey-btn" href="${item.href}">Continue <span>→</span></a>`;
+    const target = document.querySelector('.main-wrap') || document.querySelector('main') || document.querySelector('.tools-hub') || document.body;
+    target.appendChild(bar);
   },
 
   /* ── PROGRESS DATA ── */
