@@ -1,5 +1,5 @@
 /* ================================================================
-   padhIQ SHELL.CSS — Unified Design System v1.0
+   padhIQ SHELL.CSS — Unified Design System v2.0
    One CSS file shared by ALL pages.
    Import this + page-specific overrides only.
    ================================================================ */
@@ -582,6 +582,146 @@ body::before {
   .page-actions .btn-ghost { display: none; }
 }
 
+
+/* ================================================================
+   V2 LEGACY COMPATIBILITY — content lane + fixed shell
+   ================================================================ */
+body.pq-legacy-shell nav,
+body.pq-legacy-shell .back-home-bar{display:none!important;}
+
+/* The topbar stays full-width. Only document content moves into the
+   lane to the right of the fixed sidebar. This removes the overlap
+   visible on legacy pages such as resources.html. */
+body.pq-legacy-shell{
+  padding-top:64px;
+  padding-left:248px;
+  min-height:100vh;
+}
+body.pq-legacy-shell .topbar{
+  left:0;
+  right:0;
+}
+body.pq-legacy-shell .sidebar{left:0;}
+
+body.pq-legacy-shell main,
+body.pq-legacy-shell .tools-hub,
+body.pq-legacy-shell .page-hero,
+body.pq-legacy-shell .resources-grid,
+body.pq-legacy-shell .class-tabs,
+body.pq-legacy-shell .bazaar-hero,
+body.pq-legacy-shell .bazaar-wrap{
+  position:relative;
+  z-index:2;
+  width:min(100%,1320px);
+  margin-left:auto;
+  margin-right:auto;
+}
+
+body.pq-legacy-shell .page-hero{
+  padding-left:1.25rem;
+  padding-right:1.25rem;
+}
+
+body.pq-legacy-shell .resources-grid{
+  padding-left:1.25rem;
+  padding-right:1.25rem;
+}
+
+body.pq-legacy-shell .class-tabs{
+  padding-left:1.25rem;
+  padding-right:1.25rem;
+}
+
+body.pq-legacy-shell .pq-journey{
+  width:min(calc(100% - 2.5rem),1320px);
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* V2 page surface: preserve each page's identity while making the
+   product feel like one coherent application. */
+body.pq-app-shell .page-hero,
+body.pq-app-shell .tools-hub,
+body.pq-app-shell .resources-grid,
+body.pq-app-shell .class-tabs,
+body.pq-app-shell .bazaar-hero,
+body.pq-app-shell .bazaar-wrap{
+  animation: pqPageIn .55s cubic-bezier(.2,.7,.2,1) both;
+}
+@keyframes pqPageIn{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+body.pq-app-shell .page-hero::before{
+  content:'';
+  position:absolute;
+  inset:10% 12%;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(108,92,231,.08),transparent 68%);
+  filter:blur(18px);
+  pointer-events:none;
+  z-index:-1;
+}
+
+body.pq-app-shell .topbar{
+  isolation:isolate;
+}
+body.pq-app-shell .topbar::after{
+  content:'';
+  position:absolute;
+  left:0;right:0;bottom:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--pq-saffron),var(--pq-royal),var(--pq-teal),transparent);
+  opacity:.55;
+  pointer-events:none;
+}
+
+body.pq-app-shell .sb-item{
+  min-height:42px;
+}
+body.pq-app-shell .sb-item.active{
+  box-shadow:inset 0 0 24px rgba(108,92,231,.06),0 8px 24px rgba(0,0,0,.12);
+}
+
+body.pq-app-shell .pq-coming-soon{
+  position:relative;
+  overflow:hidden;
+  cursor:default;
+}
+body.pq-app-shell .pq-coming-soon::after{
+  content:'V2 PREVIEW';
+  position:absolute;
+  top:.8rem;right:.8rem;
+  padding:.22rem .5rem;
+  border-radius:999px;
+  font:700 .48rem 'JetBrains Mono',monospace;
+  letter-spacing:.12em;
+  color:#aeb5d8;
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.09);
+}
+
+@media(max-width:800px){
+  body.pq-legacy-shell{
+    padding-left:0;
+    padding-top:52px;
+  }
+  body.pq-legacy-shell .topbar{left:0;}
+  body.pq-legacy-shell main,
+  body.pq-legacy-shell .tools-hub,
+  body.pq-legacy-shell .page-hero,
+  body.pq-legacy-shell .resources-grid,
+  body.pq-legacy-shell .class-tabs,
+  body.pq-legacy-shell .bazaar-hero,
+  body.pq-legacy-shell .bazaar-wrap{
+    width:100%;
+    padding-left:1rem;
+    padding-right:1rem;
+  }
+  body.pq-legacy-shell .pq-journey{
+    width:calc(100% - 2rem);
+  }
+}
 
 /* ================================================================
    PADHIQ UI SYSTEM v2 — BHARAT FUTURISM
