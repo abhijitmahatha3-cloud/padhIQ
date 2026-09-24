@@ -501,7 +501,7 @@ nav {
   box-shadow:8px 0 32px rgba(0,0,0,.6);
 }
 </style>
-</head>
+<link id="padhiq-shell-css" rel="stylesheet" href="shell.css">\n</head>
 <body>
 
 <canvas id="starCanvas"></canvas>
@@ -1219,5 +1219,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 
-<!-- VidyaBot v1 engine is server-side; no client-side model keys are used. -->\n</body>
+<!-- VidyaBot v1 engine is server-side; no client-side model keys are used. -->\n<script id="padhiq-shell-js" src="shell.js"></script>
+<script>document.addEventListener('DOMContentLoaded',()=>Shell.init('study'));</script>
+</body>
 </html>
