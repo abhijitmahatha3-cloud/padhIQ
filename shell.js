@@ -1,5 +1,5 @@
 /* ================================================================
-   padhIQ SHELL.JS — Shared Sidebar + Topbar
+   padhIQ SHELL.JS — Shared Sidebar + Topbar — V2
    Include this on every page. Call: Shell.init('dashboard')
    ================================================================ */
 
@@ -33,12 +33,17 @@ const Shell = {
     this.activePage = activePage;
     document.body.dataset.pqTheme = activePage;
     document.body.classList.add('pq-app-shell');
+    // V2: legacy pages do not have a .main-wrap. Give them the same content lane
+    // as the native shell so the fixed sidebar never sits on top of page content.
+    const isLegacy = !document.querySelector('.main-wrap');
+    document.body.classList.toggle('pq-legacy-shell', isLegacy);
     this._injectFonts();
     this._buildTopbar(activePage);
     this._buildSidebar(activePage);
     this._setupMobile();
     this._loadProgress();
     this._buildJourney(activePage);
+    this._markNavigation(activePage);
   },
 
   /* ── FONTS ── */
@@ -191,8 +196,15 @@ const Shell = {
         <small>Move from this page to the next step without losing your flow.</small>
       </div>
       <a class="pq-journey-btn" href="${item.href}">Continue <span>→</span></a>`;
-    const target = document.querySelector('.main-wrap') || document.querySelector('main') || document.querySelector('.tools-hub') || document.body;
+    const target = document.querySelector('.main-wrap') || document.querySelector('main') || document.body;
     target.appendChild(bar);
+  },
+
+  /* ── NAVIGATION STATE ── */
+  _markNavigation(activePage) {
+    document.querySelectorAll('.sb-item').forEach(link => {
+      if (link.classList.contains('active')) link.setAttribute('aria-current','page');
+    });
   },
 
   /* ── PROGRESS DATA ── */
