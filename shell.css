@@ -851,3 +851,117 @@ body.pq-legacy-shell .back-home-bar{display:none;}
 .pq-journey-btn{position:relative;display:inline-flex;align-items:center;gap:.55rem;padding:.62rem .95rem;border-radius:999px;background:linear-gradient(135deg,var(--pq-royal),#887cf0);color:#fff;font-size:.72rem;font-weight:700;border:1px solid rgba(255,255,255,.1);white-space:nowrap}
 .pq-journey-btn:hover{transform:translateX(2px);box-shadow:0 8px 24px rgba(108,92,231,.28)}
 @media(max-width:600px){.pq-journey{align-items:flex-start}.pq-journey-btn{align-self:center}.pq-journey-copy small{display:none}}
+
+
+/* ================================================================
+   V2 RESOURCE LIBRARY — polished manuscript / knowledge-lab surface
+   ================================================================ */
+body[data-pq-theme="resources"] .page-hero{
+  min-height:360px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding-top:3rem;
+  padding-bottom:2.5rem;
+}
+body[data-pq-theme="resources"] .page-hero-icon{
+  width:72px;height:72px;
+  display:grid;place-items:center;
+  margin-bottom:1rem;
+  border-radius:22px;
+  background:linear-gradient(145deg,rgba(255,138,42,.14),rgba(108,92,231,.12));
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 18px 50px rgba(0,0,0,.24);
+  font-size:2.2rem;
+}
+body[data-pq-theme="resources"] .page-label{
+  color:var(--pq-teal);
+  font:700 .55rem 'JetBrains Mono',monospace;
+  letter-spacing:.28em;
+}
+body[data-pq-theme="resources"] .page-title{
+  max-width:900px;
+  margin:.55rem auto .7rem;
+  font-size:clamp(2.5rem,5vw,4.6rem);
+  line-height:.98;
+  letter-spacing:-.045em;
+  text-wrap:balance;
+}
+body[data-pq-theme="resources"] .page-sub{
+  max-width:720px;
+  color:#8f97bb;
+}
+body[data-pq-theme="resources"] .class-tabs{
+  display:flex;
+  justify-content:center;
+  gap:.6rem;
+  margin-bottom:1.35rem;
+}
+body[data-pq-theme="resources"] .class-tab{
+  min-width:120px;
+  padding:.72rem 1rem;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.025);
+  color:#858cac;
+  transition:all .2s ease;
+}
+body[data-pq-theme="resources"] .class-tab:hover{
+  color:#fff;
+  border-color:rgba(255,138,42,.35);
+  transform:translateY(-1px);
+}
+body[data-pq-theme="resources"] .class-tab.active{
+  color:#fff;
+  border-color:rgba(255,138,42,.5);
+  background:linear-gradient(135deg,rgba(255,138,42,.14),rgba(108,92,231,.08));
+  box-shadow:0 10px 30px rgba(255,138,42,.08);
+}
+body[data-pq-theme="resources"] .resources-grid{
+  display:grid;
+  gap:1rem;
+  padding-bottom:3rem;
+}
+body[data-pq-theme="resources"] .res-subject{
+  background:linear-gradient(145deg,rgba(18,24,40,.86),rgba(9,14,25,.78));
+  border:1px solid rgba(255,255,255,.075);
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 18px 55px rgba(0,0,0,.2);
+  backdrop-filter:blur(18px);
+}
+body[data-pq-theme="resources"] .res-subject-header{
+  padding:1.05rem 1.2rem;
+  background:linear-gradient(90deg,rgba(108,92,231,.09),rgba(22,199,183,.035));
+  border-bottom:1px solid rgba(255,255,255,.07);
+  font-weight:700;
+  color:#f3f5ff;
+}
+body[data-pq-theme="resources"] .res-item{
+  min-height:66px;
+  padding:.75rem 1.2rem;
+  border-bottom:1px solid rgba(255,255,255,.045);
+  transition:background .2s,transform .2s;
+}
+body[data-pq-theme="resources"] .res-item:last-child{border-bottom:0}
+body[data-pq-theme="resources"] .res-item:hover{
+  background:linear-gradient(90deg,rgba(108,92,231,.07),rgba(22,199,183,.025));
+}
+body[data-pq-theme="resources"] .res-btn{
+  border-radius:999px!important;
+  padding:.45rem .8rem!important;
+  background:rgba(255,255,255,.025)!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+}
+body[data-pq-theme="resources"] .res-btn:hover{
+  border-color:rgba(22,199,183,.35)!important;
+  color:#fff!important;
+}
+@media(max-width:700px){
+  body[data-pq-theme="resources"] .page-hero{min-height:300px}
+  body[data-pq-theme="resources"] .page-title{font-size:2.45rem}
+  body[data-pq-theme="resources"] .class-tabs{overflow-x:auto;justify-content:flex-start}
+  body[data-pq-theme="resources"] .class-tab{min-width:105px}
+}
