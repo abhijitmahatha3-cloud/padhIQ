@@ -81,7 +81,7 @@
 
 @media(max-width:600px){.tools-grid{grid-template-columns:1fr}}
 </style>
-</head>
+<link id="padhiq-shell-css" rel="stylesheet" href="shell.css">\n</head>
 <body>
 <div class="stars" id="stars"></div>
 <div class="nebula"></div>
@@ -208,5 +208,7 @@ window.addEventListener('scroll', () => {
   document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 20);
 });
 </script>
+<script id="padhiq-shell-js" src="shell.js"></script>
+<script>document.addEventListener('DOMContentLoaded',()=>Shell.init('study'));</script>
 </body>
 </html>
