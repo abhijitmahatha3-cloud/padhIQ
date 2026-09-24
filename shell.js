@@ -7,30 +7,32 @@ const Shell = {
 
   /* ── NAV ITEMS — single source of truth ── */
   nav: [
-    { id: 'dashboard',  label: 'Dashboard',       icon: '⊞',  href: 'dashboard.html' },
+    { id: 'dashboard',  label: 'Home',            icon: '⌂',  href: 'dashboard.html' },
     { id: 'study',      label: 'VidyaBot',         icon: '🤖', href: 'study-guide.html',  badge: 'AI' },
-    { id: 'planner',    label: 'Study Planner',    icon: '📅', href: 'study-planner.html' },
-    { id: 'doubts',     label: 'Doubt Solver',     icon: '🔬', href: 'doubt-solver.html' },
-    { id: 'predictor',  label: 'Exam Predictor',   icon: '🔮', href: 'exam-predictor.html' },
-    { id: 'quiz',       label: 'XP Arena',         icon: '⚡', href: 'gamified.html',     badge: 'XP' },
-    { id: 'resources',  label: 'Resources',        icon: '📚', href: 'resources.html' },
-    { id: 'marketplace',label: 'Bazaar',           icon: '🛒', href: 'marketplace.html' },
+    { id: 'planner',    label: 'My Plan',          icon: '◫', href: 'study-planner.html' },
+    { id: 'doubts',     label: 'Solve & Practise',  icon: '◇', href: 'doubt-solver.html' },
+    { id: 'predictor',  label: 'Exam Insights',     icon: '✦', href: 'exam-predictor.html' },
+    { id: 'quiz',       label: 'Practice Arena',    icon: '⚡', href: 'gamified.html',     badge: 'XP' },
+    { id: 'resources',  label: 'Library',           icon: '▤', href: 'resources.html' },
+    { id: 'marketplace',label: 'Student Bazaar',    icon: '◇', href: 'marketplace.html' },
   ],
 
   PAGE_TITLES: {
-    dashboard:   'Dashboard',
+    dashboard:   'Home',
     study:       'VidyaBot — AI Study Guide',
-    planner:     'Study Planner',
-    doubts:      'Doubt Solver',
-    predictor:   'Exam Predictor',
-    quiz:        'XP Arena',
-    resources:   'Resources',
-    marketplace: 'Bazaar',
+    planner:     'My Plan',
+    doubts:      'Solve & Practise',
+    predictor:   'Exam Insights',
+    quiz:        'Practice Arena',
+    resources:   'Library',
+    marketplace: 'Student Bazaar',
   },
 
   /* ── INIT ── */
   init(activePage) {
     this.activePage = activePage;
+    document.body.dataset.pqTheme = activePage;
+    document.body.classList.add('pq-app-shell');
     this._injectFonts();
     this._buildTopbar(activePage);
     this._buildSidebar(activePage);
@@ -60,7 +62,7 @@ const Shell = {
         <button class="hamburger-btn" id="shellHamburger" aria-label="Menu">
           <span></span><span></span><span></span>
         </button>
-        <a href="index.html" class="brand-logo">AAA</a>
+        <a href="index.html" class="brand-logo" aria-label="padhIQ home">padhIQ</a>
         <span class="topbar-title">${this.PAGE_TITLES[activePage] || ''}</span>
       </div>
       <div class="topbar-search">
@@ -93,7 +95,7 @@ const Shell = {
     sb.id = 'shellSidebar';
     sb.innerHTML = `
       <div class="sb-section">
-        <div class="sb-section-label">Menu</div>
+        <div class="sb-section-label">Your learning OS</div>
         ${navHTML}
       </div>
       <div class="sb-section">
