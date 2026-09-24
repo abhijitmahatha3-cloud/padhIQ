@@ -134,7 +134,7 @@ main{position:relative;z-index:2;max-width:820px;margin:0 auto;padding:72px 1.5r
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 @media(max-width:500px){.scan-modes{grid-template-columns:1fr;}.scan-mode{border-right:none;border-bottom:1px solid var(--border);}}
 </style>
-</head>
+<link id="padhiq-shell-css" rel="stylesheet" href="shell.css">\n</head>
 <body>
 
 <nav>
@@ -257,5 +257,7 @@ Be clear, structured, and use simple language a Class 10 student can understand.
   btn.disabled=false; btn.textContent='⚡ SCAN & SOLVE';
 }
 </script>
+<script id="padhiq-shell-js" src="shell.js"></script>
+<script>document.addEventListener('DOMContentLoaded',()=>Shell.init('doubts'));</script>
 </body>
 </html>
