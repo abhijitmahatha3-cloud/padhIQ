@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="pages.css">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
-</head>
+<link id="padhiq-shell-css" rel="stylesheet" href="shell.css">\n</head>
 <body>
 
 <nav class="navbar">
@@ -195,5 +195,7 @@ window.addEventListener('scroll',()=>{
   document.querySelector('.navbar').classList.toggle('scrolled',window.scrollY>20);
 });
 </script>
+<script id="padhiq-shell-js" src="shell.js"></script>
+<script>document.addEventListener('DOMContentLoaded',()=>Shell.init('resources'));</script>
 </body>
 </html>
