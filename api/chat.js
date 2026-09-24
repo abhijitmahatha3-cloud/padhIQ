@@ -74,12 +74,24 @@ Keep each section concise and useful. Practice Questions must not include answer
       ...safeMessages
     ];
 
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      console.error('VidyaBot: GROQ_API_KEY is not configured in this Vercel environment.');
+      return res.status(500).json({
+        error: 'VidyaBot is not configured on the server. Add GROQ_API_KEY to the Vercel environment and redeploy.'
+      });
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20000);
+
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+        'Authorization': `Bearer ${apiKey}`
       },
+      signal: controller.signal,
       body: JSON.stringify({
         model: DEFAULT_MODEL,
         messages: modelMessages,
@@ -87,6 +99,8 @@ Keep each section concise and useful. Practice Questions must not include answer
         temperature: 0.55
       })
     });
+
+    clearTimeout(timeout);
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
@@ -105,6 +119,9 @@ Keep each section concise and useful. Practice Questions must not include answer
     });
   } catch (err) {
     console.error('VidyaBot error:', err);
+    if (err?.name === 'AbortError') {
+      return res.status(504).json({ error: 'VidyaBot took too long to respond. Please try again.' });
+    }
     return res.status(500).json({ error: 'VidyaBot service failed' });
   }
 }
