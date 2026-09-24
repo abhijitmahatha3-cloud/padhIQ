@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Tools — padhIQ</title>
+<title>padhIQ — AI Toolkit</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="pages.css">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -107,8 +107,8 @@
 <div class="page-hero" style="padding-bottom:2rem">
   <div class="page-hero-icon">⚡</div>
   <div class="page-label">AI TOOLKIT</div>
-  <h1 class="page-title">All your AI tools.<br><span class="accent-cyan">One place.</span></h1>
-  <p class="page-sub">8 powerful tools built for Indian students — NCERT-aligned, board-exam focused, completely free.</p>
+  <h1 class="page-title">Your learning toolkit.<br><span class="accent-cyan">Built in layers.</span></h1>
+  <p class="page-sub">VidyaBot is active today. The rest of the toolkit is being built as a connected V2 learning system — visible now, arriving in stages.</p>
 </div>
 
 <div class="tools-hub">
@@ -125,10 +125,10 @@
   </div>
 
   <!-- ── DEDICATED TOOLS ── -->
-  <div class="tools-divider">Dedicated AI Tools</div>
+  <div class="tools-divider">V2 TOOLKIT · UI PREVIEWS</div>
   <div class="tools-grid">
 
-    <div class="tool-card c-cyan" onclick="window.location='doubt-solver.html'">
+    <div class="tool-card c-cyan pq-coming-soon" aria-disabled="true">
       <div class="tc-top"><div class="tc-icon">📸</div><div class="tc-badge cyan">PHOTO</div></div>
       <div class="tc-title">Doubt Solver</div>
       <div class="tc-desc">Upload a photo of any question — from your textbook, notebook, or test paper — and get an instant step-by-step solution.</div>
@@ -136,7 +136,7 @@
       <div class="tc-arrow">↗</div>
     </div>
 
-    <div class="tool-card c-orange" onclick="window.location='exam-predictor.html'">
+    <div class="tool-card c-orange pq-coming-soon" aria-disabled="true">
       <div class="tc-top"><div class="tc-icon">🔮</div><div class="tc-badge orange">BOARD EXAM</div></div>
       <div class="tc-title">Exam Predictor</div>
       <div class="tc-desc">Predicts the most likely questions for your upcoming board exams based on previous year patterns and NCERT chapter weightage.</div>
@@ -144,7 +144,7 @@
       <div class="tc-arrow">↗</div>
     </div>
 
-    <div class="tool-card c-green" onclick="window.location='gamified.html'">
+    <div class="tool-card c-green pq-coming-soon" aria-disabled="true">
       <div class="tc-top"><div class="tc-icon">🎮</div><div class="tc-badge green">XP SYSTEM</div></div>
       <div class="tc-title">XP & Leaderboard</div>
       <div class="tc-desc">Earn XP, unlock badges and compete on a real global leaderboard. AI generates fresh quiz questions every single day — never repeats.</div>
@@ -152,7 +152,7 @@
       <div class="tc-arrow">↗</div>
     </div>
 
-    <div class="tool-card c-purple" onclick="window.location='study-planner.html'">
+    <div class="tool-card c-purple pq-coming-soon" aria-disabled="true">
       <div class="tc-top"><div class="tc-icon">📅</div><div class="tc-badge purple">PLANNER</div></div>
       <div class="tc-title">Study Planner</div>
       <div class="tc-desc">Generate a personalised day-by-day study schedule for your board exams. Set your exam date, subjects, and get a complete 30-day AI plan.</div>
@@ -160,7 +160,7 @@
       <div class="tc-arrow">↗</div>
     </div>
 
-    <div class="tool-card c-gold" onclick="launchTool('Create detailed chapter-wise notes for Class 10 Science — Matter in Our Surroundings. Include key points, definitions, diagrams description, and all important formulas.')">
+    <div class="tool-card c-gold" data-v2-preview="true" onclick="launchTool('Create detailed chapter-wise notes for Class 10 Science — Matter in Our Surroundings. Include key points, definitions, diagrams description, and all important formulas.')">
       <div class="tc-top"><div class="tc-icon">⚡</div><div class="tc-badge gold">INSTANT</div></div>
       <div class="tc-title">Notes Generator</div>
       <div class="tc-desc">Auto-generate chapter-wise notes for any subject and class. Structured, NCERT-aligned, and ready to revise from — in seconds.</div>
@@ -168,7 +168,7 @@
       <div class="tc-arrow">↗</div>
     </div>
 
-    <div class="tool-card c-cyan" onclick="launchTool('Give me the 10 most important predicted questions for Class 12 Physics Board exam with short answers. Focus on high-weightage chapters from NCERT.')">
+    <div class="tool-card c-cyan" data-v2-preview="true" onclick="launchTool('Give me the 10 most important predicted questions for Class 12 Physics Board exam with short answers. Focus on high-weightage chapters from NCERT.')">
       <div class="tc-top"><div class="tc-icon">📚</div><div class="tc-badge cyan">PREDICTED</div></div>
       <div class="tc-title">Question Bank</div>
       <div class="tc-desc">Get predicted high-weightage questions for any chapter — based on board exam patterns, NCERT importance, and previous years.</div>
@@ -176,7 +176,7 @@
       <div class="tc-arrow">↗</div>
     </div>
 
-    <div class="tool-card c-orange" onclick="launchTool('Give me a complete last-minute exam strategy for Class 12 Physics Board exam. Which chapters are highest weightage? What can I safely skip? Give me a 3-day action plan.')">
+    <div class="tool-card c-orange" data-v2-preview="true" onclick="launchTool('Give me a complete last-minute exam strategy for Class 12 Physics Board exam. Which chapters are highest weightage? What can I safely skip? Give me a 3-day action plan.')">
       <div class="tc-top"><div class="tc-icon">🎯</div><div class="tc-badge orange">STRATEGY</div></div>
       <div class="tc-title">Exam Prep Coach</div>
       <div class="tc-desc">What to study, what to safely skip, and exactly how to maximise your score in the time you have left. Built for last-minute prep.</div>
@@ -184,7 +184,7 @@
       <div class="tc-arrow">↗</div>
     </div>
 
-    <div class="tool-card c-green" onclick="launchTool('Give me 5 practice problems on Trigonometry for Class 10 with full step-by-step solutions. Vary the difficulty from easy to hard.')">
+    <div class="tool-card c-green" data-v2-preview="true" onclick="launchTool('Give me 5 practice problems on Trigonometry for Class 10 with full step-by-step solutions. Vary the difficulty from easy to hard.')">
       <div class="tc-top"><div class="tc-icon">🧩</div><div class="tc-badge green">PRACTICE</div></div>
       <div class="tc-title">Practice Problems</div>
       <div class="tc-desc">Get solved practice problems for any topic, from easy to hard. The more you practice, the more confident you become on exam day.</div>
